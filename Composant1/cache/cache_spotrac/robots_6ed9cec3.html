@@ -1,0 +1,365 @@
+# Spotrac robots.txt
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+Allow: /ads.txt
+Disallow: /nba/trade-machine/
+Disallow: /nfl/trade-machine/
+Disallow: /mlb/trade-machine/
+Disallow: /wnba/trade-machine/
+Disallow: /nba/manage2/
+Disallow: /application/
+Disallow: /system/
+Allow: /vendor/*.css
+Allow: /vendor/*.js
+Allow: /vendor/*.woff
+Allow: /vendor/*.woff2
+Allow: /vendor/*.ttf
+Allow: /vendor/*.eot
+Disallow: /vendor/
+Disallow: /mobile/
+Disallow: /mobi/
+Disallow: /app/
+Disallow: /m/
+Disallow: /2015/
+Disallow: /labs/
+Disallow: /cache/
+Disallow: /reports/
+Allow: /assets/*.css
+Allow: /assets/*.js
+Allow: /assets/*.woff
+Allow: /assets/*.woff2
+Allow: /assets/*.ttf
+Allow: /assets/*.eot
+Disallow: /assets/
+Disallow: /ads/
+Disallow: /signin/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /remote/
+Disallow: /errors/
+Disallow: /widget/
+Disallow: /*/_/sort/
+Disallow: /*/_/column/
+Disallow: /*/_/position/
+Disallow: /*/_/type/
+Disallow: /*/_/dir/
+Disallow: /*.html$
+Disallow: /*?*key=
+Disallow: /*?*app=
+Disallow: /*?*ci_session=
+Disallow: /*?*st_session=
+Disallow: /*?*token=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /*?*search=
+
+# Bingbot
+User-agent: bingbot
+Crawl-delay: 1
+Allow: /
+Allow: /ads.txt
+Disallow: /nba/trade-machine/
+Disallow: /nfl/trade-machine/
+Disallow: /mlb/trade-machine/
+Disallow: /wnba/trade-machine/
+Disallow: /nba/manage2/
+Disallow: /application/
+Disallow: /system/
+Allow: /vendor/*.css
+Allow: /vendor/*.js
+Allow: /vendor/*.woff
+Allow: /vendor/*.woff2
+Allow: /vendor/*.ttf
+Allow: /vendor/*.eot
+Disallow: /vendor/
+Disallow: /mobile/
+Disallow: /mobi/
+Disallow: /app/
+Disallow: /m/
+Disallow: /2015/
+Disallow: /labs/
+Disallow: /cache/
+Disallow: /reports/
+Allow: /assets/*.css
+Allow: /assets/*.js
+Allow: /assets/*.woff
+Allow: /assets/*.woff2
+Allow: /assets/*.ttf
+Allow: /assets/*.eot
+Disallow: /assets/
+Disallow: /ads/
+Disallow: /signin/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /remote/
+Disallow: /errors/
+Disallow: /widget/
+Disallow: /*/_/sort/
+Disallow: /*/_/column/
+Disallow: /*/_/position/
+Disallow: /*/_/type/
+Disallow: /*/_/dir/
+Disallow: /*.html$
+Disallow: /*?*key=
+Disallow: /*?*app=
+Disallow: /*?*ci_session=
+Disallow: /*?*st_session=
+Disallow: /*?*token=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /*?*search=
+Disallow: /*%23*
+
+# AI crawlers - allow homepage and sport landing pages only
+# so AI can describe Spotrac as a source, but not scrape data
+User-agent: GPTBot
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: ChatGPT-User
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: Grokbot
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: ClaudeBot
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: anthropic-ai
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /nba/trade-machine/
+Disallow: /cache/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /widget/
+Disallow: /*?*ci_session=
+Disallow: /*?*st_session=
+
+User-agent: YouBot
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+User-agent: cohere-ai
+Allow: /$
+Allow: /nfl/$
+Allow: /nba/$
+Allow: /mlb/$
+Allow: /nhl/$
+Allow: /epl/$
+Allow: /mls/$
+Allow: /wnba/$
+Allow: /pga/$
+Allow: /formula1/$
+Disallow: /
+
+# AI training crawlers - block entirely (no value, just harvesting)
+User-agent: Bytespider
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+# Ad/data bots - block entirely (consume resources, no traffic value)
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: AmazonAdBot
+Disallow: /
+
+User-agent: peer39_crawler
+Disallow: /
+User-agent: peer39_crawler/1.0
+Disallow: /
+
+# Hugging Face 
+# Provider of open-source NLP models and tools
+User-agent: HuggingFaceBot
+Disallow: /
+
+# ImagesiftBot 
+# Reverse image search tool and AI image generator (The Hive)
+User-agent: ImageSiftBot
+Disallow: /
+
+# Omgili (Oh My God I Love It) 
+# AI data scraper from Webz.io that collects and sells data to train AI models 
+User-agent: omgili
+Disallow: /
+User-agent: OmgiliBot
+Disallow: /
+
+# Tencent 
+# Unconfirmed bots from Chinese tech conglomerate developing AI applications
+User-agent: TencentBot
+Disallow: /
+User-agent: HunyuanAide
+Disallow: /
+
+# img2dataset
+# Used by SD, Midjourney, OpenAI, and others to scrape images
+User-agent: img2dataset
+Disallow: /
+
+# DeepMind
+# Models operated by AI research company DeepMind owned by Alphabet (Google)
+User-agent: DeepMindBot
+Disallow: /
+User-agent: Chinchilla
+Disallow: /
+User-agent: Flamingo
+Disallow: /
+User-agent: Gopher
+Disallow: /
+
+# Common Crawl
+# AI data scraper for a large public dataset used for training LLMs
+User-agent: CCBot
+Disallow: /
+
+# Baidu
+# Chinese tech giant developing AI models like ERNIE
+User-agent: Baiduspider
+Disallow: /
+
+# All other crawlers
+User-agent: *
+Crawl-delay: 5
+Allow: /
+Allow: /ads.txt
+Disallow: /nba/trade-machine/
+Disallow: /nfl/trade-machine/
+Disallow: /mlb/trade-machine/
+Disallow: /wnba/trade-machine/
+Disallow: /nba/manage2/
+Disallow: /application/
+Disallow: /system/
+Allow: /vendor/*.css
+Allow: /vendor/*.js
+Allow: /vendor/*.woff
+Allow: /vendor/*.woff2
+Allow: /vendor/*.ttf
+Allow: /vendor/*.eot
+Disallow: /vendor/
+Disallow: /mobile/
+Disallow: /mobi/
+Disallow: /app/
+Disallow: /m/
+Disallow: /2015/
+Disallow: /labs/
+Disallow: /redirect/
+Disallow: /cache/
+Disallow: /reports/
+Allow: /assets/*.css
+Allow: /assets/*.js
+Allow: /assets/*.woff
+Allow: /assets/*.woff2
+Allow: /assets/*.ttf
+Allow: /assets/*.eot
+Disallow: /assets/
+Disallow: /ads/
+Disallow: /signin/
+Disallow: /admin/
+Disallow: /login/
+Disallow: /dashboard/
+Disallow: /remote/
+Disallow: /errors/
+Disallow: /widget/
+Disallow: /*/_/sort/
+Disallow: /*/_/column/
+Disallow: /*/_/position/
+Disallow: /*/_/type/
+Disallow: /*/_/dir/
+Disallow: /*.html$
+Disallow: /*?*key=
+Disallow: /*?*app=
+Disallow: /*?*ci_session=
+Disallow: /*?*st_session=
+Disallow: /*?*token=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+Disallow: /*?*search=
+
+# Sitemap location
+Sitemap: https://www.spotrac.com/sitemap.xml
+Sitemap: https://www.spotrac.com/news-sitemap.xml

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: nba_copilot_db
+    environment:
+      POSTGRES_DB: nba_copilot
+      POSTGRES_USER: nba_user
+      POSTGRES_PASSWORD: nba_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:

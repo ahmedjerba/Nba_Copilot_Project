@@ -1,0 +1,40 @@
+# Config des métriques par rôle/poste — composant 2, étape 1
+#
+# Principe : le POSITION brut de nba_api (7 valeurs, dont des labels composés)
+# porte un vrai signal de rôle, confirmé empiriquement (gradient net de taille/poids
+# sur les 1029 joueurs de la base). On le convertit en score continu 0-1 (Guard -> Center),
+# puis on interpole entre les 3 groupes "purs" pour obtenir la cible de shrinkage
+# de n'importe quel label, y compris les composés.
+#
+# Limite connue et assumée (documentée pour le composant 8) : le score vient du
+# LABEL déclaré (donc du jugement des scouts/NBA), pas de la morphologie individuelle
+# du joueur, ni de son style de jeu réel. Deux joueurs au même label peuvent avoir
+# des rôles fonctionnels différents (ex. Luka Doncic vs Paul George, tous deux
+# "Forward-Guard" mais l'un meneur créateur, l'autre ailier scoreur). Cette limite
+# sera affinée par le clustering comportemental du composant 5, qui pourra à terme
+# remplacer ou enrichir ce score.
+
+position_score:
+  GUARD:           0.000
+  GUARD-FORWARD:   0.325
+  FORWARD-GUARD:   0.426
+  FORWARD:         0.532
+  FORWARD-CENTER:  0.831
+  CENTER-FORWARD:  0.938
+  CENTER:          1.000
+
+# Ancres pures utilisées pour calculer les moyennes de référence (shrinkage target).
+# Un joueur composé n'est jamais lui-même une ancre : il interpole entre deux ancres.
+ancres:
+  - nom: GUARD
+    score: 0.000
+  - nom: FORWARD
+    score: 0.532
+  - nom: CENTER
+    score: 1.000
+
+# Force du shrinkage bayésien (k) : à calibrer à l'étape 3. Plus k est grand,
+# plus un joueur à peu d'échantillon (peu de POSS) est ramené vers sa cible de poste.
+shrinkage:
+  k: null   # à définir à l'étape 3, ex. via validation croisée
+  poids_echantillon: POSS   # colonne utilisée comme mesure de volume/fiabilité

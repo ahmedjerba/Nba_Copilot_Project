@@ -1,0 +1,63 @@
+shrinkage:
+  methode: continu_par_poss
+  k_max: 1000
+  poss_seuil: 1600
+  note: >
+    k varie continuellement selon les possessions.
+    k=0 pour les fiables (POSS >= 1600), k=1000 pour 0 poss.
+    Calibration fine par backtest au composant 3.
+  metriques_a_shrinker:
+    - pts_per100
+    - reb_per100
+    - ast_per100
+    - stl_per100
+    - blk_per100
+    - tov_per100
+    - fgm_per100
+    - fga_per100
+    - fg3m_per100
+    - fg3a_per100
+    - ftm_per100
+    - fta_per100
+    - oreb_per100
+    - dreb_per100
+    - plus_minus_per100
+    - blka_per100
+    - pf_per100
+  metriques_non_shrinkees:
+    note: ces colonnes sont des ratios stables, pas de shrinkage
+    liste:
+      - fg_pct
+      - fg3_pct
+      - ft_pct
+      - efg_pct
+      - ts_pct
+      - off_rating
+      - def_rating
+      - net_rating
+      - usg_pct
+      - pie
+      - ast_pct
+      - ast_to
+      - ast_ratio
+      - oreb_pct
+      - dreb_pct
+      - reb_pct
+      - tm_tov_pct
+      - fgm_adv
+      - fga_adv
+      - fg_pct_adv
+
+
+
+null_semantics:
+  trend_pts: "NULL = première saison, pas de données N-1"
+  trend_pie: "NULL = première saison, pas de données N-1"
+  weight: "NULL = CommonPlayerInfo non disponible"
+  bmi: "NULL = CommonPlayerInfo non disponible"
+  three_rate: "NULL = fga=0, zéro = ne tente pas de 3pts"
+  free_throw_rate: "NULL = fga=0, zéro = ne va pas à la ligne"
+  assist_rate: "NULL = fga=0, zéro = ne fait pas de passes"
+  turnover_rate: "NULL = dénominateur nul"
+  fg3m_per100_shrunk: "ZERO = zéro réel, joueur ne tente pas de 3pts"
+  fg3a_per100_shrunk: "ZERO = zéro réel, joueur ne tente pas de 3pts"
