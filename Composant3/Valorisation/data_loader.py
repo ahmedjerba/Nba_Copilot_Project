@@ -9,15 +9,19 @@ from sqlalchemy import create_engine, text
 from Composant3.Valorisation.config import DB_URL, FEATURE_VERSION, SALARY_CAP, SEASON_WEIGHTS
 
 
-def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
+def load_pairs(segment: str = "market") -> pd.DataFrame:
     """
     Retourne le dataset joueur-saison avec cap_hit_pct comme cible.
 
-    segment : "middle_class" (0.05-0.25), "all", ou "max" (>0.25)
+    segment :
+        "market"       (0.001-0.30) ← défaut — vétérans + role players + middle + stars
+        "middle_class" (0.05-0.25)
+        "max"          (>0.30)      ← non modélisable, usage analytique seulement
+        "all"          (tout)
 
-    Chaque ligne = features saison N  +  cap_hit saison N
-    Join direct : on valorise un joueur avec ses stats de la même saison
-    (le contrat signé l'été N reflète les stats de la saison N).
+    Exclusions systématiques (tous segments) :
+        - Rookies    : saisons_experience <= 1
+        - Two-way    : cap_hit_pct < 0.001
     """
     engine = create_engine(DB_URL)
 
@@ -32,11 +36,6 @@ def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
         df_contracts = pd.read_sql(text("SELECT * FROM contracts"), conn)
 
     # ── Normaliser la saison du contrat ────────────────────────────────────
-    # contracts.saison est au format "2022-23" (saison en cours du contrat)
-    # player_features.saison est au format "2021-22" (saison jouée)
-    # Le contrat signé à l'été 2022 porte sur la saison 2022-23
-    # → on veut l'apparier aux stats de 2021-22 (la saison précédente)
-    # saison_key = "2021-22" quand contrat.saison = "2022-23"
     df_contracts["saison_key"] = df_contracts["saison"].apply(
         lambda s: f"{int(s[:4]) - 1}-{s[:4][2:]}"
     )
@@ -44,7 +43,13 @@ def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
     df_contracts["cap_hit_pct"] = df_contracts["cap_hit"] / df_contracts["salary_cap"]
 
     # ── Filtre de segment ──────────────────────────────────────────────────
-    if segment == "middle_class":
+    if segment == "market":
+        mask = (
+            (df_contracts["cap_hit_pct"] >= 0.001) &
+            (df_contracts["cap_hit_pct"] <= 0.30) &
+            (df_contracts["salary_cap"].notna())
+        )
+    elif segment == "middle_class":
         mask = (
             (df_contracts["cap_hit_pct"] >= 0.05) &
             (df_contracts["cap_hit_pct"] <= 0.25) &
@@ -52,7 +57,7 @@ def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
         )
     elif segment == "max":
         mask = (
-            (df_contracts["cap_hit_pct"] > 0.25) &
+            (df_contracts["cap_hit_pct"] > 0.30) &
             (df_contracts["salary_cap"].notna())
         )
     else:  # "all"
@@ -74,9 +79,7 @@ def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
     # ── Pondération temporelle ─────────────────────────────────────────────
     pairs["sample_weight"] = pairs["saison"].map(SEASON_WEIGHTS).fillna(1.0)
 
-    # ── draft_position : rang absolu dans la draft ─────────────────────────
-    # draft_number est dans players ; on le récupère directement
-    # (draft_round et draft_number sont déjà dans le SELECT ci-dessus)
+    # ── draft_position ─────────────────────────────────────────────────────
     pairs["draft_position"] = pairs.apply(
         lambda r: (r["draft_round"] - 1) * 30 + r["draft_number"]
         if pd.notna(r["draft_round"]) and pd.notna(r["draft_number"])
@@ -86,7 +89,22 @@ def load_pairs(segment: str = "middle_class") -> pd.DataFrame:
 
     pairs = pairs.drop(columns=["saison_key"])
 
+    # ── Exclusions systématiques ───────────────────────────────────────────
+    n_avant = len(pairs)
+
+    # Two-way contracts
+    mask_twoway = pairs["cap_hit_pct"] < 0.001
+    pairs = pairs[~mask_twoway].copy()
+    n_twoway = int(mask_twoway.sum())
+
+    # Rookies (saison 1)
+    mask_rookie = pairs["saisons_experience"] == 0
+    pairs = pairs[~mask_rookie].copy()
+    n_rookie = int(mask_rookie.sum())
+
     print(f"[data_loader] segment={segment!r}  →  {len(pairs)} paires")
+    print(f"  Exclusions : {n_rookie} rookies  |  {n_twoway} two-way  "
+          f"(retiré : {n_avant - len(pairs)})")
     print(f"  Par saison :\n{pairs['saison'].value_counts().sort_index().to_string()}")
     print(f"  cap_hit_pct  mean={pairs['cap_hit_pct'].mean():.4f}  "
           f"std={pairs['cap_hit_pct'].std():.4f}  "

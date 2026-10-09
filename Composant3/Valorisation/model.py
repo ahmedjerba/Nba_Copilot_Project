@@ -26,24 +26,19 @@ class BetaValuationModel:
     """
 
     def __init__(self):
-        self.glm_model   = None   # statsmodels GLMResultsWrapper
-        self.imputer     = None
-        self.encoder     = None
+        self.glm_model    = None
+        self.imputer      = None
+        self.encoder      = None
+        self.alpha        = 0.01
         self.num_features: list[str] = []
         self.cat_features: list[str] = []
-        self.feature_names: list[str] = []  # toutes les features après encodage
+        self.feature_names: list[str] = []
 
     # ──────────────────────────────────────────────────────────────────────
     # Préparation interne
     # ──────────────────────────────────────────────────────────────────────
 
     def _prepare_X(self, df: pd.DataFrame, fit: bool = False) -> pd.DataFrame:
-        """
-        Impute les numériques + encode les catégorielles.
-        fit=True : ajuste imputer et encoder sur df.
-        fit=False : applique les transformateurs déjà ajustés.
-        Retourne un DataFrame complet avec toutes les colonnes.
-        """
         X_num = df[self.num_features].copy()
 
         if fit:
@@ -65,14 +60,9 @@ class BetaValuationModel:
         cat_names = self.encoder.get_feature_names_out(self.cat_features).tolist()
         X_cat_df  = pd.DataFrame(X_cat_arr, columns=cat_names, index=df.index)
 
-        X_full = pd.concat([X_num_df, X_cat_df], axis=1)
-        return X_full
+        return pd.concat([X_num_df, X_cat_df], axis=1)
 
     def _build_formula(self, feature_names: list[str], target: str) -> str:
-        """
-        Construit la formule statsmodels.
-        Les noms de colonnes avec caractères spéciaux sont wrappés en Q('...').
-        """
         terms = []
         for c in feature_names:
             if any(s in c for s in [" ", "-", "/", "("]):
@@ -91,37 +81,40 @@ class BetaValuationModel:
         num_features: list[str],
         cat_features: list[str],
         sample_weight_col: str = "sample_weight",
+        alpha: float = 0.01,
     ) -> "BetaValuationModel":
         """
         Entraîne la Beta Regression sur le dataset df.
-        df doit contenir la colonne 'cap_hit_pct' comme cible.
+        alpha > 0 : régularisation Ridge (L2) pour éviter l'overfit.
+        alpha = 0 : GLM standard sans régularisation.
         """
         self.num_features = num_features
         self.cat_features = cat_features
+        self.alpha        = alpha
 
         X_full = self._prepare_X(df, fit=True)
         self.feature_names = X_full.columns.tolist()
 
-        # Cible clippée strictement en (0, 1) pour la Beta Regression
         y = df["cap_hit_pct"].clip(1e-6, 1 - 1e-6).values
 
-        # Construire le DataFrame pour statsmodels
         X_model = X_full.copy().reset_index(drop=True)
         X_model["cap_hit_pct"] = y
 
-        if sample_weight_col in df.columns:
-            weights = df[sample_weight_col].values
-        else:
-            weights = None
+        weights = df[sample_weight_col].values if sample_weight_col in df.columns else None
 
         formula = self._build_formula(self.feature_names, "cap_hit_pct")
 
-        self.glm_model = smf.glm(
+        glm = smf.glm(
             formula=formula,
             data=X_model,
             family=sm.families.Binomial(link=sm.families.links.Logit()),
             freq_weights=weights,
-        ).fit(disp=0)
+        )
+
+        if alpha > 0:
+            self.glm_model = glm.fit_regularized(alpha=alpha, L1_wt=0.0)
+        else:
+            self.glm_model = glm.fit(disp=0)
 
         return self
 
@@ -134,11 +127,11 @@ class BetaValuationModel:
         Calcule MAE en % du cap et en $ sur le dataset df.
         df doit contenir 'cap_hit_pct'.
         """
-        X_full = self._prepare_X(df, fit=False)
+        X_full  = self._prepare_X(df, fit=False)
         X_model = X_full.copy().reset_index(drop=True)
         y_true  = df["cap_hit_pct"].values
 
-        y_pred  = self.glm_model.predict(X_model)
+        y_pred = self.glm_model.predict(X_model)
 
         mae_pct     = mean_absolute_error(y_true, y_pred)
         mae_dollars = mae_pct * SALARY_CAP_REF
@@ -146,11 +139,11 @@ class BetaValuationModel:
         gain        = (baseline - mae_pct) / baseline
 
         return {
-            "mae_pct":     round(mae_pct, 4),
-            "mae_dollars": round(mae_dollars),
+            "mae_pct":              round(mae_pct, 4),
+            "mae_dollars":          round(mae_dollars),
             "baseline_mae_dollars": round(baseline * SALARY_CAP_REF),
-            "gain_vs_baseline": round(gain, 4),
-            "n": len(df),
+            "gain_vs_baseline":     round(gain, 4),
+            "n":                    len(df),
         }
 
     # ──────────────────────────────────────────────────────────────────────
@@ -164,11 +157,6 @@ class BetaValuationModel:
     ) -> dict:
         """
         Prédit la valeur marché d'un joueur à partir d'une ligne de features.
-
-        player_row : DataFrame d'une seule ligne (les colonnes num + cat)
-        salary_cap : cap de la saison cible (pour convertir en $)
-
-        Retourne un dict avec valeur_pct, valeur_dollars, et intervalles quantiles.
         """
         X_full  = self._prepare_X(player_row, fit=False)
         X_model = X_full.reset_index(drop=True)
@@ -176,23 +164,21 @@ class BetaValuationModel:
         val_pct = float(self.glm_model.predict(X_model).iloc[0])
         val_usd = val_pct * salary_cap
 
-        # Intervalle de confiance basé sur l'erreur standard du GLM (delta method)
         try:
             pred_obj = self.glm_model.get_prediction(X_model)
-            ci = pred_obj.summary_frame(alpha=0.20)  # intervalle 80%
+            ci       = pred_obj.summary_frame(alpha=0.20)
             low_pct  = float(ci["mean_ci_lower"].iloc[0])
             high_pct = float(ci["mean_ci_upper"].iloc[0])
         except Exception:
-            # Fallback : ±15% de la prédiction si le delta method échoue
             low_pct  = val_pct * 0.85
             high_pct = val_pct * 1.15
 
         return {
-            "valeur_pct":    round(val_pct, 4),
+            "valeur_pct":     round(val_pct, 4),
             "valeur_dollars": round(val_usd),
-            "p10_dollars":   round(low_pct * salary_cap),
-            "p90_dollars":   round(high_pct * salary_cap),
-            "salary_cap":    salary_cap,
+            "p10_dollars":    round(low_pct  * salary_cap),
+            "p90_dollars":    round(high_pct * salary_cap),
+            "salary_cap":     salary_cap,
         }
 
     def predict_surplus(
@@ -205,12 +191,12 @@ class BetaValuationModel:
         Calcule le surplus value = valeur estimée − salaire actuel.
         cap_hit : salaire actuel du joueur en dollars.
         """
-        pred = self.predict_player(player_row, salary_cap)
+        pred    = self.predict_player(player_row, salary_cap)
         surplus = pred["valeur_dollars"] - cap_hit
         signal  = "SOUS-PAYÉ 🟢" if surplus > 0 else "SUR-PAYÉ 🔴"
         return {
             **pred,
-            "cap_hit":    round(cap_hit),
-            "surplus":    round(surplus),
-            "signal":     signal,
+            "cap_hit": round(cap_hit),
+            "surplus": round(surplus),
+            "signal":  signal,
         }

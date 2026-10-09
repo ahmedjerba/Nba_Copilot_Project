@@ -31,40 +31,38 @@ from sklearn.preprocessing import StandardScaler
 # Définition des groupes de features de base (sans PIE)
 # ══════════════════════════════════════════════════════════════════════════════
 
-SCORING     = ["pts_per100_shrunk", "fg3m_per100_shrunk", "fgm_per100_shrunk",
-               "ts_pct", "efg_pct", "three_rate", "usg_pct"]
+# Remplacer les groupes et NUM_BASE par ceci :
 
-REBOUNDING  = ["reb_per100_shrunk", "oreb_per100_shrunk", "dreb_per100_shrunk",
-               "oreb_pct", "dreb_pct", "reb_pct"]
+SCORING    = ["pts_per100_shrunk", "fg3m_per100_shrunk", "ts_pct", "usg_pct"]
 
-PLAYMAKING  = ["ast_per100_shrunk", "ast_pct", "assist_rate",
-               "tov_per100_shrunk", "turnover_rate"]
+REBOUNDING = ["reb_per100_shrunk", "oreb_pct", "dreb_pct"]
 
-DEFENSE     = ["stl_per100_shrunk", "blk_per100_shrunk", "def_rating",
-               "blka_per100_shrunk"]
+PLAYMAKING = ["ast_per100_shrunk", "ast_pct", "tov_per100_shrunk"]
 
-DISPO       = ["poss", "gp"]
+DEFENSE    = ["stl_per100_shrunk", "blk_per100_shrunk", "def_rating"]
 
-PROFIL      = ["age_at_date", "peak_distance", "saisons_experience",
-               "height_inches", "weight", "bmi"]
+IMPACT     = ["net_rating", "plus_minus_per100_shrunk"]
 
-TENDANCE    = ["trend_pts", "trend_pie"]
+DISPO      = ["poss", "gp"]
 
-# Features numériques de base (44 features, sans PIE)
+PROFIL     = ["age_at_date", "bmi", "saisons_experience"]
+# ↑ supprimé : peak_distance (= linéaire de age), height_inches, weight (→ bmi)
+
+TENDANCE   = ["trend_pts", "trend_pie"]
+
+TIRS       = ["ft_pct", "free_throw_rate"]
+
 NUM_BASE = (
     SCORING + REBOUNDING + PLAYMAKING +
-    DEFENSE + DISPO + PROFIL + TENDANCE +
-    ["fga_per100_shrunk", "fg3a_per100_shrunk", "ftm_per100_shrunk",
-     "fta_per100_shrunk", "plus_minus_per100_shrunk", "blka_per100_shrunk",
-     "pf_per100_shrunk", "fg_pct", "fg3_pct", "ft_pct",
-     "off_rating", "net_rating", "free_throw_rate"]
+    DEFENSE + IMPACT + DISPO + PROFIL +
+    TENDANCE + TIRS
 )
-# Dédupliquer en gardant l'ordre
+# → 25 features, ratio 24 obs/feature ✅
+
 seen = set()
 NUM_BASE = [f for f in NUM_BASE if not (f in seen or seen.add(f))]
 
 CAT_FEATURES = ["position", "valuation_tier"]
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FE VALIDÉES
@@ -270,11 +268,11 @@ def build_features(
     use_interactions: bool = True,
     use_polyvalence:  bool = True,
     # FE à tester — désactivées par défaut
-    use_age_peak:     bool = False,
-    use_scoring_eff:  bool = False,
-    use_clean_pm:     bool = False,
-    use_bankability:  bool = False,
-    use_archetype:    bool = False,
+    use_age_peak:     bool = True,
+    use_scoring_eff:  bool = True,
+    use_clean_pm:     bool = True,
+    use_bankability:  bool = True,
+    use_archetype:    bool = True,
     # FE dégradantes — désactivées
     use_ratios:       bool = False,
     use_pca_rebond:   bool = False,
