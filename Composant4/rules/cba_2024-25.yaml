@@ -1,0 +1,40 @@
+# Composant4/rules/cba_2024-25.yaml
+meta:
+  saison: "2024-25"
+  cba_version: "2023-2029"
+  last_verified: "2024-07-01"
+
+thresholds:
+  salary_cap:     140_588_000
+  luxury_tax:     170_814_000
+  first_apron:    178_132_000
+  second_apron:   188_931_000
+
+exceptions:
+  mle_non_taxpayer:   12_400_000
+  mle_taxpayer:        5_200_000
+  bi_annual:           4_516_000
+  minimum_salary:      1_119_563
+
+trade_matching:
+  pct_above:          0.25
+  flat_bonus:       100_000
+  above_cap_threshold: 5_000_000
+
+apron1_restrictions:
+  no_mle_non_taxpayer: true
+  no_bi_annual:        true
+  trade_aggregation:   false
+
+apron2_restrictions:
+  no_mle:                  true
+  no_bi_annual:            true
+  no_trade_aggregation:    true
+  sign_and_trade_out_only: true
+  picks_delayed:           true
+
+roster:
+  min_players: 14
+  max_players: 15
+  two_way_slots: 2
+  two_way_max_salary: 600_000

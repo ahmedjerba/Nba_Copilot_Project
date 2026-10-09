@@ -1,0 +1,31 @@
+# Composant4/rules/cba_2021-22.yaml
+meta:
+  saison: "2021-22"
+  cba_version: "2011-2024"
+  last_verified: "2024-07-01"
+
+thresholds:
+  salary_cap:     112_414_000
+  luxury_tax:     136_606_000
+  first_apron:    null   # n'existait pas avant la CBA 2023
+  second_apron:   null
+
+exceptions:
+  mle_non_taxpayer:   9_536_000
+  mle_taxpayer:       5_890_000
+  bi_annual:          3_732_000
+  minimum_salary:       925_258
+
+trade_matching:
+  pct_above:          0.25
+  flat_bonus:       100_000
+  above_cap_threshold: 5_000_000
+
+apron1_restrictions:  null
+apron2_restrictions:  null
+
+roster:
+  min_players: 14
+  max_players: 15
+  two_way_slots: 2
+  two_way_max_salary: 462_629

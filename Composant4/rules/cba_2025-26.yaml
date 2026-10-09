@@ -1,0 +1,43 @@
+# Composant4/rules/cba_2025-26.yaml
+meta:
+  saison: "2025-26"
+  cba_version: "2023-2029"
+  last_verified: "2025-07-01"
+  source: "https://pr.nba.com/nba-salary-cap-2025-26-season"
+
+thresholds:
+  salary_cap:     154_647_000   # ✅ officiel NBA
+  luxury_tax:     187_895_000   # ✅ officiel NBA
+  first_apron:    195_945_000   # ✅ officiel NBA
+  second_apron:   207_824_000   # ✅ officiel NBA
+  minimum_floor:  139_182_000   # ✅ officiel NBA
+
+exceptions:
+  mle_non_taxpayer:   14_104_000   # ✅ officiel NBA
+  mle_taxpayer:        5_685_000   # ✅ officiel NBA
+  mle_room:            8_781_000   # ✅ équipes avec cap space
+  bi_annual:           4_950_000   # ⚠️ à confirmer
+  minimum_salary:      1_200_000   # ⚠️ à confirmer
+
+trade_matching:
+  pct_above:           0.25        # stable jusqu'en 2029
+  flat_bonus:        100_000       # stable jusqu'en 2029
+  above_cap_threshold: 5_000_000   # stable jusqu'en 2029
+
+apron1_restrictions:
+  no_mle_non_taxpayer: true
+  no_bi_annual:        true
+  trade_aggregation:   false
+
+apron2_restrictions:
+  no_mle:                  true
+  no_bi_annual:            true
+  no_trade_aggregation:    true
+  sign_and_trade_out_only: true
+  picks_delayed:           true
+
+roster:
+  min_players: 14
+  max_players: 15
+  two_way_slots: 2
+  two_way_max_salary: 650_000   # ⚠️ à confirmer

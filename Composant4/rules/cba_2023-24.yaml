@@ -1,0 +1,40 @@
+# Composant4/rules/cba_2023-24.yaml
+meta:
+  saison: "2023-24"
+  cba_version: "2023-2029"   # nouvelle CBA entrée en vigueur
+  last_verified: "2024-07-01"
+
+thresholds:
+  salary_cap:     136_021_000
+  luxury_tax:     165_294_000
+  first_apron:    172_346_000   # nouveau — CBA 2023
+  second_apron:   182_794_000   # nouveau — CBA 2023
+
+exceptions:
+  mle_non_taxpayer:   12_405_000
+  mle_taxpayer:        5_000_000
+  bi_annual:           4_379_000
+  minimum_salary:      1_119_563
+
+trade_matching:
+  pct_above:          0.25
+  flat_bonus:       100_000
+  above_cap_threshold: 5_000_000
+
+apron1_restrictions:
+  no_mle_non_taxpayer: true
+  no_bi_annual:        true
+  trade_aggregation:   false
+
+apron2_restrictions:
+  no_mle:                  true
+  no_bi_annual:            true
+  no_trade_aggregation:    true
+  sign_and_trade_out_only: true
+  picks_delayed:           true
+
+roster:
+  min_players: 14
+  max_players: 15
+  two_way_slots: 2
+  two_way_max_salary: 600_000
