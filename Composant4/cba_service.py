@@ -20,7 +20,7 @@ from typing import Any, Optional
 from pydantic import BaseModel, Field, validator
 
 from Composant4.engine import EngineResult, propose_moves
-from Composant4.rules import is_legal
+from Composant4.ruleees import is_legal
 from Composant4.schemas import (
     Contract,
     ExceptionType,
@@ -49,7 +49,7 @@ class ProposeMovesInput(BaseModel):
     saison: str = Field(
         default="2025-26",
         description="Saison au format 'YYYY-YY' (ex: '2025-26')",
-        regex=r"^\d{4}-\d{2}$",
+        pattern=r"^\d{4}-\d{2}$",
     )
     top_n: int = Field(
         default=10,
@@ -80,7 +80,7 @@ class CheckMoveInput(BaseModel):
     """Input de l'outil check_move (vérification d'un move spécifique)."""
 
     team_id: int = Field(..., description="ID de l'équipe", gt=0)
-    saison:  str = Field(default="2025-26", regex=r"^\d{4}-\d{2}$")
+    saison:  str = Field(default="2025-26", pattern=r"^\d{4}-\d{2}$")
 
     # State de l'équipe passé explicitement par l'agent
     total_cap_hit:     int   = Field(..., description="Masse salariale actuelle en $", ge=0)
@@ -136,7 +136,7 @@ class CheckMoveInput(BaseModel):
 class GetTeamStateInput(BaseModel):
     """Input pour récupérer l'état financier d'une équipe."""
     team_id: int = Field(..., gt=0)
-    saison:  str = Field(default="2025-26", regex=r"^\d{4}-\d{2}$")
+    saison:  str = Field(default="2025-26", pattern=r"^\d{4}-\d{2}$")
 
 
 # ---------------------------------------------------------------------------

@@ -32,7 +32,7 @@ from Composant4.schemas import (
     MoveType,
     TeamPayroll,
 )
-from Composant4.rules import is_legal
+from Composant4.ruleees import is_legal
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -130,8 +130,10 @@ class EngineResult:
 # DB helpers
 # ---------------------------------------------------------------------------
 
+from Composant4.config import DB_URL
+
 def _get_conn() -> psycopg2.extensions.connection:
-    url = os.getenv("DB_URL")
+    url = DB_URL
     if not url:
         raise EnvironmentError("DB_URL manquant dans .env")
     return psycopg2.connect(url, cursor_factory=psycopg2.extras.RealDictCursor)
