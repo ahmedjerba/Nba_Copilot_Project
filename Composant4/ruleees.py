@@ -42,22 +42,23 @@ def check_salary_cap(state: TeamPayroll, move: Move, rules: dict) -> RuleResult:
         return _ok(RULE, f"Trade — cap après : {cap_after:,}$ (règle matching s'applique)")
 
     if move.move_type == MoveType.SIGN:
-        if state.total_cap_hit >= cap:
-            # Au-dessus du cap → doit utiliser une exception
-            if move.exception == ExceptionType.NONE:
-                return _fail(
-                    RULE,
-                    f"Équipe au-dessus du cap ({state.total_cap_hit:,}$). "
-                    f"Une exception (MLE, BAE) est requise pour signer."
-                )
+        if move.exception != ExceptionType.NONE:
             return _ok(RULE, f"Signature via exception {move.exception.value} — cap après : {cap_after:,}$")
 
-        if cap_after > cap:
-            # Sous le cap mais la signature dépasse
-            cap_space = cap - state.total_cap_hit
+        if state.total_cap_hit >= cap:
             return _fail(
                 RULE,
-                f"Signature de {move.salary_offer:,}$ dépasse le cap space disponible "
+                f"Équipe au-dessus du cap ({state.total_cap_hit:,}$). "
+                f"Une exception (MLE, BAE) est requise pour signer."
+            )
+
+        if cap_after > cap:
+            # Sous le cap mais la signature sans exception dépasse
+            cap_space = cap - state.total_cap_hit
+            offre_str = f"{move.salary_offer:,}$" if move.salary_offer else "proposée"
+            return _fail(
+                RULE,
+                f"Signature de {offre_str} dépasse le cap space disponible "
                 f"({cap_space:,}$). Cap après : {cap_after:,}$."
             )
 
@@ -95,6 +96,15 @@ def check_trade_matching(state: TeamPayroll, move: Move, rules: dict) -> RuleRes
 
     if salary_out == 0 and salary_in == 0:
         return _ok(RULE, "Trade de picks uniquement — pas de salary matching requis")
+
+    # Vérification d'unicité de la franchise partenaire (trade standard bilatéral)
+    in_teams = {c.team_id for c in move.players_in if c.team_id}
+    if len(in_teams) > 1:
+        return _fail(
+            RULE,
+            f"Trade bilatéral invalide : les joueurs reçus proviennent de "
+            f"{len(in_teams)} franchises différentes. Ils doivent provenir de la même équipe."
+        )
 
     # Calcul du max recevable
     if state.total_cap_hit <= cap:
@@ -224,7 +234,8 @@ def check_exceptions(state: TeamPayroll, move: Move, rules: dict) -> RuleResult:
                 f"Offre ({move.salary_offer:,}$) dépasse le MLE non-taxpayer "
                 f"({max_mle:,}$)."
             )
-        return _ok(RULE, f"MLE non-taxpayer valide — offre : {move.salary_offer:,}$")
+        offre = f"{move.salary_offer:,}$" if move.salary_offer else "non spécifiée"
+        return _ok(RULE, f"MLE non-taxpayer valide — offre : {offre}")
 
     # MLE Taxpayer
     if move.exception == ExceptionType.MLE_TAXPAYER:
@@ -237,7 +248,8 @@ def check_exceptions(state: TeamPayroll, move: Move, rules: dict) -> RuleResult:
                 f"Offre ({move.salary_offer:,}$) dépasse le MLE taxpayer "
                 f"({max_mle:,}$)."
             )
-        return _ok(RULE, f"MLE taxpayer valide — offre : {move.salary_offer:,}$")
+        offre = f"{move.salary_offer:,}$" if move.salary_offer else "non spécifiée"
+        return _ok(RULE, f"MLE taxpayer valide — offre : {offre}")
 
     # Bi-Annual Exception
     if move.exception == ExceptionType.BI_ANNUAL:
@@ -256,7 +268,8 @@ def check_exceptions(state: TeamPayroll, move: Move, rules: dict) -> RuleResult:
                 f"Offre ({move.salary_offer:,}$) dépasse le bi-annual "
                 f"({max_bae:,}$)."
             )
-        return _ok(RULE, f"Bi-annual exception valide — offre : {move.salary_offer:,}$")
+        offre = f"{move.salary_offer:,}$" if move.salary_offer else "non spécifiée"
+        return _ok(RULE, f"Bi-annual exception valide — offre : {offre}")
 
     return _ok(RULE, "Exception non reconnue — ignorée")
 
@@ -314,7 +327,7 @@ def is_legal(move: Move, state: TeamPayroll, saison: str = "2024-25") -> MoveRes
 
     cap_after   = state.total_cap_hit + move.salary_delta
     cap_space   = rules["thresholds"]["salary_cap"] - cap_after
-    value_delta = move.value_delta
+    value_delta = move.value_delta if move.value_delta is not None else 0
 
     if value_delta > 1_000_000:
         value_signal = f"GAIN 🟢 +{value_delta:,}$"

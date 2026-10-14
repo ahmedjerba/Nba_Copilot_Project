@@ -73,7 +73,7 @@ def save_model(
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
 
-    print(f"[model_registry] ✅ Modèle sauvegardé → {pkl_path.name}")
+    print(f"[model_registry] [OK] Modele sauvegarde -> {pkl_path.name}")
     print(f"[model_registry]    MAE OOS : {mae_oos:,.0f}$")
     print(f"[model_registry]    Features : {len(num_features)} num + {len(CAT_FEATURES)} cat")
     print(f"[model_registry]    alpha Ridge : {model.alpha}")
@@ -107,7 +107,7 @@ def load_model(version: str | None = None) -> dict:
             raise FileNotFoundError(f"Modèle introuvable : {pkl_path}")
 
     payload = joblib.load(pkl_path)
-    print(f"[model_registry] ✅ Modèle chargé ← {pkl_path.name}")
+    print(f"[model_registry] [OK] Modele charge <- {pkl_path.name}")
     print(f"[model_registry]    Features : {len(payload['num_features'])} num "
           f"+ {len(payload['cat_features'])} cat")
     print(f"[model_registry]    alpha Ridge : {payload['alpha']}")

@@ -125,8 +125,9 @@ class TeamPayroll(BaseModel):
     saison          : str
 
     # Depuis table team_payrolls
-    total_cap_hit   : int                   # masse salariale totale actuelle
-    nb_joueurs      : int
+    total_cap_hit     : int                   # masse salariale totale actuelle
+    total_base_salary : int = 0
+    nb_joueurs        : int
 
     # Contrats actifs (chargés depuis contracts + players)
     contracts       : list[Contract] = Field(default_factory=list)
@@ -203,7 +204,8 @@ class Move(BaseModel):
       - players_out  : le joueur libéré
     """
     move_type    : MoveType
-    team_id      : int                          # équipe qui initie le move
+    team_id      : int = 0                      # équipe qui initie le move
+    description  : str = ""
 
     # Joueurs
     players_out  : list[Contract] = Field(default_factory=list)
@@ -232,6 +234,8 @@ class Move(BaseModel):
     @property
     def salary_delta(self) -> int:
         """Variation nette de masse salariale après le move."""
+        if self.move_type == MoveType.SIGN and not self.players_in:
+            return self.salary_offer or 0
         return self.salary_in - self.salary_out
 
     # --- Valeur réelle (agent) ---
@@ -253,11 +257,58 @@ class Move(BaseModel):
     @property
     def value_delta(self) -> int:
         """
-        Bilan de valeur réelle du trade.
-        Positif = vous gagnez de la valeur.
-        Négatif = vous cédez de la valeur.
+        Bilan de valeur réelle du mouvement.
+        Positif = gain net pour la franchise.
+        Négatif = perte nette.
         """
+        if self.move_type == MoveType.WAIVE:
+            # Réalité CBA NBA :
+            # Couper un joueur sous contrat garanti ne supprime PAS son cap hit.
+            # Le salaire reste en 'dead money' à 100% sur le payroll.
+            # La franchise perd la production sportive du joueur sans économie salariale.
+            # Le coût net d'un waive est donc au moins la perte du joueur (- valeur réelle sportive).
+            valeur_sportive = sum(
+                max(c.cap_hit + (c.estimated_value or 0), 0)
+                for c in self.players_out
+            )
+            return -valeur_sportive
+
         return self.estimated_value_in - self.estimated_value_out
+
+    def breakdown(self) -> str:
+        """
+        Rapport détaillé affichant :
+        - Le salaire (cap_hit) et le surplus (Composant 3) de chaque joueur.
+        - Le total envoyé (OUT) et reçu (IN).
+        - Le surplus net global du trade.
+        """
+        lines = []
+        lines.append(f"  • Description : {self.description}")
+
+        # Joueurs envoyés
+        lines.append("    📤 Joueurs envoyés (OUT) :")
+        for p in self.players_out:
+            s_val = p.surplus_value if p.surplus_value is not None else p.estimated_value
+            s_str = f"{s_val:+,}$" if s_val is not None else "N/A"
+            sig = "Sous-payé 🟢" if (s_val and s_val > 0) else ("Surpayé 🔴" if (s_val and s_val < 0) else "Neutre ⚪")
+            lines.append(f"       - {p.player_name:<22} | Salaire: {p.cap_hit:>11,}$ | Surplus C3: {s_str:>12} ({sig})")
+        lines.append(f"       -> Total Salaire OUT : {self.salary_out:,}$ | Total Surplus OUT : {self.estimated_value_out:+,}$")
+
+        # Joueurs reçus
+        if self.players_in:
+            lines.append("    📥 Joueurs reçus (IN) :")
+            for p in self.players_in:
+                s_val = p.surplus_value if p.surplus_value is not None else p.estimated_value
+                s_str = f"{s_val:+,}$" if s_val is not None else "N/A"
+                sig = "Sous-payé 🟢" if (s_val and s_val > 0) else ("Surpayé 🔴" if (s_val and s_val < 0) else "Neutre ⚪")
+                lines.append(f"       - {p.player_name:<22} | Salaire: {p.cap_hit:>11,}$ | Surplus C3: {s_str:>12} ({sig})")
+            lines.append(f"       -> Total Salaire IN  : {self.salary_in:,}$ | Total Surplus IN  : {self.estimated_value_in:+,}$")
+
+        lines.append("    📊 BILAN DU TRADE :")
+        lines.append(f"       -> Variation de salaire (in - out) : {self.salary_delta:+,}$")
+        lines.append(f"       -> SURPLUS GLOBAL NET DU TRADE      : {self.value_delta:+,}$")
+
+        return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -308,5 +359,18 @@ class MoveResult(BaseModel):
                 f"Bilan valeur : {self.value_signal or 'non calculé'}."
             )
         return (
-            f"❌ Trade illégal — {self.blocking_rule} : {self.blocking_reason}"
+            f"❌ Trade illégal — bloqué par {self.blocking_rule}. "
+            f"Motif : {self.blocking_reason}"
         )
+
+    def breakdown(self) -> str:
+        """Rapport complet intégrant le breakdown du Move et la validation CBA."""
+        base = self.move.breakdown()
+        lines = [base]
+        stat_icon = "LÉGAL ✔" if self.is_legal else "ILLÉGAL ❌"
+        lines.append(f"    ⚖️ STATUT CBA : {stat_icon}")
+        if self.cap_hit_after:
+            lines.append(f"       -> Cap après move  : {self.cap_hit_after:,}$")
+        if not self.is_legal and self.blocking_rule:
+            lines.append(f"       ⚠️ Bloqué par règle : {self.blocking_rule} — {self.blocking_reason}")
+        return "\n".join(lines)

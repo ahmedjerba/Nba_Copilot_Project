@@ -1,0 +1,107 @@
+══════════════════════════════════════════════════════════════════════════════
+  NBA COPILOT — RAPPORT D'ANALYSE FRONT-OFFICE (COMPOSANT 4)
+  Équipe : Atlanta Hawks (ID: 1610612737) | Saison : 2025-26
+  Masse salariale actuelle : 240,917,708$ | Joueurs : 15
+══════════════════════════════════════════════════════════════════════════════
+
+📊 VUE D'ENSEMBLE :
+   • Candidats explorés : 20
+   • Moves légaux       : 19 (Trades: 5, Signatures: 0, Waives: 14)
+   • Moves illégaux     : 1
+
+══════════════════════════════════════════════════════════════════════════════
+⭐ MEILLEURES OPTIONS DE TRADES (SOLVEUR CP-SAT & CBA)
+══════════════════════════════════════════════════════════════════════════════
+
+[OPTION 1] GAIN 🟢 +44,398,000$
+  • Description : Trade Trae Young + Dejounte Murray -> Stephen Curry (out: 77,195,203$ | in: 59,606,817$)
+    📤 Joueurs envoyés (OUT) :
+       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
+       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
+       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+    📥 Joueurs reçus (IN) :
+       - Stephen Curry          | Salaire:  59,606,817$ | Surplus C3:          N/A (Neutre ⚪)
+       -> Total Salaire IN  : 59,606,817$ | Total Surplus IN  : +0$
+    📊 BILAN DU TRADE :
+       -> Variation de salaire (in - out) : -17,588,386$
+       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+    ⚖️ STATUT CBA : LÉGAL ✔
+       -> Cap après move  : 223,329,322$
+------------------------------------------------------------------------------
+
+[OPTION 2] GAIN 🟢 +44,398,000$
+  • Description : Trade Trae Young + Dejounte Murray -> Joel Embiid (out: 77,195,203$ | in: 55,224,526$)
+    📤 Joueurs envoyés (OUT) :
+       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
+       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
+       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+    📥 Joueurs reçus (IN) :
+       - Joel Embiid            | Salaire:  55,224,526$ | Surplus C3:          N/A (Neutre ⚪)
+       -> Total Salaire IN  : 55,224,526$ | Total Surplus IN  : +0$
+    📊 BILAN DU TRADE :
+       -> Variation de salaire (in - out) : -21,970,677$
+       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+    ⚖️ STATUT CBA : LÉGAL ✔
+       -> Cap après move  : 218,947,031$
+------------------------------------------------------------------------------
+
+[OPTION 3] GAIN 🟢 +44,398,000$
+  • Description : Trade Trae Young + Dejounte Murray -> Nikola Jokić (out: 77,195,203$ | in: 55,224,526$)
+    📤 Joueurs envoyés (OUT) :
+       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
+       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
+       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+    📥 Joueurs reçus (IN) :
+       - Nikola Jokić           | Salaire:  55,224,526$ | Surplus C3:          N/A (Neutre ⚪)
+       -> Total Salaire IN  : 55,224,526$ | Total Surplus IN  : +0$
+    📊 BILAN DU TRADE :
+       -> Variation de salaire (in - out) : -21,970,677$
+       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+    ⚖️ STATUT CBA : LÉGAL ✔
+       -> Cap après move  : 218,947,031$
+------------------------------------------------------------------------------
+
+[OPTION 4] GAIN 🟢 +44,398,000$
+  • Description : Trade Trae Young + Dejounte Murray -> Kevin Durant (out: 77,195,203$ | in: 54,708,609$)
+    📤 Joueurs envoyés (OUT) :
+       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
+       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
+       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+    📥 Joueurs reçus (IN) :
+       - Kevin Durant           | Salaire:  54,708,609$ | Surplus C3:          N/A (Neutre ⚪)
+       -> Total Salaire IN  : 54,708,609$ | Total Surplus IN  : +0$
+    📊 BILAN DU TRADE :
+       -> Variation de salaire (in - out) : -22,486,594$
+       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+    ⚖️ STATUT CBA : LÉGAL ✔
+       -> Cap après move  : 218,431,114$
+------------------------------------------------------------------------------
+
+[OPTION 5] GAIN 🟢 +44,398,000$
+  • Description : Trade Trae Young + Dejounte Murray -> Giannis Antetokounmpo (out: 77,195,203$ | in: 54,126,450$)
+    📤 Joueurs envoyés (OUT) :
+       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
+       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
+       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+    📥 Joueurs reçus (IN) :
+       - Giannis Antetokounmpo  | Salaire:  54,126,450$ | Surplus C3:          N/A (Neutre ⚪)
+       -> Total Salaire IN  : 54,126,450$ | Total Surplus IN  : +0$
+    📊 BILAN DU TRADE :
+       -> Variation de salaire (in - out) : -23,068,753$
+       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+    ⚖️ STATUT CBA : LÉGAL ✔
+       -> Cap après move  : 217,848,955$
+------------------------------------------------------------------------------
+
+══════════════════════════════════════════════════════════════════════════════
+✂️ OPTIONS DE LIBÉRATIONS (WAIVES / DEAD MONEY)
+══════════════════════════════════════════════════════════════════════════════
+  ⚠️ RAPPEL CBA : Un contrat garanti coupé reste à 100% en Dead Cap.
+  1. Libérer Zaccharie Risacher (13,197,720$ | 4 ans restants) | PERTE 🔴 -6,159,253$ (Perte sportive nette)
+  2. Libérer Asa Newell (3,237,480$ | 4 ans restants) | PERTE 🔴 -8,590,422$ (Perte sportive nette)
+  3. Libérer Mouhamed Gueye (2,221,677$ | 4 ans restants) | PERTE 🔴 -8,629,617$ (Perte sportive nette)
+
+══════════════════════════════════════════════════════════════════════════════
+⚠️ AVERTISSEMENTS RÉGLEMENTAIRES
+══════════════════════════════════════════════════════════════════════════════
+   • Libération de Trae Young ignorée — contrat max (46,394,100$), trop coûteux en stretch.

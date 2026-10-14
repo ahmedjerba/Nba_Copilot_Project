@@ -25,11 +25,13 @@ from dotenv import load_dotenv
 
 from Composant4.schemas import (
     Contract,
+    DraftPick,
     ExceptionType,
     Move,
     MoveResult,
     MoveStatus,
     MoveType,
+    PickRound,
     TeamPayroll,
 )
 from Composant4.ruleees import is_legal
@@ -104,26 +106,114 @@ class EngineResult:
     warnings:         list[str] = field(default_factory=list)
 
     @property
+    def legal_trades(self) -> list[MoveResult]:
+        return [m for m in self.legal_moves if m.move.move_type == MoveType.TRADE]
+
+    @property
+    def legal_signs(self) -> list[MoveResult]:
+        return [m for m in self.legal_moves if m.move.move_type == MoveType.SIGN]
+
+    @property
+    def legal_waives(self) -> list[MoveResult]:
+        return [m for m in self.legal_moves if m.move.move_type == MoveType.WAIVE]
+
+    @property
     def best_moves(self) -> list[MoveResult]:
-        return self.legal_moves[: self.top_n]
+        # Priorité aux trades et signatures légaux, puis waives
+        sorted_moves = sorted(
+            self.legal_moves,
+            key=lambda m: (
+                1 if m.move.move_type == MoveType.TRADE else (0 if m.move.move_type == MoveType.SIGN else -1),
+                m.value_delta or 0,
+            ),
+            reverse=True,
+        )
+        return sorted_moves[: self.top_n]
 
     def summary(self) -> str:
         lines = [
             f"═══ Engine Report — Team {self.team_id} | {self.saison} ═══",
             f"Candidats générés  : {self.total_candidates}",
-            f"Moves légaux       : {len(self.legal_moves)}",
+            f"Moves légaux       : {len(self.legal_moves)} (Trades: {len(self.legal_trades)}, Signatures: {len(self.legal_signs)}, Waives: {len(self.legal_waives)})",
             f"Moves illégaux     : {len(self.illegal_moves)}",
             f"Top {self.top_n} retenus  :",
         ]
         for i, m in enumerate(self.best_moves, 1):
             lines.append(
-                f"  {i:>2}. [{m.value_signal}] {m.move.description} "
-                f"| cap après : {m.cap_hit_after:,}$"
+                f"\n  {i:>2}. [{m.value_signal}] {m.move.description} | cap après : {m.cap_hit_after:,}$"
             )
+            if m.move.move_type == MoveType.TRADE:
+                for pout in m.move.players_out:
+                    s = pout.surplus_value if pout.surplus_value is not None else pout.estimated_value
+                    s_str = f"{s:+,}$" if s is not None else "N/A"
+                    lines.append(f"       📤 OUT: {pout.player_name} | Salaire: {pout.cap_hit:,}$ | Surplus C3: {s_str}")
+                for pin in m.move.players_in:
+                    s = pin.surplus_value if pin.surplus_value is not None else pin.estimated_value
+                    s_str = f"{s:+,}$" if s is not None else "N/A"
+                    lines.append(f"       📥 IN : {pin.player_name} | Salaire: {pin.cap_hit:,}$ | Surplus C3: {s_str}")
+                lines.append(f"       📊 SURPLUS TOTAL DU TRADE : {m.value_delta:+,}$")
         if self.warnings:
             lines.append("\n⚠️  Warnings :")
             lines.extend(f"   - {w}" for w in self.warnings)
         return "\n".join(lines)
+
+    def detailed_report(self) -> str:
+        """Génère le rapport exhaustif au format texte avec salaire et surplus par joueur."""
+        lines = [
+            "═" * 78,
+            f"  NBA COPILOT — RAPPORT D'ANALYSE FRONT-OFFICE (COMPOSANT 4)",
+            f"  Équipe : {self.team_state.team_name} (ID: {self.team_id}) | Saison : {self.saison}",
+            f"  Masse salariale actuelle : {self.team_state.total_cap_hit:,}$ | Joueurs : {self.team_state.nb_joueurs}",
+            "═" * 78,
+            "",
+            "📊 VUE D'ENSEMBLE :",
+            f"   • Candidats explorés : {self.total_candidates}",
+            f"   • Moves légaux       : {len(self.legal_moves)} (Trades: {len(self.legal_trades)}, Signatures: {len(self.legal_signs)}, Waives: {len(self.legal_waives)})",
+            f"   • Moves illégaux     : {len(self.illegal_moves)}",
+            "",
+            "═" * 78,
+            "⭐ MEILLEURES OPTIONS DE TRADES (SOLVEUR CP-SAT & CBA)",
+            "═" * 78,
+        ]
+
+        if not self.legal_trades:
+            lines.append("  (Aucun trade légal direct trouvé — vérifier le statut Apron 2 ou élargir le pool)")
+        else:
+            for i, m in enumerate(self.legal_trades[:self.top_n], 1):
+                lines.append(f"\n[OPTION {i}] {m.value_signal}")
+                lines.append(m.breakdown())
+                lines.append("-" * 78)
+
+        if self.legal_signs:
+            lines.append("\n" + "═" * 78)
+            lines.append("✍️ OPPORTUNITÉS DE SIGNATURES (EXCEPTIONS CBA)")
+            lines.append("═" * 78)
+            for i, m in enumerate(self.legal_signs[:3], 1):
+                lines.append(f"  {i}. {m.move.description} | Cap après : {m.cap_hit_after:,}$")
+
+        if self.legal_waives:
+            lines.append("\n" + "═" * 78)
+            lines.append("✂️ OPTIONS DE LIBÉRATIONS (WAIVES / DEAD MONEY)")
+            lines.append("═" * 78)
+            lines.append("  ⚠️ RAPPEL CBA : Un contrat garanti coupé reste à 100% en Dead Cap.")
+            for i, m in enumerate(self.legal_waives[:3], 1):
+                lines.append(f"  {i}. {m.move.description} | {m.value_signal} (Perte sportive nette)")
+
+        if self.warnings:
+            lines.append("\n" + "═" * 78)
+            lines.append("⚠️ AVERTISSEMENTS RÉGLEMENTAIRES")
+            lines.append("═" * 78)
+            for w in self.warnings:
+                lines.append(f"   • {w}")
+
+        return "\n".join(lines)
+
+    def export_to_file(self, filepath: str = "Composant4/meilleures_options_c4.txt") -> str:
+        """Exporte le rapport complet au format texte."""
+        content = self.detailed_report()
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(content)
+        return filepath
 
 
 # ---------------------------------------------------------------------------
@@ -139,16 +229,15 @@ def _get_conn() -> psycopg2.extensions.connection:
     return psycopg2.connect(url, cursor_factory=psycopg2.extras.RealDictCursor)
 
 
+# engine.py — remplace _load_team_state entièrement
+
 def _load_team_state(team_id: int, saison: str) -> TeamPayroll:
-    """
-    Charge TeamPayroll depuis team_payrolls.
-    Lève ValueError si l'équipe est inconnue pour cette saison.
-    """
     sql = """
-        SELECT total_cap_hit, total_base_salary, nb_joueurs
-        FROM   team_payrolls
-        WHERE  team_id = %s AND saison = %s
-        LIMIT  1
+        SELECT tp.total_cap_hit, tp.total_base_salary, tp.nb_joueurs, t.team_name
+        FROM team_payrolls tp
+        JOIN teams t ON t.team_id = tp.team_id
+        WHERE tp.team_id = %s AND tp.saison = %s
+        LIMIT 1
     """
     with _get_conn() as conn:
         with conn.cursor() as cur:
@@ -157,52 +246,121 @@ def _load_team_state(team_id: int, saison: str) -> TeamPayroll:
 
     if not row:
         raise ValueError(
-            f"Aucun payroll trouvé pour team_id={team_id}, saison={saison}. "
-            f"Vérifiez que la DB est alimentée."
+            f"Aucun payroll trouvé pour team_id={team_id}, saison={saison}."
         )
 
     return TeamPayroll(
         team_id           = team_id,
+        team_name         = row["team_name"],   # ← ajouté
         saison            = saison,
         total_cap_hit     = row["total_cap_hit"],
         total_base_salary = row["total_base_salary"],
         nb_joueurs        = row["nb_joueurs"],
-        # mle_used / bi_annual_used → False par défaut (pas encore en DB)
         mle_used          = False,
         bi_annual_used    = False,
     )
 
 
+# SQL avec predictions (market_value depuis surplus_value)
+_SQL_ROSTER_WITH_PRED = """
+    SELECT
+        p.player_id,
+        p.player_name,
+        p.position,
+        c.saison,
+        c.cap_hit,
+        c.base_salary,
+        c.years_remaining,
+        c.contract_value,
+        ps.age,
+        pr.surplus_value
+    FROM   contracts  c
+    JOIN   players    p  ON p.player_id  = c.player_id
+    LEFT JOIN player_stats ps
+           ON ps.player_id = c.player_id
+          AND ps.saison    = c.saison
+          AND ps.team_id   = %s
+    LEFT JOIN predictions pr
+           ON pr.player_id = c.player_id
+          AND pr.saison    = c.saison
+    WHERE  p.team_id = %s
+      AND  c.saison  = %s
+    ORDER  BY c.cap_hit DESC
+"""
+
+# SQL de fallback si la table predictions n'existe pas encore
+_SQL_ROSTER_NO_PRED = """
+    SELECT
+        p.player_id,
+        p.player_name,
+        p.position,
+        c.saison,
+        c.cap_hit,
+        c.base_salary,
+        c.years_remaining,
+        c.contract_value,
+        ps.age,
+        NULL::bigint AS surplus_value
+    FROM   contracts  c
+    JOIN   players    p  ON p.player_id  = c.player_id
+    LEFT JOIN player_stats ps
+           ON ps.player_id = c.player_id
+          AND ps.saison    = c.saison
+          AND ps.team_id   = %s
+    WHERE  p.team_id = %s
+      AND  c.saison  = %s
+    ORDER  BY c.cap_hit DESC
+"""
+
+
+def _enrich_with_composant3(players: list[RosterPlayer], saison: str) -> None:
+    """
+    Enrichit in-place le champ market_value des RosterPlayer
+    via Composant3.valuation_service.get_bulk_valuations
+    pour les joueurs dont market_value est None.
+    """
+    missing_pids = [p.player_id for p in players if p.market_value is None]
+    if not missing_pids:
+        return
+
+    try:
+        from Composant3.valuation_service import get_bulk_valuations
+        valuations = get_bulk_valuations(missing_pids, saison)
+        for p in players:
+            if p.market_value is None and p.player_id in valuations:
+                val = valuations[p.player_id]
+                if val is not None:
+                    p.market_value = val
+    except Exception as exc:
+        logger.warning(
+            "Composant 3 valuation non disponible pour saison=%s : %s",
+            saison, exc
+        )
+
+
 def _load_team_roster(team_id: int, saison: str) -> list[RosterPlayer]:
     """
     Charge le roster complet avec contrats + stats de base.
-    Joint players + contracts + player_stats pour enrichir chaque joueur.
+    Tente de charger surplus_value depuis la table predictions si présente,
+    sinon calcule directement la valorisation via Composant 3.
     """
-    sql = """
-        SELECT
-            p.player_id,
-            p.player_name,
-            p.position,
-            c.saison,
-            c.cap_hit,
-            c.base_salary,
-            c.years_remaining,
-            c.contract_value,
-            ps.age
-        FROM   contracts  c
-        JOIN   players    p  ON p.player_id  = c.player_id
-        LEFT JOIN player_stats ps
-               ON ps.player_id = c.player_id
-              AND ps.saison    = c.saison
-              AND ps.team_id   = %s
-        WHERE  p.team_id = %s
-          AND  c.saison  = %s
-        ORDER  BY c.cap_hit DESC
-    """
+    import psycopg2.errors as _pgerr
+
+    rows = None
     with _get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql, (team_id, team_id, saison))
-            rows = cur.fetchall()
+            try:
+                cur.execute(_SQL_ROSTER_WITH_PRED, (team_id, team_id, saison))
+                rows = cur.fetchall()
+            except _pgerr.UndefinedTable:
+                conn.rollback()
+
+    # Fallback : requête sans predictions
+    if rows is None:
+        with _get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(_SQL_ROSTER_NO_PRED, (team_id, team_id, saison))
+                rows = cur.fetchall()
 
     roster = []
     for r in rows:
@@ -218,6 +376,7 @@ def _load_team_roster(team_id: int, saison: str) -> list[RosterPlayer]:
                 contract_value  = r["contract_value"],
                 position        = r["position"],
                 age             = r["age"],
+                market_value    = r["surplus_value"],  # None si pas de prédiction en DB
             )
         )
 
@@ -225,8 +384,65 @@ def _load_team_roster(team_id: int, saison: str) -> list[RosterPlayer]:
         logger.warning(
             "Roster vide pour team_id=%s, saison=%s", team_id, saison
         )
+    else:
+        # Calcul dynamique des surplus values via Composant 3
+        _enrich_with_composant3(roster, saison)
 
     return roster
+
+
+_SQL_AVAIL_WITH_PRED = """
+    SELECT
+        p.player_id,
+        p.player_name,
+        p.team_id,
+        p.position,
+        c.saison,
+        c.cap_hit,
+        c.base_salary,
+        c.years_remaining,
+        c.contract_value,
+        ps.age,
+        pr.surplus_value
+    FROM   contracts  c
+    JOIN   players    p  ON p.player_id = c.player_id
+    LEFT JOIN player_stats ps
+           ON ps.player_id = c.player_id
+          AND ps.saison    = c.saison
+          AND ps.team_id   = p.team_id
+    LEFT JOIN predictions pr
+           ON pr.player_id = c.player_id
+          AND pr.saison    = c.saison
+    WHERE  p.team_id != %s
+      AND  c.saison   = %s
+    ORDER  BY c.cap_hit DESC
+    LIMIT  %s
+"""
+
+_SQL_AVAIL_NO_PRED = """
+    SELECT
+        p.player_id,
+        p.player_name,
+        p.team_id,
+        p.position,
+        c.saison,
+        c.cap_hit,
+        c.base_salary,
+        c.years_remaining,
+        c.contract_value,
+        ps.age,
+        NULL::bigint AS surplus_value
+    FROM   contracts  c
+    JOIN   players    p  ON p.player_id = c.player_id
+    LEFT JOIN player_stats ps
+           ON ps.player_id = c.player_id
+          AND ps.saison    = c.saison
+          AND ps.team_id   = p.team_id
+    WHERE  p.team_id != %s
+      AND  c.saison   = %s
+    ORDER  BY c.cap_hit DESC
+    LIMIT  %s
+"""
 
 
 def _load_available_players(
@@ -236,37 +452,28 @@ def _load_available_players(
 ) -> list[RosterPlayer]:
     """
     Charge des joueurs disponibles sur le marché (autres équipes).
-    Utilisé pour générer des candidats de trade ou signature.
+    Tente de charger surplus_value depuis la table predictions si présente,
+    sinon calcule directement la valorisation via Composant 3.
     """
-    sql = """
-        SELECT
-            p.player_id,
-            p.player_name,
-            p.team_id,
-            p.position,
-            c.saison,
-            c.cap_hit,
-            c.base_salary,
-            c.years_remaining,
-            c.contract_value,
-            ps.age
-        FROM   contracts  c
-        JOIN   players    p  ON p.player_id = c.player_id
-        LEFT JOIN player_stats ps
-               ON ps.player_id = c.player_id
-              AND ps.saison    = c.saison
-              AND ps.team_id   = p.team_id
-        WHERE  p.team_id != %s
-          AND  c.saison   = %s
-        ORDER  BY c.cap_hit DESC
-        LIMIT  %s
-    """
+    import psycopg2.errors as _pgerr
+
+    rows = None
     with _get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute(sql, (exclude_team_id, saison, limit))
-            rows = cur.fetchall()
+            try:
+                cur.execute(_SQL_AVAIL_WITH_PRED, (exclude_team_id, saison, limit))
+                rows = cur.fetchall()
+            except _pgerr.UndefinedTable:
+                conn.rollback()
 
-    return [
+    # Fallback : requête sans predictions
+    if rows is None:
+        with _get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(_SQL_AVAIL_NO_PRED, (exclude_team_id, saison, limit))
+                rows = cur.fetchall()
+
+    available = [
         RosterPlayer(
             player_id       = r["player_id"],
             player_name     = r["player_name"],
@@ -278,9 +485,64 @@ def _load_available_players(
             contract_value  = r["contract_value"],
             position        = r["position"],
             age             = r["age"],
+            market_value    = r["surplus_value"],  # None si pas de prédiction en DB
         )
         for r in rows
     ]
+
+    # Calcul dynamique des surplus values via Composant 3
+    _enrich_with_composant3(available, saison)
+
+    return available
+
+
+def _load_player(player_id: int, saison: str) -> RosterPlayer | None:
+    """Charge un joueur individuel avec son contrat et sa valorisation."""
+    with _get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT
+                    p.player_id,
+                    p.player_name,
+                    p.team_id,
+                    p.position,
+                    c.saison,
+                    c.cap_hit,
+                    c.base_salary,
+                    c.years_remaining,
+                    c.contract_value,
+                    ps.age,
+                    NULL::bigint AS surplus_value
+                FROM   contracts  c
+                JOIN   players    p  ON p.player_id = c.player_id
+                LEFT JOIN player_stats ps
+                       ON ps.player_id = c.player_id
+                      AND ps.saison    = c.saison
+                      AND ps.team_id   = p.team_id
+                WHERE  p.player_id = %s
+                  AND  c.saison    = %s
+                LIMIT 1
+            """, (player_id, saison))
+            row = cur.fetchone()
+
+    if not row:
+        return None
+
+    player = RosterPlayer(
+        player_id       = row["player_id"],
+        player_name     = row["player_name"],
+        team_id         = row["team_id"],
+        saison          = row["saison"],
+        cap_hit         = row["cap_hit"],
+        base_salary     = row["base_salary"],
+        years_remaining = row["years_remaining"],
+        contract_value  = row["contract_value"],
+        position        = row["position"],
+        age             = row["age"],
+        market_value    = None,
+    )
+    _enrich_with_composant3([player], saison)
+    return player
 
 
 # ---------------------------------------------------------------------------
@@ -360,24 +622,22 @@ def _generate_waive_candidates(
 
         move = Move(
             move_type    = MoveType.WAIVE,
+            team_id      = state.team_id,
             players_out  = [
                 Contract(
                     player_id       = player.player_id,
                     player_name     = player.player_name,
+                    team_id         = state.team_id,
                     saison          = saison,
                     cap_hit         = player.cap_hit,
                     base_salary     = player.base_salary,
                     years_remaining = player.years_remaining,
-                    contract_value  = player.contract_value,
+                    estimated_value = player.market_value,
                 )
             ],
             players_in   = [],
-            salary_out   = player.cap_hit,
-            salary_in    = 0,
-            salary_delta = -player.cap_hit,
             salary_offer = None,
             exception    = ExceptionType.NONE,
-            value_delta  = -(player.market_value or player.cap_hit // 2),
             description  = (
                 f"Libérer {player.player_name} "
                 f"({player.cap_hit:,}$ | {player.years_remaining} ans restants)"
@@ -413,14 +673,11 @@ def _generate_sign_candidates(
         offer = min(cap_space, 20_000_000)  # offre exemple = cap space dispo
         move  = Move(
             move_type    = MoveType.SIGN,
+            team_id      = state.team_id,
             players_out  = [],
             players_in   = [],
-            salary_out   = 0,
-            salary_in    = offer,
-            salary_delta = offer,
             salary_offer = offer,
             exception    = ExceptionType.NONE,
-            value_delta  = int(offer * 0.9),  # placeholder
             description  = f"Signature via cap space ({offer:,}$)",
             picks_in     = [],
             picks_out    = [],
@@ -433,14 +690,11 @@ def _generate_sign_candidates(
         if apron1 is None or (state.total_cap_hit + mle) <= apron1:
             move = Move(
                 move_type    = MoveType.SIGN,
+                team_id      = state.team_id,
                 players_out  = [],
                 players_in   = [],
-                salary_out   = 0,
-                salary_in    = mle,
-                salary_delta = mle,
                 salary_offer = mle,
                 exception    = ExceptionType.MLE_NON_TAXPAYER,
-                value_delta  = int(mle * 0.85),
                 description  = f"Signature MLE non-taxpayer ({mle:,}$)",
                 picks_in     = [],
                 picks_out    = [],
@@ -452,14 +706,11 @@ def _generate_sign_candidates(
         mle_t = exc["mle_taxpayer"]
         move  = Move(
             move_type    = MoveType.SIGN,
+            team_id      = state.team_id,
             players_out  = [],
             players_in   = [],
-            salary_out   = 0,
-            salary_in    = mle_t,
-            salary_delta = mle_t,
             salary_offer = mle_t,
             exception    = ExceptionType.MLE_TAXPAYER,
-            value_delta  = int(mle_t * 0.85),
             description  = f"Signature MLE taxpayer ({mle_t:,}$)",
             picks_in     = [],
             picks_out    = [],
@@ -471,14 +722,11 @@ def _generate_sign_candidates(
         bae  = exc["bi_annual"]
         move = Move(
             move_type    = MoveType.SIGN,
+            team_id      = state.team_id,
             players_out  = [],
             players_in   = [],
-            salary_out   = 0,
-            salary_in    = bae,
-            salary_delta = bae,
             salary_offer = bae,
             exception    = ExceptionType.BI_ANNUAL,
-            value_delta  = int(bae * 0.80),
             description  = f"Signature Bi-Annual Exception ({bae:,}$)",
             picks_in     = [],
             picks_out    = [],
@@ -559,50 +807,50 @@ def _generate_trade_candidates(
             names_in  = " + ".join(p.player_name for p in in_group)
 
             move = Move(
-                move_type = MoveType.TRADE,
-                players_out = [
+                move_type    = MoveType.TRADE,
+                team_id      = state.team_id,
+                players_out  = [
                     Contract(
                         player_id       = p.player_id,
                         player_name     = p.player_name,
+                        team_id         = p.team_id,
                         saison          = saison,
                         cap_hit         = p.cap_hit,
                         base_salary     = p.base_salary,
                         years_remaining = p.years_remaining,
-                        contract_value  = p.contract_value,
+                        estimated_value = p.market_value,
                     )
                     for p in out_group
                 ],
-                players_in = [
+                players_in   = [
                     Contract(
                         player_id       = p.player_id,
                         player_name     = p.player_name,
+                        team_id         = p.team_id,
                         saison          = saison,
                         cap_hit         = p.cap_hit,
                         base_salary     = p.base_salary,
                         years_remaining = p.years_remaining,
-                        contract_value  = p.contract_value,
+                        estimated_value = p.market_value,
                     )
                     for p in in_group
                 ],
-                salary_out   = salary_out,
-                salary_in    = salary_in,
-                salary_delta = salary_in - salary_out,
                 salary_offer = None,
                 exception    = ExceptionType.NONE,
-                value_delta  = (val_in + pick_value) - val_out,
                 description  = (
                     f"Trade {names_out} → {names_in} "
                     f"(out: {salary_out:,}$ | in: {salary_in:,}$)"
                 ),
                 # Stub : on inclut 1 first round pick sortant symbolique
-                picks_in  = [],
-                picks_out = [
-                    {
-                        "round":      1,
-                        "protection": None,
-                        "years_out":  1,
-                        "value":      pick_value,
-                    }
+                picks_in     = [],
+                picks_out    = [
+                    DraftPick(
+                        year            = int(saison[:4]) + 1,
+                        round           = PickRound.FIRST,
+                        team_origin     = "OWN",
+                        protection      = None,
+                        estimated_value = pick_value,
+                    )
                 ],
             )
             candidates.append(move)
@@ -677,12 +925,13 @@ def propose_moves(
         logger.info("Sign candidates  : %s", len(sign_moves))
 
     if include_trades:
+        from Composant4.optimizer import optimize_trades
         available   = _load_available_players(team_id, saison)
-        trade_moves = _generate_trade_candidates(
-            roster, available, state, saison, rules, warnings
+        trade_moves = optimize_trades(
+            roster, available, state, rules, saison, n_solutions=5
         )
         all_candidates.extend(trade_moves)
-        logger.info("Trade candidates : %s", len(trade_moves))
+        logger.info("Trade candidates (CP-SAT) : %s", len(trade_moves))
 
     logger.info("Total candidats  : %s", len(all_candidates))
 
@@ -714,3 +963,115 @@ def propose_moves(
         top_n            = top_n,
         warnings         = warnings,
     )
+
+
+# ---------------------------------------------------------------------------
+# API Avancée : Mode Cible (Target Acquisition & Franchise Partenaire)
+# ---------------------------------------------------------------------------
+
+def propose_trade_for_target(
+    team_id:          int,
+    target_player_id: int,
+    saison:           str = DEFAULT_SAISON,
+    n_solutions:      int = 3,
+) -> list[MoveResult]:
+    """
+    Mode 'Target Acquisition' :
+    L'utilisateur choisit un joueur cible qu'il souhaite acquérir.
+    Le moteur identifie son équipe et calcule le package optimal de joueurs
+    de notre effectif (plus d'éventuels compléments de l'autre équipe)
+    pour conclure le trade en respectant strictement les règles CBA.
+
+    Args:
+        team_id          : ID de votre équipe
+        target_player_id : ID du joueur visé
+        saison           : ex. "2025-26"
+        n_solutions      : nombre de propositions de packages
+
+    Returns:
+        Liste de MoveResult triés par faisabilité puis value_delta.
+    """
+    from Composant4.cba_loader import load_cba_rules
+    from Composant4.optimizer import optimize_trades
+
+    target = _load_player(target_player_id, saison)
+    if not target:
+        raise ValueError(
+            f"Joueur cible ID {target_player_id} introuvable pour la saison {saison}."
+        )
+
+    if target.team_id == team_id:
+        raise ValueError(
+            f"Le joueur {target.player_name} appartient déjà à votre équipe (team_id={team_id})."
+        )
+
+    state  = _load_team_state(team_id, saison)
+    roster = _load_team_roster(team_id, saison)
+    rules  = load_cba_rules(saison)
+
+    # Charger le roster adverse pour les fillers éventuels
+    partner_roster = _load_team_roster(target.team_id, saison)
+    available = [target] + [p for p in partner_roster if p.player_id != target.player_id]
+
+    moves = optimize_trades(
+        roster=roster,
+        available=available,
+        state=state,
+        rules=rules,
+        saison=saison,
+        n_solutions=n_solutions,
+        target_player_id=target_player_id,
+        partner_team_id=target.team_id,
+    )
+
+    results: list[MoveResult] = []
+    for move in moves:
+        res = is_legal(move, state, saison)
+        results.append(res)
+
+    results.sort(key=lambda r: (r.status == MoveStatus.LEGAL, r.value_delta), reverse=True)
+    return results
+
+
+def propose_trades_with_team(
+    team_id:         int,
+    partner_team_id: int,
+    saison:          str = DEFAULT_SAISON,
+    n_solutions:     int = 5,
+) -> list[MoveResult]:
+    """
+    Mode 'Négociation Franchise à Franchise' :
+    Propose les meilleurs trades bilatéraux exclusivement entre team_id
+    et partner_team_id.
+    """
+    from Composant4.cba_loader import load_cba_rules
+    from Composant4.optimizer import optimize_trades
+
+    if team_id == partner_team_id:
+        raise ValueError("L'équipe partenaire doit être différente de votre équipe.")
+
+    state          = _load_team_state(team_id, saison)
+    roster         = _load_team_roster(team_id, saison)
+    partner_roster = _load_team_roster(partner_team_id, saison)
+    rules          = load_cba_rules(saison)
+
+    if not partner_roster:
+        return []
+
+    moves = optimize_trades(
+        roster=roster,
+        available=partner_roster,
+        state=state,
+        rules=rules,
+        saison=saison,
+        n_solutions=n_solutions,
+        partner_team_id=partner_team_id,
+    )
+
+    results: list[MoveResult] = []
+    for move in moves:
+        res = is_legal(move, state, saison)
+        results.append(res)
+
+    results.sort(key=lambda r: (r.status == MoveStatus.LEGAL, r.value_delta), reverse=True)
+    return results

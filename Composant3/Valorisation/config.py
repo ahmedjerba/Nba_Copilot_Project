@@ -7,15 +7,21 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
-load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
+# Load .env by traversing up to project root
+for p in Path(__file__).resolve().parents:
+    if (p / ".env").exists():
+        load_dotenv(dotenv_path=p / ".env")
+        break
+else:
+    load_dotenv()
 
-DB_URL = (
-    f"postgresql://{os.getenv('POSTGRES_USER')}"
-    f":{os.getenv('POSTGRES_PASSWORD')}"
-    f"@{os.getenv('POSTGRES_HOST')}"
-    f":{os.getenv('POSTGRES_PORT')}"
-    f"/{os.getenv('POSTGRES_DB')}"
-)
+_user = os.getenv('POSTGRES_USER', 'nba_user')
+_pass = os.getenv('POSTGRES_PASSWORD', 'nba_pass')
+_host = os.getenv('POSTGRES_HOST', 'localhost')
+_port = os.getenv('POSTGRES_PORT', '5432')
+_db   = os.getenv('POSTGRES_DB', 'nba_copilot')
+
+DB_URL = f"postgresql://{_user}:{_pass}@{_host}:{_port}/{_db}"
 
 FEATURE_VERSION = "v1.0"
 
@@ -25,6 +31,7 @@ SALARY_CAP = {
     "2022-23": 123_655_000,
     "2023-24": 136_021_000,
     "2024-25": 140_588_000,
+    "2025-26": 154_647_000,
 }
 
 SALARY_CAP_REF = 140_588_000   # cap de référence pour affichage en $

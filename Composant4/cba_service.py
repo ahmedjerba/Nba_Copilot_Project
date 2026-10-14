@@ -120,17 +120,19 @@ class CheckMoveInput(BaseModel):
 
     @validator("move_type")
     def validate_move_type(cls, v: str) -> str:
+        v_lower = v.lower()
         valid = {m.value for m in MoveType}
-        if v.upper() not in valid:
+        if v_lower not in valid:
             raise ValueError(f"move_type invalide: '{v}'. Valeurs valides: {valid}")
-        return v.upper()
+        return v.lower()
 
     @validator("exception")
     def validate_exception(cls, v: str) -> str:
+        v_lower = v.lower()
         valid = {e.value for e in ExceptionType}
-        if v.upper() not in valid:
+        if v_lower not in valid:
             raise ValueError(f"exception invalide: '{v}'. Valeurs valides: {valid}")
-        return v.upper()
+        return v.lower()
 
 
 class GetTeamStateInput(BaseModel):
@@ -164,7 +166,7 @@ class MoveOutput(BaseModel):
             description     = result.move.description,
             cap_hit_after   = result.cap_hit_after,
             cap_space_after = result.cap_space_after,
-            value_delta     = result.value_delta,
+            value_delta     = result.value_delta or 0,
             value_signal    = result.value_signal,
             blocking_rule   = result.blocking_rule,
             blocking_reason = result.blocking_reason,
@@ -244,7 +246,7 @@ class CheckMoveOutput(BaseModel):
         if not self.success:
             return f"❌ Erreur : {self.error}"
 
-        icon   = "✅" if self.status == "LEGAL" else "❌"
+        icon   = "✅" if self.status.lower() == "legal" else "❌"
         lines  = [
             f"{icon} Move : {self.description}",
             f"   Statut         : {self.status}",
@@ -408,6 +410,7 @@ def tool_check_move(raw_input: dict[str, Any]) -> CheckMoveOutput:
         # Reconstituer TeamPayroll
         state = TeamPayroll(
             team_id           = inp.team_id,
+            team_name         = "Custom",
             saison            = inp.saison,
             total_cap_hit     = inp.total_cap_hit,
             total_base_salary = inp.total_base_salary,
@@ -421,24 +424,21 @@ def tool_check_move(raw_input: dict[str, Any]) -> CheckMoveOutput:
             return Contract(
                 player_id       = d.get("player_id", 0),
                 player_name     = d.get("player_name", "Inconnu"),
+                team_id         = d.get("team_id", inp.team_id),
                 saison          = inp.saison,
                 cap_hit         = d.get("cap_hit", 0),
                 base_salary     = d.get("base_salary", 0),
                 years_remaining = d.get("years_remaining", 1),
-                contract_value  = d.get("contract_value", 0),
             )
 
         # Reconstituer le Move
         move = Move(
-            move_type    = MoveType(inp.move_type),
+            move_type    = MoveType(inp.move_type.lower()),
+            team_id      = inp.team_id,
             players_out  = [_to_contract(p) for p in inp.players_out],
             players_in   = [_to_contract(p) for p in inp.players_in],
-            salary_out   = inp.salary_out,
-            salary_in    = inp.salary_in,
-            salary_delta = inp.salary_in - inp.salary_out,
-            salary_offer = inp.salary_offer,
-            exception    = ExceptionType(inp.exception),
-            value_delta  = inp.value_delta,
+            salary_offer = inp.salary_offer or (inp.salary_in if inp.salary_in > 0 else None),
+            exception    = ExceptionType(inp.exception.lower()),
             description  = inp.description,
             picks_in     = inp.picks_in,
             picks_out    = inp.picks_out,

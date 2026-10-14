@@ -1,0 +1,13 @@
+❌ Move : Signer un joueur via MLE non-taxpayer
+   Statut         : illegal
+   Cap après      : 204,115,130$
+   Space après    : -49,468,130$
+   Valeur delta   : NEUTRE ⚪
+   ⛔ Blocage      : Équipe au-dessus du first apron (195,945,000$) après le move (204,115,130$). Le MLE non-taxpayer est interdit.
+
+   Détail des règles :
+   ✅ check_salary_cap — Signature via exception mle_non_taxpayer — cap après : 204,115,130$
+   ✅ check_trade_matching — Non applicable — pas un trade
+   ❌ check_luxury_tax — Équipe au-dessus du first apron (195,945,000$) après le move (204,115,130$). Le MLE non-taxpayer est interdit.
+   ❌ check_exceptions — Équipe taxpayer (190,011,130$ ≥ 187,895,000$). Le MLE non-taxpayer n'est pas disponible.
+   ❌ check_roster_size — Roster après le move : 16 joueurs (max 15). Libérez un joueur avant.

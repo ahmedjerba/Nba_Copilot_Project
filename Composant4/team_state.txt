@@ -1,0 +1,9 @@
+💰 État financier — Team 1610612738 | 2025-26
+   Statut         : TAXPAYER
+   Cap hit total  : 190,011,130$
+   Cap space      : -35,364,130$
+   Tax space      : -2,116,130$
+   Apron 1 space  : 5,933,870$
+   Apron 2 space  : 17,812,870$
+   Joueurs roster : 16
+   MLE dispo      : MLE taxpayer (5,685,000$)

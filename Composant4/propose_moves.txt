@@ -1,0 +1,21 @@
+📊 Analyse CBA — Team 1610612738 | 2025-26
+   Cap hit actuel : 190,011,130$
+   Cap space      : -35,364,130$
+   Joueurs roster : 16
+   Candidats      : 20 (17 légaux / 3 illégaux)
+
+🏆 Top 5 moves recommandés :
+   1. [NEUTRE ⚪] Libérer Derrick White (28,100,000$ | 4 ans restants)
+      Cap après : 161,911,130$ | Space : -7,264,130$
+   2. [NEUTRE ⚪] Libérer Robert Williams III (13,285,713$ | 4 ans restants)
+      Cap après : 176,725,417$ | Space : -22,078,417$
+   3. [NEUTRE ⚪] Libérer Sam Hauser (10,044,644$ | 4 ans restants)
+      Cap après : 179,966,486$ | Space : -25,319,486$
+   4. [NEUTRE ⚪] Libérer Payton Pritchard (7,232,143$ | 4 ans restants)
+      Cap après : 182,778,987$ | Space : -28,131,987$
+   5. [NEUTRE ⚪] Libérer Al Horford (5,685,000$ | 2 ans restants)
+      Cap après : 184,326,130$ | Space : -29,679,130$
+
+⚠️  Avertissements :
+   - Libération de Jayson Tatum ignorée — contrat max (54,126,450$), trop coûteux en stretch.
+   - Libération de Jaylen Brown ignorée — contrat max (53,142,264$), trop coûteux en stretch.
