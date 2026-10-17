@@ -1,0 +1,384 @@
+============================================================
+TEST 1 — VALIDATION PYDANTIC
+============================================================
+✅ Saison invalide rejetée : 1 validation error for ComparableRequest
+  Value error, Format saison invalide : '2025/26'. Attendu : YYYY-YY [type=value_error, input_value={'player_id': 203507, 'season': '2025/26'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.12/v/value_error
+✅ k=99 rejeté : 1 validation error for ComparableRequest
+k
+  Input should be less than or equal to 20 [type=less_than_equal, input_value=99, input_type=int]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal
+✅ min_similarity_pct=150 rejeté : 1 validation error for ComparableRequest
+min_similarity_pct
+  Input should be less than or equal to 100 [type=less_than_equal, input_value=150.0, input_type=float]
+    For further information visit https://errors.pydantic.dev/2.12/v/less_than_equal
+✅ Request minimale valide : mode=ComparableMode.current, k=5, age_window=2.0
+✅ Request complète valide : mode=<ComparableMode.historical: 'historical'> player_id=203507 season='2025-26' k=5 age_window=2.0 min_similarity_pct=70.0 weights={'blk_per100_shrunk': 2.0} role_filter='franchise_player'
+
+============================================================
+  Aaron Gordon — current
+============================================================
+  archetype        : superstar (conf=0.321)
+  archetype_second : ascending_wing
+  confidence       : high
+  ⚠️  warning       : Joueur outlier HDBSCAN — archétype estimé par soft assignment.
+  total_found      : 5
+
+  Julius Randle                2022-23  age=28.1  sim=90.5%  [superstar  conf=1.000]
+    shared   : oreb_pct, three_rate, blk_per100_shrunk
+    diverging: trend_pts, pts_per100_shrunk
+  Moritz Wagner                2023-24  age=26.7  sim=88.3%  [ascending_wing  conf=0.188]
+    shared   : usg_pct, free_throw_rate, dreb_pct
+    diverging: trend_pie, net_rating
+  Aaron Gordon                 2024-25  age=29.3  sim=86.2%  [superstar  conf=1.000]
+    shared   : blk_per100_shrunk, three_rate, oreb_pct
+    diverging: trend_pie, stl_per100_shrunk
+  Keldon Johnson               2025-26  age=26.2  sim=86.2%  [ascending_wing / superstar  conf=0.195]
+    shared   : pie, dreb_pct, ts_pct
+    diverging: trend_pts, free_throw_rate
+  Aaron Gordon                 2022-23  age=27.3  sim=85.8%  [rim_protector  conf=1.000]
+    shared   : free_throw_rate, ts_pct, ast_per100_shrunk
+    diverging: blk_per100_shrunk, oreb_pct
+
+============================================================
+  Aaron Gordon — historical
+============================================================
+  archetype        : superstar (conf=0.321)
+  archetype_second : ascending_wing
+  confidence       : high
+  ⚠️  warning       : Joueur outlier HDBSCAN — archétype estimé par soft assignment.
+  total_found      : 5
+
+  Aaron Gordon                 2024-25  age=29.3  sim=84.4%  [superstar  conf=1.000]
+    shared   : blk_per100_shrunk, three_rate, oreb_pct
+    diverging: trend_pie, dreb_pct
+  Jaylen Brown                 2025-26  age=29.2  sim=77.3%  [superstar  conf=0.573]
+    shared   : blk_per100_shrunk, dreb_pct, free_throw_rate
+    diverging: trend_pts, trend_pie
+  Tobias Harris                2023-24  age=31.5  sim=77.1%  [ascending_wing  conf=0.418]
+    shared   : pie, ast_per100_shrunk, dreb_pct
+    diverging: free_throw_rate, net_rating
+  Jamal Murray                 2025-26  age=28.9  sim=75.3%  [superstar  conf=1.000]
+    shared   : blk_per100_shrunk, ts_pct, three_rate
+    diverging: ast_per100_shrunk, trend_pie
+  Lauri Markkanen              2025-26  age=28.6  sim=74.5%  [ascending_wing / superstar  conf=0.348]
+    shared   : three_rate, oreb_pct, ts_pct
+    diverging: trend_pie, net_rating
+
+============================================================
+  Duncan Robinson — current
+============================================================
+  archetype        : spot_up_shooter (conf=1.000)
+  confidence       : high
+  total_found      : 5
+
+  Sam Hauser                   2025-26  age=28.1  sim=88.4%  [spot_up_shooter  conf=1.000]
+    shared   : stl_per100_shrunk, pie, trend_pts
+    diverging: free_throw_rate, dreb_pct
+  Max Strus                    2021-22  age=25.8  sim=87.8%  [spot_up_shooter  conf=1.000]
+    shared   : blk_per100_shrunk, trend_pie, oreb_pct
+    diverging: trend_pts, net_rating
+  Luke Kennard                 2022-23  age=26.5  sim=87.8%  [spot_up_shooter  conf=1.000]
+    shared   : oreb_pct, trend_pts, usg_pct
+    diverging: ts_pct, trend_pie
+  Cedi Osman                   2022-23  age=27.7  sim=87.5%  [3and_d_wing  conf=0.228]
+    shared   : ast_per100_shrunk, pts_per100_shrunk, oreb_pct
+    diverging: three_rate, ts_pct
+  Grayson Allen                2021-22  age=26.2  sim=86.9%  [spot_up_shooter  conf=1.000]
+    shared   : blk_per100_shrunk, trend_pie, usg_pct
+    diverging: trend_pts, net_rating
+
+============================================================
+  Duncan Robinson — historical
+============================================================
+  archetype        : spot_up_shooter (conf=1.000)
+  confidence       : high
+  total_found      : 5
+
+  Seth Curry                   2021-22  age=31.4  sim=76.5%  [spot_up_shooter  conf=0.409]
+    shared   : trend_pie, dreb_pct, oreb_pct
+    diverging: three_rate, net_rating
+  Joe Harris                   2022-23  age=31.3  sim=75.7%  [spot_up_shooter  conf=1.000]
+    shared   : oreb_pct, trend_pts, three_rate
+    diverging: net_rating, free_throw_rate
+  Reggie Bullock Jr.           2021-22  age=30.8  sim=74.5%  [spot_up_shooter  conf=1.000]
+    shared   : trend_pie, three_rate, oreb_pct
+    diverging: ts_pct, pts_per100_shrunk
+  Harrison Barnes              2025-26  age=33.6  sim=73.2%  [3and_d_wing  conf=1.000]
+    shared   : ast_per100_shrunk, pie, usg_pct
+    diverging: trend_pie, trend_pts
+  Georges Niang                2024-25  age=31.5  sim=72.9%  [spot_up_shooter  conf=1.000]
+    shared   : pts_per100_shrunk, blk_per100_shrunk, trend_pie
+    diverging: trend_pts, net_rating
+
+============================================================
+  Giannis Antetokounmpo — current
+============================================================
+  archetype        : franchise_player (conf=0.251)
+  archetype_second : superstar
+  confidence       : high
+  total_found      : 5
+
+  Giannis Antetokounmpo        2022-23  age=28.1  sim=96.7%  [franchise_player / superstar  conf=0.237]
+    shared   : free_throw_rate, blk_per100_shrunk, pie
+    diverging: stl_per100_shrunk, trend_pie
+  Giannis Antetokounmpo        2024-25  age=30.1  sim=95.4%  [franchise_player  conf=0.300]
+    shared   : ast_per100_shrunk, pie, three_rate
+    diverging: trend_pie, stl_per100_shrunk
+  Joel Embiid                  2023-24  age=29.8  sim=93.1%  [franchise_player  conf=0.291]
+    shared   : dreb_pct, ts_pct, stl_per100_shrunk
+    diverging: blk_per100_shrunk, trend_pie
+  Luka Dončić                  2022-23  age=23.8  sim=93.0%  [superstar  conf=1.000]
+    shared   : dreb_pct, usg_pct, net_rating
+    diverging: oreb_pct, three_rate
+  Zion Williamson              2022-23  age=22.5  sim=92.7%  [franchise_player  conf=0.475]
+    shared   : stl_per100_shrunk, ts_pct, three_rate
+    diverging: trend_pts, pts_per100_shrunk
+
+============================================================
+  Giannis Antetokounmpo — historical
+============================================================
+  archetype        : franchise_player (conf=0.251)
+  archetype_second : superstar
+  confidence       : high
+  total_found      : 5
+
+  Giannis Antetokounmpo        2024-25  age=30.1  sim=96.0%  [franchise_player  conf=0.300]
+    shared   : ast_per100_shrunk, pie, three_rate
+    diverging: trend_pie, oreb_pct
+  Joel Embiid                  2023-24  age=29.8  sim=94.1%  [franchise_player  conf=0.291]
+    shared   : dreb_pct, stl_per100_shrunk, ts_pct
+    diverging: blk_per100_shrunk, net_rating
+  Julius Randle                2025-26  age=31.1  sim=90.4%  [superstar  conf=1.000]
+    shared   : net_rating, trend_pie, stl_per100_shrunk
+    diverging: pts_per100_shrunk, pie
+  Giannis Antetokounmpo        2023-24  age=29.1  sim=89.4%  [franchise_player / star_fading  conf=0.217]
+    shared   : stl_per100_shrunk, three_rate, dreb_pct
+    diverging: trend_pts, trend_pie
+  Kawhi Leonard                2022-23  age=31.5  sim=89.2%  [franchise_player  conf=1.000]
+    shared   : net_rating, trend_pie, blk_per100_shrunk
+    diverging: free_throw_rate, oreb_pct
+
+============================================================
+  Rudy Gobert — current
+============================================================
+  archetype        : shot_blocker (conf=0.141)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  total_found      : 5
+
+  Rudy Gobert                  2024-25  age=32.5  sim=97.0%  [physical_big  conf=0.126]
+    shared   : stl_per100_shrunk, usg_pct, three_rate
+    diverging: blk_per100_shrunk, trend_pts
+  Rudy Gobert                  2023-24  age=31.5  sim=97.0%  [shot_blocker  conf=0.213]
+    shared   : three_rate, oreb_pct, free_throw_rate
+    diverging: blk_per100_shrunk, pts_per100_shrunk
+  Moussa Diabaté               2025-26  age=23.9  sim=94.0%  [physical_big / shot_blocker  conf=0.154]
+    shared   : three_rate, trend_pts, ts_pct
+    diverging: blk_per100_shrunk, stl_per100_shrunk
+  Onyeka Okongwu               2021-22  age=21.1  sim=93.1%  [shot_blocker  conf=1.000]
+    shared   : three_rate, ast_per100_shrunk, net_rating
+    diverging: dreb_pct, trend_pts
+  Luke Kornet                  2025-26  age=30.5  sim=92.8%  [shot_blocker  conf=0.139]
+    shared   : trend_pie, three_rate, net_rating
+    diverging: free_throw_rate, dreb_pct
+
+============================================================
+  Rudy Gobert — historical
+============================================================
+  archetype        : shot_blocker (conf=0.141)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  total_found      : 5
+
+  Rudy Gobert                  2024-25  age=32.5  sim=98.1%  [physical_big  conf=0.126]
+    shared   : stl_per100_shrunk, usg_pct, ast_per100_shrunk
+    diverging: blk_per100_shrunk, free_throw_rate
+  Hassan Whiteside             2021-22  age=32.5  sim=93.0%  [shot_blocker  conf=1.000]
+    shared   : ts_pct, three_rate, pie
+    diverging: blk_per100_shrunk, dreb_pct
+  Dewayne Dedmon               2021-22  age=32.4  sim=92.8%  [scoring_big  conf=0.166]
+    shared   : ast_per100_shrunk, stl_per100_shrunk, pie
+    diverging: free_throw_rate, blk_per100_shrunk
+  JaVale McGee                 2021-22  age=34.0  sim=88.2%  [shot_blocker  conf=1.000]
+    shared   : three_rate, net_rating, ts_pct
+    diverging: free_throw_rate, pts_per100_shrunk
+  Mason Plumlee                2024-25  age=34.8  sim=88.1%  [shot_blocker  conf=0.125]
+    shared   : stl_per100_shrunk, three_rate, free_throw_rate
+    diverging: trend_pts, blk_per100_shrunk
+
+============================================================
+  De'Aaron Fox — current
+============================================================
+  archetype        : star_fading (conf=1.000)
+  confidence       : high
+  total_found      : 5
+
+  Jalen Williams               2025-26  age=24.7  sim=95.8%  [star_fading  conf=1.000]
+    shared   : pts_per100_shrunk, ast_per100_shrunk, trend_pie
+    diverging: three_rate, dreb_pct
+  Khris Middleton              2024-25  age=33.4  sim=93.2%  [star_fading  conf=0.447]
+    shared   : blk_per100_shrunk, stl_per100_shrunk, three_rate
+    diverging: pts_per100_shrunk, net_rating
+  Khris Middleton              2023-24  age=32.4  sim=92.8%  [star_fading  conf=1.000]
+    shared   : pie, three_rate, ast_per100_shrunk
+    diverging: stl_per100_shrunk, dreb_pct
+  LaMelo Ball                  2025-26  age=24.4  sim=91.1%  [franchise_player / star_fading  conf=0.161]
+    shared   : blk_per100_shrunk, trend_pts, net_rating
+    diverging: pts_per100_shrunk, ast_per100_shrunk
+  De'Aaron Fox                 2024-25  age=27.0  sim=90.4%  [star_fading  conf=1.000]
+    shared   : stl_per100_shrunk, pie, oreb_pct
+    diverging: net_rating, trend_pts
+
+============================================================
+  De'Aaron Fox — historical
+============================================================
+  archetype        : star_fading (conf=1.000)
+  confidence       : high
+  total_found      : 5
+
+  Immanuel Quickley            2025-26  age=26.5  sim=88.0%  [star_fading / declining_star  conf=0.278]
+    shared   : ts_pct, free_throw_rate, pie
+    diverging: net_rating, trend_pts
+  De'Aaron Fox                 2024-25  age=27.0  sim=86.8%  [star_fading  conf=1.000]
+    shared   : stl_per100_shrunk, pie, oreb_pct
+    diverging: net_rating, trend_pts
+  Trae Young                   2024-25  age=26.3  sim=85.6%  [franchise_player  conf=0.193]
+    shared   : trend_pie, oreb_pct, ts_pct
+    diverging: ast_per100_shrunk, net_rating
+  Donovan Mitchell             2023-24  age=27.3  sim=85.1%  [franchise_player  conf=0.598]
+    shared   : trend_pts, oreb_pct, trend_pie
+    diverging: pts_per100_shrunk, stl_per100_shrunk
+  Jalen Brunson                2024-25  age=28.3  sim=83.7%  [star_fading  conf=1.000]
+    shared   : oreb_pct, three_rate, dreb_pct
+    diverging: pts_per100_shrunk, stl_per100_shrunk
+
+============================================================
+  Draymond Green — current
+============================================================
+  archetype        : 3and_d_specialist (conf=0.081)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  total_found      : 5
+
+  Chris Paul                   2024-25  age=39.7  sim=78.0%  [declining_vet  conf=0.091]
+    shared   : three_rate, free_throw_rate, pts_per100_shrunk
+    diverging: stl_per100_shrunk, ast_per100_shrunk
+  Draymond Green               2022-23  age=32.8  sim=75.9%  [unclassified  conf=0.062]
+    shared   : stl_per100_shrunk, oreb_pct, trend_pts
+    diverging: trend_pie, three_rate
+  Walter Clayton Jr.           2025-26  age=22.8  sim=72.0%  [3and_d_specialist  conf=0.093]
+    shared   : ast_per100_shrunk, trend_pts, ts_pct
+    diverging: dreb_pct, blk_per100_shrunk
+  Isaiah Collier               2024-25  age=20.2  sim=70.8%  [3and_d_specialist  conf=0.095]
+    shared   : pie, trend_pts, pts_per100_shrunk
+    diverging: blk_per100_shrunk, three_rate
+  Tomas Satoransky             2021-22  age=30.2  sim=69.7%  [3and_d_specialist  conf=0.100]
+    shared   : oreb_pct, ast_per100_shrunk, pie
+    diverging: blk_per100_shrunk, three_rate
+
+============================================================
+  Draymond Green — historical
+============================================================
+  archetype        : 3and_d_specialist (conf=0.081)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  total_found      : 5
+
+  Draymond Green               2024-25  age=34.8  sim=59.3%  [unclassified  conf=0.060]
+    shared   : dreb_pct, usg_pct, pts_per100_shrunk
+    diverging: stl_per100_shrunk, net_rating
+  Draymond Green               2023-24  age=33.8  sim=58.9%  [3and_d_specialist  conf=0.122]
+    shared   : pts_per100_shrunk, usg_pct, free_throw_rate
+    diverging: trend_pts, net_rating
+  Markieff Morris              2023-24  age=34.3  sim=52.7%  [replacement_level  conf=0.592]
+    shared   : three_rate, usg_pct, trend_pie
+    diverging: ast_per100_shrunk, net_rating
+  James Johnson                2021-22  age=34.9  sim=46.8%  [3and_d_specialist  conf=0.145]
+    shared   : pts_per100_shrunk, free_throw_rate, trend_pts
+    diverging: three_rate, ast_per100_shrunk
+  Al Horford                   2021-22  age=35.6  sim=43.7%  [shot_blocker  conf=1.000]
+    shared   : free_throw_rate, usg_pct, trend_pts
+    diverging: blk_per100_shrunk, net_rating
+
+============================================================
+TEST 3a — ROLE FILTER MATCH (Gobert, shot_blocker)
+============================================================
+  archetype        : shot_blocker (conf=0.141)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  role_filter      : shot_blocker [✅]
+  total_found      : 5
+
+  Rudy Gobert                  2023-24  age=31.5  sim=97.0%  [shot_blocker  conf=0.213]
+    shared   : three_rate, oreb_pct, free_throw_rate
+    diverging: blk_per100_shrunk, pts_per100_shrunk
+  Moussa Diabaté               2025-26  age=23.9  sim=94.0%  [physical_big / shot_blocker  conf=0.154]
+    shared   : three_rate, trend_pts, ts_pct
+    diverging: blk_per100_shrunk, stl_per100_shrunk
+  Onyeka Okongwu               2021-22  age=21.1  sim=93.1%  [shot_blocker  conf=1.000]
+    shared   : three_rate, ast_per100_shrunk, net_rating
+    diverging: dreb_pct, trend_pts
+  Luke Kornet                  2025-26  age=30.5  sim=92.8%  [shot_blocker  conf=0.139]
+    shared   : trend_pie, three_rate, net_rating
+    diverging: free_throw_rate, dreb_pct
+  Rudy Gobert                  2021-22  age=29.5  sim=92.4%  [shot_blocker  conf=0.181]
+    shared   : three_rate, oreb_pct, ast_per100_shrunk
+    diverging: free_throw_rate, pts_per100_shrunk
+
+============================================================
+TEST 3b — ROLE FILTER FALLBACK (Gobert, rim_protector)
+============================================================
+  archetype        : shot_blocker (conf=0.141)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  role_filter      : rim_protector [⚠️  FALLBACK]
+  total_found      : 5
+
+  Rudy Gobert                  2024-25  age=32.5  sim=97.0%  [physical_big  conf=0.126]
+    shared   : stl_per100_shrunk, usg_pct, three_rate
+    diverging: blk_per100_shrunk, trend_pts
+  Rudy Gobert                  2023-24  age=31.5  sim=97.0%  [shot_blocker  conf=0.213]
+    shared   : three_rate, oreb_pct, free_throw_rate
+    diverging: blk_per100_shrunk, pts_per100_shrunk
+  Moussa Diabaté               2025-26  age=23.9  sim=94.0%  [physical_big / shot_blocker  conf=0.154]
+    shared   : three_rate, trend_pts, ts_pct
+    diverging: blk_per100_shrunk, stl_per100_shrunk
+  Onyeka Okongwu               2021-22  age=21.1  sim=93.1%  [shot_blocker  conf=1.000]
+    shared   : three_rate, ast_per100_shrunk, net_rating
+    diverging: dreb_pct, trend_pts
+  Luke Kornet                  2025-26  age=30.5  sim=92.8%  [shot_blocker  conf=0.139]
+    shared   : trend_pie, three_rate, net_rating
+    diverging: free_throw_rate, dreb_pct
+
+============================================================
+TEST 4 — WEIGHTS (Giannis, blk x2)
+============================================================
+  archetype        : franchise_player (conf=0.251)
+  archetype_second : superstar
+  confidence       : high
+  total_found      : 5
+
+  Giannis Antetokounmpo        2022-23  age=28.1  sim=96.6%  [franchise_player / superstar  conf=0.237]
+    shared   : free_throw_rate, blk_per100_shrunk, pie
+    diverging: stl_per100_shrunk, trend_pie
+  Giannis Antetokounmpo        2024-25  age=30.1  sim=93.0%  [franchise_player  conf=0.300]
+    shared   : ast_per100_shrunk, pie, three_rate
+    diverging: trend_pie, stl_per100_shrunk
+  Jayson Tatum                 2022-23  age=24.8  sim=91.7%  [superstar  conf=0.441]
+    shared   : net_rating, blk_per100_shrunk, trend_pts
+    diverging: oreb_pct, ast_per100_shrunk
+  Zion Williamson              2022-23  age=22.5  sim=91.5%  [franchise_player  conf=0.475]
+    shared   : stl_per100_shrunk, ts_pct, three_rate
+    diverging: trend_pts, pts_per100_shrunk
+  Luka Dončić                  2022-23  age=23.8  sim=91.4%  [superstar  conf=1.000]
+    shared   : dreb_pct, usg_pct, net_rating
+    diverging: oreb_pct, three_rate
+
+============================================================
+TEST 5 — MIN SIMILARITY (Draymond historical, seuil=65%)
+============================================================
+  archetype        : 3and_d_specialist (conf=0.081)
+  confidence       : high
+  ⚠️  warning       : Confiance d'assignement faible (<0.15) — archétype reclassifié.
+  total_found      : 0

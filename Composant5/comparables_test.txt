@@ -1,0 +1,108 @@
+
+============================================================
+  Aaron Gordon
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Julius Randle                2022-23  sim=90.5%  [franchise_star]
+  Moritz Wagner                2023-24  sim=88.3%  [versatile_hybrid]
+  Aaron Gordon                 2024-25  sim=86.2%  [franchise_star]
+  Keldon Johnson               2025-26  sim=86.2%  [ascending_shooter]
+  Aaron Gordon                 2022-23  sim=85.8%  [versatile_hybrid]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Aaron Gordon                 2024-25  age=29.3  sim=84.4%  [franchise_star]
+  Jaylen Brown                 2025-26  age=29.2  sim=77.3%  [franchise_star]
+  Tobias Harris                2023-24  age=31.5  sim=77.1%  [ascending_shooter]
+  Jamal Murray                 2025-26  age=28.9  sim=75.3%  [franchise_star]
+  Lauri Markkanen              2025-26  age=28.6  sim=74.5%  [ascending_shooter]
+
+============================================================
+  Duncan Robinson
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Sam Hauser                   2025-26  sim=88.4%  [3and_d_wing]
+  Max Strus                    2021-22  sim=87.8%  [3and_d_wing]
+  Luke Kennard                 2022-23  sim=87.8%  [3and_d_wing]
+  Cedi Osman                   2022-23  sim=87.5%  [declining_shooter]
+  Grayson Allen                2021-22  sim=86.9%  [3and_d_wing]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Seth Curry                   2021-22  age=31.4  sim=76.5%  [3and_d_wing]
+  Joe Harris                   2022-23  age=31.3  sim=75.7%  [3and_d_wing]
+  Reggie Bullock Jr.           2021-22  age=30.8  sim=74.5%  [3and_d_wing]
+  Harrison Barnes              2025-26  age=33.6  sim=73.2%  [declining_shooter]
+  Georges Niang                2024-25  age=31.5  sim=72.9%  [3and_d_wing]
+
+============================================================
+  Giannis Antetokounmpo
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Giannis Antetokounmpo        2022-23  sim=96.7%  [franchise_star]
+  Giannis Antetokounmpo        2024-25  sim=95.4%  [franchise_star]
+  Joel Embiid                  2023-24  sim=93.1%  [franchise_star]
+  Luka Dončić                  2022-23  sim=93.0%  [franchise_star]
+  Zion Williamson              2022-23  sim=92.7%  [franchise_star]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Giannis Antetokounmpo        2024-25  age=30.1  sim=96.0%  [franchise_star]
+  Joel Embiid                  2023-24  age=29.8  sim=94.1%  [franchise_star]
+  Julius Randle                2025-26  age=31.1  sim=90.4%  [franchise_star]
+  Giannis Antetokounmpo        2023-24  age=29.1  sim=89.4%  [versatile_hybrid]
+  Kawhi Leonard                2022-23  age=31.5  sim=89.2%  [franchise_star]
+
+============================================================
+  Rudy Gobert
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Rudy Gobert                  2024-25  sim=97.0%  [rim_protector]
+  Rudy Gobert                  2023-24  sim=97.0%  [rim_protector]
+  Moussa Diabaté               2025-26  sim=94.0%  [rim_protector]
+  Onyeka Okongwu               2021-22  sim=93.1%  [rim_protector]
+  Luke Kornet                  2025-26  sim=92.8%  [rim_protector]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Rudy Gobert                  2024-25  age=32.5  sim=98.1%  [rim_protector]
+  Hassan Whiteside             2021-22  age=32.5  sim=93.0%  [rim_protector]
+  Dewayne Dedmon               2021-22  age=32.4  sim=92.8%  [rim_protector]
+  JaVale McGee                 2021-22  age=34.0  sim=88.2%  [rim_protector]
+  Mason Plumlee                2024-25  age=34.8  sim=88.1%  [rim_protector]
+
+============================================================
+  De'Aaron Fox
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Jalen Williams               2025-26  sim=95.8%  [star_declining]
+  Khris Middleton              2024-25  sim=93.2%  [versatile_hybrid]
+  Khris Middleton              2023-24  sim=92.8%  [star_declining]
+  LaMelo Ball                  2025-26  sim=91.1%  [franchise_star]
+  De'Aaron Fox                 2024-25  sim=90.4%  [star_declining]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Immanuel Quickley            2025-26  age=26.5  sim=88.0%  [versatile_hybrid]
+  De'Aaron Fox                 2024-25  age=27.0  sim=86.8%  [star_declining]
+  Trae Young                   2024-25  age=26.3  sim=85.6%  [franchise_star]
+  Donovan Mitchell             2023-24  age=27.3  sim=85.1%  [franchise_star]
+  Jalen Brunson                2024-25  age=28.3  sim=83.7%  [star_declining]
+
+============================================================
+  Draymond Green
+============================================================
+
+▶ SIMILAIRES ACTUELS (2025-26)
+  Chris Paul                   2024-25  sim=78.0%  [versatile_hybrid]
+  Draymond Green               2022-23  sim=75.9%  [franchise_star]
+  Walter Clayton Jr.           2025-26  sim=72.0%  [franchise_star]
+  Isaiah Collier               2024-25  sim=70.8%  [franchise_star]
+  Tomas Satoransky             2021-22  sim=69.7%  [franchise_star]
+
+▶ COMPARABLES HISTORIQUES (même âge ±2 ans)
+  Draymond Green               2024-25  age=34.8  sim=59.3%  [versatile_hybrid]
+  Draymond Green               2023-24  age=33.8  sim=58.9%  [versatile_hybrid]
+  Markieff Morris              2023-24  age=34.3  sim=52.7%  [low_impact_shooter]
+  James Johnson                2021-22  age=34.9  sim=46.8%  [3and_d_wing]
+  Al Horford                   2021-22  age=35.6  sim=43.7%  [rim_protector]
