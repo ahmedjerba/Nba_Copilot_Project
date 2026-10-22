@@ -1,107 +1,112 @@
 ══════════════════════════════════════════════════════════════════════════════
   NBA COPILOT — RAPPORT D'ANALYSE FRONT-OFFICE (COMPOSANT 4)
-  Équipe : Atlanta Hawks (ID: 1610612737) | Saison : 2025-26
-  Masse salariale actuelle : 240,917,708$ | Joueurs : 15
+  Équipe : Denver Nuggets (ID: 1610612743) | Saison : 2025-26
+  Masse salariale actuelle : 187,214,031$ | Joueurs : 15
 ══════════════════════════════════════════════════════════════════════════════
 
 📊 VUE D'ENSEMBLE :
-   • Candidats explorés : 20
-   • Moves légaux       : 19 (Trades: 5, Signatures: 0, Waives: 14)
-   • Moves illégaux     : 1
+   • Candidats explorés : 19
+   • Moves légaux       : 19 (Trades: 5, Signatures: 1, Waives: 13)
+   • Moves illégaux     : 0
 
 ══════════════════════════════════════════════════════════════════════════════
 ⭐ MEILLEURES OPTIONS DE TRADES (SOLVEUR CP-SAT & CBA)
 ══════════════════════════════════════════════════════════════════════════════
 
-[OPTION 1] GAIN 🟢 +44,398,000$
-  • Description : Trade Trae Young + Dejounte Murray -> Stephen Curry (out: 77,195,203$ | in: 59,606,817$)
+[OPTION 1] GAIN 🟢 +24,957,584$
+  • Description : Trade Jamal Murray + Aaron Gordon -> Shai Gilgeous-Alexander (out: 69,235,555$ | in: 38,333,050$)
     📤 Joueurs envoyés (OUT) :
-       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
-       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
-       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+       - Jamal Murray           | Salaire:  46,394,100$ | Surplus C3:  -4,124,833$ (Surpayé 🔴)
+       - Aaron Gordon           | Salaire:  22,841,455$ | Surplus C3:  -2,303,462$ (Surpayé 🔴)
+       -> Total Salaire OUT : 69,235,555$ | Total Surplus OUT : -6,428,295$ | Valeur Marché OUT : 62,807,260$
     📥 Joueurs reçus (IN) :
-       - Stephen Curry          | Salaire:  59,606,817$ | Surplus C3:          N/A (Neutre ⚪)
-       -> Total Salaire IN  : 59,606,817$ | Total Surplus IN  : +0$
+       - Shai Gilgeous-Alexander | Salaire:  38,333,050$ | Surplus C3: +18,529,289$ (Sous-payé 🟢)
+       -> Total Salaire IN  : 38,333,050$ | Total Surplus IN  : +18,529,289$ | Valeur Marché IN : 56,862,339$
     📊 BILAN DU TRADE :
-       -> Variation de salaire (in - out) : -17,588,386$
-       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+       -> Variation de salaire (in - out) : -30,902,505$
+       -> SURPLUS GLOBAL NET DU TRADE      : +24,957,584$
     ⚖️ STATUT CBA : LÉGAL ✔
-       -> Cap après move  : 223,329,322$
+       -> Cap après move  : 156,311,526$
 ------------------------------------------------------------------------------
 
-[OPTION 2] GAIN 🟢 +44,398,000$
-  • Description : Trade Trae Young + Dejounte Murray -> Joel Embiid (out: 77,195,203$ | in: 55,224,526$)
+[OPTION 2] GAIN 🟢 +24,777,175$
+  • Description : Trade Jamal Murray + Zeke Nnaji -> Shai Gilgeous-Alexander (out: 54,571,878$ | in: 38,333,050$)
     📤 Joueurs envoyés (OUT) :
-       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
-       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
-       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+       - Jamal Murray           | Salaire:  46,394,100$ | Surplus C3:  -4,124,833$ (Surpayé 🔴)
+       - Zeke Nnaji             | Salaire:   8,177,778$ | Surplus C3:  -2,123,053$ (Surpayé 🔴)
+       -> Total Salaire OUT : 54,571,878$ | Total Surplus OUT : -6,247,886$ | Valeur Marché OUT : 48,323,992$
     📥 Joueurs reçus (IN) :
-       - Joel Embiid            | Salaire:  55,224,526$ | Surplus C3:          N/A (Neutre ⚪)
-       -> Total Salaire IN  : 55,224,526$ | Total Surplus IN  : +0$
+       - Shai Gilgeous-Alexander | Salaire:  38,333,050$ | Surplus C3: +18,529,289$ (Sous-payé 🟢)
+       -> Total Salaire IN  : 38,333,050$ | Total Surplus IN  : +18,529,289$ | Valeur Marché IN : 56,862,339$
     📊 BILAN DU TRADE :
-       -> Variation de salaire (in - out) : -21,970,677$
-       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+       -> Variation de salaire (in - out) : -16,238,828$
+       -> SURPLUS GLOBAL NET DU TRADE      : +24,777,175$
     ⚖️ STATUT CBA : LÉGAL ✔
-       -> Cap après move  : 218,947,031$
+       -> Cap après move  : 170,975,203$
 ------------------------------------------------------------------------------
 
-[OPTION 3] GAIN 🟢 +44,398,000$
-  • Description : Trade Trae Young + Dejounte Murray -> Nikola Jokić (out: 77,195,203$ | in: 55,224,526$)
+[OPTION 3] GAIN 🟢 +22,654,122$
+  • Description : Trade Jamal Murray -> Shai Gilgeous-Alexander (out: 46,394,100$ | in: 38,333,050$)
     📤 Joueurs envoyés (OUT) :
-       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
-       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
-       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+       - Jamal Murray           | Salaire:  46,394,100$ | Surplus C3:  -4,124,833$ (Surpayé 🔴)
+       -> Total Salaire OUT : 46,394,100$ | Total Surplus OUT : -4,124,833$ | Valeur Marché OUT : 42,269,267$
     📥 Joueurs reçus (IN) :
-       - Nikola Jokić           | Salaire:  55,224,526$ | Surplus C3:          N/A (Neutre ⚪)
-       -> Total Salaire IN  : 55,224,526$ | Total Surplus IN  : +0$
+       - Shai Gilgeous-Alexander | Salaire:  38,333,050$ | Surplus C3: +18,529,289$ (Sous-payé 🟢)
+       -> Total Salaire IN  : 38,333,050$ | Total Surplus IN  : +18,529,289$ | Valeur Marché IN : 56,862,339$
     📊 BILAN DU TRADE :
-       -> Variation de salaire (in - out) : -21,970,677$
-       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+       -> Variation de salaire (in - out) : -8,061,050$
+       -> SURPLUS GLOBAL NET DU TRADE      : +22,654,122$
     ⚖️ STATUT CBA : LÉGAL ✔
-       -> Cap après move  : 218,947,031$
+       -> Cap après move  : 179,152,981$
 ------------------------------------------------------------------------------
 
-[OPTION 4] GAIN 🟢 +44,398,000$
-  • Description : Trade Trae Young + Dejounte Murray -> Kevin Durant (out: 77,195,203$ | in: 54,708,609$)
+[OPTION 4] GAIN 🟢 +19,960,148$
+  • Description : Trade Aaron Gordon + Cameron Johnson -> Shai Gilgeous-Alexander (out: 43,898,520$ | in: 38,333,050$)
     📤 Joueurs envoyés (OUT) :
-       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
-       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
-       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+       - Aaron Gordon           | Salaire:  22,841,455$ | Surplus C3:  -2,303,462$ (Surpayé 🔴)
+       - Cameron Johnson        | Salaire:  21,057,065$ | Surplus C3:    +872,603$ (Sous-payé 🟢)
+       -> Total Salaire OUT : 43,898,520$ | Total Surplus OUT : -1,430,859$ | Valeur Marché OUT : 42,467,661$
     📥 Joueurs reçus (IN) :
-       - Kevin Durant           | Salaire:  54,708,609$ | Surplus C3:          N/A (Neutre ⚪)
-       -> Total Salaire IN  : 54,708,609$ | Total Surplus IN  : +0$
+       - Shai Gilgeous-Alexander | Salaire:  38,333,050$ | Surplus C3: +18,529,289$ (Sous-payé 🟢)
+       -> Total Salaire IN  : 38,333,050$ | Total Surplus IN  : +18,529,289$ | Valeur Marché IN : 56,862,339$
     📊 BILAN DU TRADE :
-       -> Variation de salaire (in - out) : -22,486,594$
-       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+       -> Variation de salaire (in - out) : -5,565,470$
+       -> SURPLUS GLOBAL NET DU TRADE      : +19,960,148$
     ⚖️ STATUT CBA : LÉGAL ✔
-       -> Cap après move  : 218,431,114$
+       -> Cap après move  : 181,648,561$
 ------------------------------------------------------------------------------
 
-[OPTION 5] GAIN 🟢 +44,398,000$
-  • Description : Trade Trae Young + Dejounte Murray -> Giannis Antetokounmpo (out: 77,195,203$ | in: 54,126,450$)
+[OPTION 5] GAIN 🟢 +17,197,561$
+  • Description : Trade Nikola Jokić + Aaron Gordon -> Shai Gilgeous-Alexander (out: 78,065,981$ | in: 38,333,050$)
     📤 Joueurs envoyés (OUT) :
-       - Trae Young             | Salaire:  46,394,100$ | Surplus C3: -29,858,007$ (Surpayé 🔴)
-       - Dejounte Murray        | Salaire:  30,801,103$ | Surplus C3: -14,539,993$ (Surpayé 🔴)
-       -> Total Salaire OUT : 77,195,203$ | Total Surplus OUT : -44,398,000$
+       - Nikola Jokić           | Salaire:  55,224,526$ | Surplus C3:  +3,635,190$ (Sous-payé 🟢)
+       - Aaron Gordon           | Salaire:  22,841,455$ | Surplus C3:  -2,303,462$ (Surpayé 🔴)
+       -> Total Salaire OUT : 78,065,981$ | Total Surplus OUT : +1,331,728$ | Valeur Marché OUT : 79,397,709$
     📥 Joueurs reçus (IN) :
-       - Giannis Antetokounmpo  | Salaire:  54,126,450$ | Surplus C3:          N/A (Neutre ⚪)
-       -> Total Salaire IN  : 54,126,450$ | Total Surplus IN  : +0$
+       - Shai Gilgeous-Alexander | Salaire:  38,333,050$ | Surplus C3: +18,529,289$ (Sous-payé 🟢)
+       -> Total Salaire IN  : 38,333,050$ | Total Surplus IN  : +18,529,289$ | Valeur Marché IN : 56,862,339$
     📊 BILAN DU TRADE :
-       -> Variation de salaire (in - out) : -23,068,753$
-       -> SURPLUS GLOBAL NET DU TRADE      : +44,398,000$
+       -> Variation de salaire (in - out) : -39,732,931$
+       -> SURPLUS GLOBAL NET DU TRADE      : +17,197,561$
     ⚖️ STATUT CBA : LÉGAL ✔
-       -> Cap après move  : 217,848,955$
+       -> Cap après move  : 147,481,100$
 ------------------------------------------------------------------------------
+
+══════════════════════════════════════════════════════════════════════════════
+✍️ OPPORTUNITÉS DE SIGNATURES (EXCEPTIONS CBA)
+══════════════════════════════════════════════════════════════════════════════
+  1. Signature Bi-Annual Exception (4,950,000$) | Cap après : 192,164,031$
 
 ══════════════════════════════════════════════════════════════════════════════
 ✂️ OPTIONS DE LIBÉRATIONS (WAIVES / DEAD MONEY)
 ══════════════════════════════════════════════════════════════════════════════
   ⚠️ RAPPEL CBA : Un contrat garanti coupé reste à 100% en Dead Cap.
-  1. Libérer Zaccharie Risacher (13,197,720$ | 4 ans restants) | PERTE 🔴 -6,159,253$ (Perte sportive nette)
-  2. Libérer Asa Newell (3,237,480$ | 4 ans restants) | PERTE 🔴 -8,590,422$ (Perte sportive nette)
-  3. Libérer Mouhamed Gueye (2,221,677$ | 4 ans restants) | PERTE 🔴 -8,629,617$ (Perte sportive nette)
+  1. Libérer Julian Strawther (2,674,200$ | 4 ans restants) | PERTE 🔴 -5,172,484$ (Perte sportive nette)
+  2. Libérer Jalen Pickett (2,221,677$ | 4 ans restants) | PERTE 🔴 -5,636,190$ (Perte sportive nette)
+  3. Libérer Zeke Nnaji (8,177,778$ | 4 ans restants) | PERTE 🔴 -6,054,725$ (Perte sportive nette)
 
 ══════════════════════════════════════════════════════════════════════════════
 ⚠️ AVERTISSEMENTS RÉGLEMENTAIRES
 ══════════════════════════════════════════════════════════════════════════════
-   • Libération de Trae Young ignorée — contrat max (46,394,100$), trop coûteux en stretch.
+   • Libération de Nikola Jokić ignorée — contrat max (55,224,526$), trop coûteux en stretch.
+   • Libération de Jamal Murray ignorée — contrat max (46,394,100$), trop coûteux en stretch.

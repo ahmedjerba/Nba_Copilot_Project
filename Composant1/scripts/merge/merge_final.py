@@ -4,8 +4,9 @@ from pathlib import Path
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-    DATA_DIR = PROJECT_ROOT / "ingestion/data/raw"
-    FINAL_DIR = PROJECT_ROOT / "ingestion/data/final"
+    COMPOSANT1_DIR = PROJECT_ROOT / "Composant1"
+    DATA_DIR = COMPOSANT1_DIR / "data/raw" if (COMPOSANT1_DIR / "data/raw").exists() else PROJECT_ROOT / "ingestion/data/raw"
+    FINAL_DIR = COMPOSANT1_DIR / "data/final" if (COMPOSANT1_DIR / "data").exists() else PROJECT_ROOT / "ingestion/data/final"
     FINAL_DIR.mkdir(parents=True, exist_ok=True)
     
 

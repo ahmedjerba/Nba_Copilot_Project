@@ -114,17 +114,27 @@ sql_payrolls = """
         FROM teams t
         CROSS JOIN (SELECT DISTINCT saison FROM contracts) s
     ),
+    contract_teams AS (
+        SELECT
+            c.player_id,
+            c.saison,
+            COALESCE(ps.team_id, p.team_id) AS team_id,
+            c.cap_hit,
+            c.base_salary
+        FROM contracts c
+        JOIN players p ON p.player_id = c.player_id
+        LEFT JOIN player_stats ps ON ps.player_id = c.player_id AND ps.saison = c.saison
+    ),
     computed_payrolls AS (
         SELECT
-            p.team_id,
-            c.saison,
-            COALESCE(SUM(c.cap_hit), 0)         AS total_cap_hit,
-            COALESCE(SUM(c.base_salary), 0)     AS total_base_salary,
-            COUNT(DISTINCT p.player_id)         AS nb_joueurs
-        FROM players p
-        JOIN contracts c ON c.player_id = p.player_id
-        WHERE p.team_id IS NOT NULL
-        GROUP BY p.team_id, c.saison
+            team_id,
+            saison,
+            COALESCE(SUM(cap_hit), 0)         AS total_cap_hit,
+            COALESCE(SUM(base_salary), 0)     AS total_base_salary,
+            COUNT(DISTINCT player_id)         AS nb_joueurs
+        FROM contract_teams
+        WHERE team_id IS NOT NULL
+        GROUP BY team_id, saison
     )
     INSERT INTO team_payrolls (team_id, saison, total_cap_hit, total_base_salary, nb_joueurs)
     SELECT

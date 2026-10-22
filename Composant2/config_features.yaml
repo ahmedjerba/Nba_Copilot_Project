@@ -1,11 +1,28 @@
 shrinkage:
-  methode: continu_par_poss
-  k_max: 1000
-  poss_seuil: 1600
+  methode: bayesien_empirique_continu
+  k_default: 600
+  k_metriques:
+    pts_per100: 450
+    fga_per100: 450
+    fgm_per100: 450
+    reb_per100: 500
+    dreb_per100: 500
+    oreb_per100: 600
+    ast_per100: 600
+    tov_per100: 600
+    pf_per100: 600
+    fg3m_per100: 700
+    fg3a_per100: 700
+    ftm_per100: 600
+    fta_per100: 600
+    stl_per100: 800
+    blk_per100: 800
+    blka_per100: 800
+    plus_minus_per100: 1000
   note: >
-    k varie continuellement selon les possessions.
-    k=0 pour les fiables (POSS >= 1600), k=1000 pour 0 poss.
-    Calibration fine par backtest au composant 3.
+    Formulation bayésienne empirique continue : (poss * stat + k * mu_saison) / (poss + k).
+    k calibré selon le ratio variance intra/inter-joueurs de chaque métrique.
+    Moyennes mu_saison calculées rigoureusement par saison sur les joueurs fiables sans fuite temporelle.
   metriques_a_shrinker:
     - pts_per100
     - reb_per100

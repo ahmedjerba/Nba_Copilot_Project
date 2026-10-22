@@ -93,6 +93,7 @@ def _comparable_prediction(
     saison_n     : str,
     saison_target: str,
     all_features : pd.DataFrame,
+    h            : int = 1,
     k            : int = K_COMPARABLES,
 ) -> Optional[float]:
     comparables = find_historical_comparables(
@@ -108,9 +109,13 @@ def _comparable_prediction(
 
     values = []
     for comp in comparables:
+        comp_season_target = _saison_offset(comp.season, h)
+        if not comp_season_target:
+            continue
+
         comp_future = all_features[
             (all_features["player_id"] == comp.player_id) &
-            (all_features["saison"] == saison_target)
+            (all_features["saison"] == comp_season_target)
         ][TARGET_METRIC]
 
         if not comp_future.empty:
@@ -174,6 +179,7 @@ def run_backtest(engine) -> BacktestResult:
                     saison_n      = saison_n,
                     saison_target = saison_target,
                     all_features  = all_features,
+                    h             = h,
                     k             = K_COMPARABLES,
                 )
 
@@ -335,6 +341,7 @@ def run_backtest_by_archetype(engine) -> pd.DataFrame:
                     saison_n      = saison_n,
                     saison_target = saison_target,
                     all_features  = all_features,
+                    h             = h,
                     k             = K_COMPARABLES,
                 )
                 pred_base = _baseline_prediction(
@@ -452,6 +459,7 @@ def run_backtest_soft_vs_hard(engine) -> pd.DataFrame:
                     saison_n      = saison_n,
                     saison_target = saison_target,
                     all_features  = all_features,
+                    h             = h,
                     k             = K_COMPARABLES,
                 )
                 pred_base = _baseline_prediction(

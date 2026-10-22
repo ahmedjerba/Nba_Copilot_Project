@@ -11,12 +11,17 @@ conn = psycopg2.connect(
     dbname="nba_copilot", user="nba_user", password="nba_pass"
 )
 
+from pathlib import Path
+
 # --- Chargement config ---
-with open('config_features.yaml', 'r') as f:
+config_path = Path(__file__).resolve().parent / 'config_features.yaml'
+if not config_path.exists():
+    config_path = Path('config_features.yaml')
+with open(config_path, 'r', encoding='utf-8') as f:
     config = yaml.safe_load(f)
 
-K_MAX = config['shrinkage']['k_max']
-POSS_SEUIL = config['shrinkage']['poss_seuil']
+K_METRIQUES = config['shrinkage'].get('k_metriques', {})
+K_DEFAULT = config['shrinkage'].get('k_default', 600)
 FEATURE_VERSION = 'v1.0'
 
 # --- Chargement données ---
@@ -41,21 +46,8 @@ df = pd.read_sql("""
 print(f"Lignes chargées : {len(df)}")
 
 # ============================================================
-# SHRINKAGE CONTINU PAR POSS
+# SHRINKAGE BAYÉSIEN EMPIRIQUE CONTINU PAR MÉTRIQUE & PAR SAISON
 # ============================================================
-def k_joueur(poss):
-    if poss >= POSS_SEUIL:
-        return 0
-    return K_MAX * (1 - poss / POSS_SEUIL)
-
-def shrink(stat, poss, moyenne):
-    k = k_joueur(poss)
-    if k == 0:
-        return stat
-    if pd.isna(stat):
-        return moyenne
-    return (poss * stat + k * moyenne) / (poss + k)
-
 metriques = [
     'pts_per100', 'reb_per100', 'ast_per100', 'stl_per100',
     'blk_per100', 'blka_per100', 'tov_per100', 'pf_per100',
@@ -64,18 +56,35 @@ metriques = [
     'plus_minus_per100'
 ]
 
-# Moyenne globale de référence (sur les fiables uniquement)
+# Moyennes de référence calculées PAR SAISON sur les fiables (évite le Data Leakage temporel)
 fiables = df[df['valuation_tier'] == 'reliable']
-moyennes = {col: fiables[col].mean() for col in metriques}
+moyennes_par_saison = fiables.groupby('saison')[metriques].mean().to_dict(orient='index')
+moyennes_globales = {col: fiables[col].mean() for col in metriques}
 
-print("Moyennes de référence (fiables) :")
-for col, moy in moyennes.items():
-    print(f"  {col:<25} : {moy:.2f}")
+def get_prior_mean(saison, col):
+    if saison in moyennes_par_saison and col in moyennes_par_saison[saison]:
+        val = moyennes_par_saison[saison][col]
+        if pd.notna(val):
+            return val
+    return moyennes_globales.get(col, 0.0)
 
-# Appliquer le shrinkage
+def shrink_metric(stat, poss, moyenne, k):
+    if pd.isna(stat):
+        return moyenne
+    if poss <= 0:
+        return moyenne
+    return (poss * stat + k * moyenne) / (poss + k)
+
+print("Moyennes de référence par saison (échantillon pts_per100 fiables) :")
+for s in sorted(moyennes_par_saison.keys()):
+    print(f"  Saison {s} : {moyennes_par_saison[s]['pts_per100']:.2f} pts/100")
+
+# Application du shrinkage empirique continu
 for col in metriques:
+    k_col = K_METRIQUES.get(col, K_DEFAULT)
     df[f'{col}_shrunk'] = df.apply(
-        lambda r: shrink(r[col], r['poss'], moyennes[col]), axis=1
+        lambda r: shrink_metric(r[col], r['poss'], get_prior_mean(r['saison'], col), k_col),
+        axis=1
     )
 
 # ============================================================
@@ -149,20 +158,28 @@ def safe_div(a, b):
 df['three_rate']      = df.apply(lambda r: safe_div(r['fg3a_per100'], r['fga_per100']), axis=1)
 df['free_throw_rate'] = df.apply(lambda r: safe_div(r['fta_per100'], r['fga_per100']), axis=1)
 df['assist_rate']     = df.apply(lambda r: safe_div(r['ast_per100'], r['fga_per100']), axis=1)
+# Formule canonique de Dean Oliver (TOV% = TOV / (FGA + 0.44 * FTA + TOV))
 df['turnover_rate']   = df.apply(
     lambda r: safe_div(
         r['tov_per100'],
-        r['fga_per100'] + 0.44 * r['fta_per100'] + r['ast_per100']
+        r['fga_per100'] + 0.44 * r['fta_per100'] + r['tov_per100']
     ), axis=1
 )
 
 # ============================================================
-# FEATURES TEMPORELLES (trend N vs N-1)
+# FEATURES TEMPORELLES (trend consécutif N vs N-1)
 # ============================================================
 df = df.sort_values(['player_id','saison_rank'])
 
-df['trend_pts'] = df.groupby('player_id')['pts_per100_shrunk'].diff()
-df['trend_pie'] = df.groupby('player_id')['pie'].diff()
+# Ne calculer le trend que si la saison précédente est immédiatement consécutive (N - 1)
+df['prev_saison_rank'] = df.groupby('player_id')['saison_rank'].shift(1)
+df['is_consecutive'] = (df['saison_rank'] - df['prev_saison_rank']) == 1
+
+raw_trend_pts = df.groupby('player_id')['pts_per100_shrunk'].diff()
+raw_trend_pie = df.groupby('player_id')['pie'].diff()
+
+df['trend_pts'] = np.where(df['is_consecutive'], raw_trend_pts, None)
+df['trend_pie'] = np.where(df['is_consecutive'], raw_trend_pie, None)
 
 # ============================================================
 # INSERTION EN BASE
@@ -225,9 +242,52 @@ execute_values(conn.cursor(), """
         trend_pts, trend_pie
     ) VALUES %s
     ON CONFLICT (player_id, saison, team_id, feature_version) DO UPDATE SET
-        valuation_tier   = EXCLUDED.valuation_tier,
-        pts_per100_shrunk = EXCLUDED.pts_per100_shrunk,
-        trend_pts        = EXCLUDED.trend_pts
+        poss                     = EXCLUDED.poss,
+        gp                       = EXCLUDED.gp,
+        valuation_tier           = EXCLUDED.valuation_tier,
+        height_inches            = EXCLUDED.height_inches,
+        weight                   = EXCLUDED.weight,
+        bmi                      = EXCLUDED.bmi,
+        age_at_date              = EXCLUDED.age_at_date,
+        peak_distance            = EXCLUDED.peak_distance,
+        saisons_experience       = EXCLUDED.saisons_experience,
+        pts_per100_shrunk        = EXCLUDED.pts_per100_shrunk,
+        reb_per100_shrunk        = EXCLUDED.reb_per100_shrunk,
+        ast_per100_shrunk        = EXCLUDED.ast_per100_shrunk,
+        stl_per100_shrunk        = EXCLUDED.stl_per100_shrunk,
+        blk_per100_shrunk        = EXCLUDED.blk_per100_shrunk,
+        tov_per100_shrunk        = EXCLUDED.tov_per100_shrunk,
+        fgm_per100_shrunk        = EXCLUDED.fgm_per100_shrunk,
+        fga_per100_shrunk        = EXCLUDED.fga_per100_shrunk,
+        fg3m_per100_shrunk       = EXCLUDED.fg3m_per100_shrunk,
+        fg3a_per100_shrunk       = EXCLUDED.fg3a_per100_shrunk,
+        ftm_per100_shrunk        = EXCLUDED.ftm_per100_shrunk,
+        fta_per100_shrunk        = EXCLUDED.fta_per100_shrunk,
+        oreb_per100_shrunk       = EXCLUDED.oreb_per100_shrunk,
+        dreb_per100_shrunk       = EXCLUDED.dreb_per100_shrunk,
+        plus_minus_per100_shrunk = EXCLUDED.plus_minus_per100_shrunk,
+        blka_per100_shrunk       = EXCLUDED.blka_per100_shrunk,
+        pf_per100_shrunk         = EXCLUDED.pf_per100_shrunk,
+        fg_pct                   = EXCLUDED.fg_pct,
+        fg3_pct                  = EXCLUDED.fg3_pct,
+        ft_pct                   = EXCLUDED.ft_pct,
+        efg_pct                  = EXCLUDED.efg_pct,
+        ts_pct                   = EXCLUDED.ts_pct,
+        off_rating               = EXCLUDED.off_rating,
+        def_rating               = EXCLUDED.def_rating,
+        net_rating               = EXCLUDED.net_rating,
+        usg_pct                  = EXCLUDED.usg_pct,
+        pie                      = EXCLUDED.pie,
+        ast_pct                  = EXCLUDED.ast_pct,
+        oreb_pct                 = EXCLUDED.oreb_pct,
+        dreb_pct                 = EXCLUDED.dreb_pct,
+        reb_pct                  = EXCLUDED.reb_pct,
+        three_rate               = EXCLUDED.three_rate,
+        free_throw_rate          = EXCLUDED.free_throw_rate,
+        turnover_rate            = EXCLUDED.turnover_rate,
+        assist_rate              = EXCLUDED.assist_rate,
+        trend_pts                = EXCLUDED.trend_pts,
+        trend_pie                = EXCLUDED.trend_pie
 """, rows_clean)
 
 conn.commit()

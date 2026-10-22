@@ -140,46 +140,54 @@ class TeamPayroll(BaseModel):
     @property
     def cap_space(self) -> int:
         """Cap space disponible (négatif si au-dessus du cap)."""
-        from Composant4.cba_service import CBA  # import tardif pour éviter circularité
-        return CBA.SALARY_CAP - self.total_cap_hit
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return rules["thresholds"]["salary_cap"] - self.total_cap_hit
 
     @property
     def tax_space(self) -> int:
         """Marge avant la luxury tax (négatif si au-dessus)."""
-        from Composant4.cba_service import CBA
-        return CBA.LUXURY_TAX - self.total_cap_hit
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return rules["thresholds"]["luxury_tax"] - self.total_cap_hit
 
     @property
     def apron1_space(self) -> int:
         """Marge avant le first apron."""
-        from Composant4.cba_service import CBA
-        return CBA.FIRST_APRON - self.total_cap_hit
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return rules["thresholds"]["first_apron"] - self.total_cap_hit
 
     @property
     def apron2_space(self) -> int:
         """Marge avant le second apron."""
-        from Composant4.cba_service import CBA
-        return CBA.SECOND_APRON - self.total_cap_hit
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return rules["thresholds"]["second_apron"] - self.total_cap_hit
 
     @property
     def is_over_cap(self) -> bool:
-        from Composant4.cba_service import CBA
-        return self.total_cap_hit > CBA.SALARY_CAP
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return self.total_cap_hit > rules["thresholds"]["salary_cap"]
 
     @property
     def is_taxpayer(self) -> bool:
-        from Composant4.cba_service import CBA
-        return self.total_cap_hit > CBA.LUXURY_TAX
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return self.total_cap_hit > rules["thresholds"]["luxury_tax"]
 
     @property
     def is_over_apron1(self) -> bool:
-        from Composant4.cba_service import CBA
-        return self.total_cap_hit > CBA.FIRST_APRON
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return self.total_cap_hit > rules["thresholds"]["first_apron"]
 
     @property
     def is_over_apron2(self) -> bool:
-        from Composant4.cba_service import CBA
-        return self.total_cap_hit > CBA.SECOND_APRON
+        from Composant4.cba_loader import load_cba_rules
+        rules = load_cba_rules(self.saison)
+        return self.total_cap_hit > rules["thresholds"]["second_apron"]
 
 
 # ---------------------------------------------------------------------------
@@ -242,22 +250,42 @@ class Move(BaseModel):
 
     @property
     def estimated_value_out(self) -> int:
-        """Valeur totale envoyée (joueurs + picks estimés)."""
-        joueurs = sum(c.estimated_value or 0 for c in self.players_out)
+        """Valeur sportive marchande totale envoyée (joueurs + picks estimés)."""
+        joueurs = sum(c.estimated_value or c.cap_hit for c in self.players_out)
         picks   = sum(p.estimated_value or 0 for p in self.picks_out)
         return joueurs + picks
 
     @property
     def estimated_value_in(self) -> int:
-        """Valeur totale reçue (joueurs + picks estimés)."""
-        joueurs = sum(c.estimated_value or 0 for c in self.players_in)
+        """Valeur sportive marchande totale reçue (joueurs + picks estimés)."""
+        joueurs = sum(c.estimated_value or c.cap_hit for c in self.players_in)
         picks   = sum(p.estimated_value or 0 for p in self.picks_in)
+        return joueurs + picks
+
+    @property
+    def surplus_out(self) -> int:
+        """Surplus net total envoyé (V - C)."""
+        joueurs = sum(
+            c.surplus_value if c.surplus_value is not None else ((c.estimated_value or c.cap_hit) - c.cap_hit)
+            for c in self.players_out
+        )
+        picks = sum(p.estimated_value or 0 for p in self.picks_out)
+        return joueurs + picks
+
+    @property
+    def surplus_in(self) -> int:
+        """Surplus net total reçu (V - C)."""
+        joueurs = sum(
+            c.surplus_value if c.surplus_value is not None else ((c.estimated_value or c.cap_hit) - c.cap_hit)
+            for c in self.players_in
+        )
+        picks = sum(p.estimated_value or 0 for p in self.picks_in)
         return joueurs + picks
 
     @property
     def value_delta(self) -> int:
         """
-        Bilan de valeur réelle du mouvement.
+        Bilan de surplus net du mouvement : Surplus_in - Surplus_out.
         Positif = gain net pour la franchise.
         Négatif = perte nette.
         """
@@ -266,14 +294,14 @@ class Move(BaseModel):
             # Couper un joueur sous contrat garanti ne supprime PAS son cap hit.
             # Le salaire reste en 'dead money' à 100% sur le payroll.
             # La franchise perd la production sportive du joueur sans économie salariale.
-            # Le coût net d'un waive est donc au moins la perte du joueur (- valeur réelle sportive).
+            # Le coût net d'un waive est donc la perte de la valeur sportive du joueur.
             valeur_sportive = sum(
-                max(c.cap_hit + (c.estimated_value or 0), 0)
+                c.estimated_value if c.estimated_value is not None else c.cap_hit
                 for c in self.players_out
             )
             return -valeur_sportive
 
-        return self.estimated_value_in - self.estimated_value_out
+        return self.surplus_in - self.surplus_out
 
     def breakdown(self) -> str:
         """
@@ -288,21 +316,25 @@ class Move(BaseModel):
         # Joueurs envoyés
         lines.append("    📤 Joueurs envoyés (OUT) :")
         for p in self.players_out:
-            s_val = p.surplus_value if p.surplus_value is not None else p.estimated_value
-            s_str = f"{s_val:+,}$" if s_val is not None else "N/A"
-            sig = "Sous-payé 🟢" if (s_val and s_val > 0) else ("Surpayé 🔴" if (s_val and s_val < 0) else "Neutre ⚪")
+            s_val = p.surplus_value if p.surplus_value is not None else (
+                (p.estimated_value - p.cap_hit) if p.estimated_value is not None else 0
+            )
+            s_str = f"{s_val:+,}$"
+            sig = "Sous-payé 🟢" if s_val > 0 else ("Surpayé 🔴" if s_val < 0 else "Neutre ⚪")
             lines.append(f"       - {p.player_name:<22} | Salaire: {p.cap_hit:>11,}$ | Surplus C3: {s_str:>12} ({sig})")
-        lines.append(f"       -> Total Salaire OUT : {self.salary_out:,}$ | Total Surplus OUT : {self.estimated_value_out:+,}$")
+        lines.append(f"       -> Total Salaire OUT : {self.salary_out:,}$ | Total Surplus OUT : {self.surplus_out:+,}$ | Valeur Marché OUT : {self.estimated_value_out:,}$")
 
         # Joueurs reçus
         if self.players_in:
             lines.append("    📥 Joueurs reçus (IN) :")
             for p in self.players_in:
-                s_val = p.surplus_value if p.surplus_value is not None else p.estimated_value
-                s_str = f"{s_val:+,}$" if s_val is not None else "N/A"
-                sig = "Sous-payé 🟢" if (s_val and s_val > 0) else ("Surpayé 🔴" if (s_val and s_val < 0) else "Neutre ⚪")
+                s_val = p.surplus_value if p.surplus_value is not None else (
+                    (p.estimated_value - p.cap_hit) if p.estimated_value is not None else 0
+                )
+                s_str = f"{s_val:+,}$"
+                sig = "Sous-payé 🟢" if s_val > 0 else ("Surpayé 🔴" if s_val < 0 else "Neutre ⚪")
                 lines.append(f"       - {p.player_name:<22} | Salaire: {p.cap_hit:>11,}$ | Surplus C3: {s_str:>12} ({sig})")
-            lines.append(f"       -> Total Salaire IN  : {self.salary_in:,}$ | Total Surplus IN  : {self.estimated_value_in:+,}$")
+            lines.append(f"       -> Total Salaire IN  : {self.salary_in:,}$ | Total Surplus IN  : {self.surplus_in:+,}$ | Valeur Marché IN : {self.estimated_value_in:,}$")
 
         lines.append("    📊 BILAN DU TRADE :")
         lines.append(f"       -> Variation de salaire (in - out) : {self.salary_delta:+,}$")

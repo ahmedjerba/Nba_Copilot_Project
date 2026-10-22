@@ -89,8 +89,10 @@ class RosterPlayer:
     contract_value:  int
     position:        Optional[str] = None
     age:             Optional[float] = None
-    # Valeur estimée par le Composant 3
-    market_value:    Optional[int] = None
+    # Valeurs estimées par le Composant 3
+    market_value:    Optional[int] = None    # Surplus net (valeur sportive - cap hit)
+    estimated_market_value: Optional[int] = None # Vraie valeur marché brute en $
+    surplus_value:   Optional[int] = None    # Surplus net en $ (identique au surplus)
 
 
 @dataclass
@@ -328,9 +330,11 @@ def _enrich_with_composant3(players: list[RosterPlayer], saison: str) -> None:
         valuations = get_bulk_valuations(missing_pids, saison)
         for p in players:
             if p.market_value is None and p.player_id in valuations:
-                val = valuations[p.player_id]
-                if val is not None:
-                    p.market_value = val
+                surplus = valuations[p.player_id]
+                if surplus is not None:
+                    p.surplus_value = int(surplus)
+                    p.market_value  = int(surplus)
+                    p.estimated_market_value = int(p.cap_hit + surplus)
     except Exception as exc:
         logger.warning(
             "Composant 3 valuation non disponible pour saison=%s : %s",
@@ -632,7 +636,8 @@ def _generate_waive_candidates(
                     cap_hit         = player.cap_hit,
                     base_salary     = player.base_salary,
                     years_remaining = player.years_remaining,
-                    estimated_value = player.market_value,
+                    estimated_value = player.estimated_market_value if player.estimated_market_value is not None else player.cap_hit,
+                    surplus_value   = player.surplus_value if player.surplus_value is not None else player.market_value,
                 )
             ],
             players_in   = [],
@@ -818,7 +823,8 @@ def _generate_trade_candidates(
                         cap_hit         = p.cap_hit,
                         base_salary     = p.base_salary,
                         years_remaining = p.years_remaining,
-                        estimated_value = p.market_value,
+                        estimated_value = p.estimated_market_value if p.estimated_market_value is not None else p.cap_hit,
+                        surplus_value   = p.surplus_value if p.surplus_value is not None else p.market_value,
                     )
                     for p in out_group
                 ],
@@ -831,7 +837,8 @@ def _generate_trade_candidates(
                         cap_hit         = p.cap_hit,
                         base_salary     = p.base_salary,
                         years_remaining = p.years_remaining,
-                        estimated_value = p.market_value,
+                        estimated_value = p.estimated_market_value if p.estimated_market_value is not None else p.cap_hit,
+                        surplus_value   = p.surplus_value if p.surplus_value is not None else p.market_value,
                     )
                     for p in in_group
                 ],

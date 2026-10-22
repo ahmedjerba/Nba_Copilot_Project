@@ -35,34 +35,32 @@ from sklearn.preprocessing import StandardScaler
 
 SCORING    = ["pts_per100_shrunk", "fg3m_per100_shrunk", "ts_pct", "usg_pct"]
 
-REBOUNDING = ["reb_per100_shrunk", "oreb_pct", "dreb_pct"]
+REBOUNDING = ["reb_per100_shrunk", "oreb_pct"]
 
 PLAYMAKING = ["ast_per100_shrunk", "ast_pct", "tov_per100_shrunk"]
 
 DEFENSE    = ["stl_per100_shrunk", "blk_per100_shrunk", "def_rating"]
 
-IMPACT     = ["net_rating", "plus_minus_per100_shrunk"]
+IMPACT     = ["plus_minus_per100_shrunk"]
 
 DISPO      = ["poss", "gp"]
 
 PROFIL     = ["age_at_date", "bmi", "saisons_experience"]
-# ↑ supprimé : peak_distance (= linéaire de age), height_inches, weight (→ bmi)
 
 TENDANCE   = ["trend_pts", "trend_pie"]
 
-TIRS       = ["ft_pct", "free_throw_rate"]
+TIRS       = ["ft_pct"]
 
 NUM_BASE = (
     SCORING + REBOUNDING + PLAYMAKING +
     DEFENSE + IMPACT + DISPO + PROFIL +
     TENDANCE + TIRS
 )
-# → 25 features, ratio 24 obs/feature ✅
 
 seen = set()
 NUM_BASE = [f for f in NUM_BASE if not (f in seen or seen.add(f))]
 
-CAT_FEATURES = ["position", "valuation_tier"]
+CAT_FEATURES = ["position"]
 
 # ══════════════════════════════════════════════════════════════════════════════
 # FE VALIDÉES
@@ -183,17 +181,67 @@ def add_bankability_score(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
     return df, ["bankability_score"]
 
 
+def add_nba_modern_features(df: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
+    """
+    Features avancées NBA moderne (sans modifier la BDD) :
+    - draft_pedigree         : impact persistant du rang de draft sur la valorisation contractuelle
+    - age_prime_factor       : modélisation gaussienne du prime athlétique/contractuel (pic à 27.5 ans)
+    - gravity_score          : menace extérieure et spacing (3pt_rate × 3pt% × 3pm)
+    - rim_pressure           : provocation de lancers à l'intérieur (ft_rate × (1 - 3pt_rate))
+    - creation_burden        : responsabilité collective du porteur de balle (usage × assist_pct)
+    - true_usage_efficiency  : efficacité au tir modulée par le volume (ts_pct × log(1 + usg))
+    """
+    df = df.copy()
+
+    # 1. Pedigree de draft avec extinction progressive après 8 ans (règle business NBA)
+    draft_pos = df["draft_position"] if "draft_position" in df.columns else pd.Series(60, index=df.index)
+    raw_pedigree = 1.0 / np.log1p(draft_pos.fillna(60).clip(lower=1))
+    decay_draft = np.clip(1.0 - (df["saisons_experience"] / 8.0), 0.0, 1.0)
+    df["draft_pedigree"] = raw_pedigree * decay_draft
+
+    # 2. Facteur prime d'âge (pic centré à 27.5 ans, écart-type 3 ans)
+    age = df["age_at_date"]
+    df["age_prime_factor"] = np.exp(-0.5 * ((age - 27.5) / 3.0) ** 2)
+
+    # 3. Modern gravity (tireur d'élite qui stretch la défense)
+    fg3_pct = df["fg3_pct"].fillna(0) if "fg3_pct" in df.columns else pd.Series(0, index=df.index)
+    three_rate = df["three_rate"].fillna(0) if "three_rate" in df.columns else pd.Series(0, index=df.index)
+    df["gravity_score"] = three_rate * fg3_pct * df["fg3m_per100_shrunk"]
+
+    # 4. Rim pressure (génère des lancers francs à l'intérieur)
+    ft_rate = df["free_throw_rate"].fillna(0) if "free_throw_rate" in df.columns else pd.Series(0, index=df.index)
+    df["rim_pressure"] = ft_rate * (1.0 - three_rate.clip(0, 1))
+
+    # 5. Creation burden (porteur de ballon principal)
+    ast_pct = df["ast_pct"].fillna(0) if "ast_pct" in df.columns else pd.Series(0, index=df.index)
+    df["creation_burden"] = df["usg_pct"] * ast_pct
+
+    # 6. True usage efficiency
+    df["true_usage_efficiency"] = df["ts_pct"] * np.log1p(df["usg_pct"].clip(lower=0))
+
+    cols = [
+        "draft_pedigree", "age_prime_factor", "gravity_score",
+        "rim_pressure", "creation_burden", "true_usage_efficiency"
+    ]
+    return df, cols
+
+
 def add_archetype_kmeans(
     df: pd.DataFrame,
     n_clusters: int = 6,
-    random_state: int = 42
-) -> tuple[pd.DataFrame, list[str]]:
+    random_state: int = 42,
+    fitted_kmeans=None,       # CORRECTION C3-5 : accept un modèle pré-fité
+    fitted_scaler=None,
+    fitted_imputer=None,
+) -> tuple[pd.DataFrame, list[str], object, object, object]:
     """
     Clustering KMeans (6 clusters) sur les dimensions scoring/rebond/passes/défense.
     Produit une variable catégorielle encodée en OHE → archetype_0 … archetype_5.
-    Hypothèse : le marché paie différemment selon l'archétype (scorer pur, 3&D, etc.)
-    Note : le clustering est fit sur le dataset courant (transductive).
-    Pour la prod, il faudra sauvegarder le modèle KMeans et le réappliquer.
+
+    CORRECTION C3-5 : séparation train / inférence.
+    - Si fitted_kmeans=None (entraînement) : fitte le KMeans sur df et le retourne.
+    - Si fitted_kmeans fourni (inférence)  : applique uniquement predict, pas de fuite.
+    Retourne : (df_enrichi, cols, kmeans, scaler, imputer)
     """
     ARCHETYPE_FEATURES = [
         "pts_per100_shrunk", "reb_per100_shrunk", "ast_per100_shrunk",
@@ -202,20 +250,36 @@ def add_archetype_kmeans(
     ]
     df = df.copy()
 
-    imp  = SimpleImputer(strategy="median")
-    scal = StandardScaler()
-    X    = scal.fit_transform(imp.fit_transform(df[ARCHETYPE_FEATURES]))
+    if fitted_imputer is None:
+        fitted_imputer = SimpleImputer(strategy="median")
+        X_imp = fitted_imputer.fit_transform(df[ARCHETYPE_FEATURES])
+    else:
+        X_imp = fitted_imputer.transform(df[ARCHETYPE_FEATURES])
 
-    km   = KMeans(n_clusters=n_clusters, random_state=random_state, n_init=10)
-    labels = km.fit_predict(X)
+    if fitted_scaler is None:
+        fitted_scaler = StandardScaler()
+        X = fitted_scaler.fit_transform(X_imp)
+    else:
+        X = fitted_scaler.transform(X_imp)
+
+    if fitted_kmeans is None:
+        fitted_kmeans = KMeans(n_clusters=n_clusters, random_state=random_state, n_init=10)
+        labels = fitted_kmeans.fit_predict(X)
+    else:
+        labels = fitted_kmeans.predict(X)
 
     df["archetype"] = labels
-    # OHE → archetype_0, archetype_1, …
     ohe_cols = pd.get_dummies(df["archetype"], prefix="archetype").astype(int)
+    # S'assurer que toutes les colonnes attendues sont présentes (même si cluster absent)
+    for i in range(n_clusters):
+        col = f"archetype_{i}"
+        if col not in ohe_cols.columns:
+            ohe_cols[col] = 0
+    ohe_cols = ohe_cols[[f"archetype_{i}" for i in range(n_clusters)]]
     df = pd.concat([df, ohe_cols], axis=1)
 
     cols = [f"archetype_{i}" for i in range(n_clusters)]
-    return df, cols
+    return df, cols, fitted_kmeans, fitted_scaler, fitted_imputer
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -267,24 +331,37 @@ def build_features(
     use_rarete:       bool = True,
     use_interactions: bool = True,
     use_polyvalence:  bool = True,
-    # FE à tester — désactivées par défaut
+    use_modern_nba:   bool = True,
+    # FE à tester — activées par défaut
     use_age_peak:     bool = True,
     use_scoring_eff:  bool = True,
     use_clean_pm:     bool = True,
     use_bankability:  bool = True,
-    use_archetype:    bool = True,
+    use_archetype:    bool = False,
     # FE dégradantes — désactivées
     use_ratios:       bool = False,
     use_pca_rebond:   bool = False,
-) -> tuple[pd.DataFrame, list[str], list[str]]:
+    # CORRECTION C3-5 : modèles KMeans pré-fittés pour l'inférence sans fuite
+    archetype_kmeans=None,
+    archetype_scaler=None,
+    archetype_imputer=None,
+) -> tuple[pd.DataFrame, list[str], list[str], dict]:
     """
     Applique toutes les FE activées et retourne :
-        (df_enrichi, num_features_list, cat_features_list)
+        (df_enrichi, num_features_list, cat_features_list, archetype_artifacts)
 
-    num_features_list : toutes les colonnes numériques à passer au modèle
-    cat_features_list : colonnes catégorielles (position, valuation_tier)
+    num_features_list   : toutes les colonnes numériques à passer au modèle
+    cat_features_list   : colonnes catégorielles (position, valuation_tier)
+    archetype_artifacts : dict {kmeans, scaler, imputer} — à sauvegarder pendant
+                          l'entraînement et à fournir lors de l'inférence (C3-5)
     """
     extra_cols = []
+    archetype_artifacts = {"kmeans": None, "scaler": None, "imputer": None}
+
+    # Plafonnement de l'ancienneté à 10 ans (palier supermax du CBA NBA : au-delà de 10 ans, aucun dollar légal en plus)
+    df = df.copy()
+    if "saisons_experience" in df.columns:
+        df["saisons_experience"] = df["saisons_experience"].clip(upper=10)
 
     if use_rarete:
         df, cols = add_rarete_par_poste(df)
@@ -296,6 +373,10 @@ def build_features(
 
     if use_polyvalence:
         df, cols = add_polyvalence(df)
+        extra_cols += cols
+
+    if use_modern_nba:
+        df, cols = add_nba_modern_features(df)
         extra_cols += cols
 
     if use_age_peak:
@@ -315,8 +396,14 @@ def build_features(
         extra_cols += cols
 
     if use_archetype:
-        df, cols = add_archetype_kmeans(df)
+        df, cols, km, sc, imp = add_archetype_kmeans(
+            df,
+            fitted_kmeans=archetype_kmeans,
+            fitted_scaler=archetype_scaler,
+            fitted_imputer=archetype_imputer,
+        )
         extra_cols += cols
+        archetype_artifacts = {"kmeans": km, "scaler": sc, "imputer": imp}
 
     if use_ratios:
         df, cols = add_ratios_efficacite(df)
@@ -333,4 +420,4 @@ def build_features(
     print(f"[feature_engineering] {len(num_features)} features numériques  "
           f"+ {len(CAT_FEATURES)} catégorielles")
 
-    return df, num_features, CAT_FEATURES
+    return df, num_features, CAT_FEATURES, archetype_artifacts

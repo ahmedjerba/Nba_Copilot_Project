@@ -169,7 +169,13 @@ def _explain_similarity(
     feature_names: list[str],
     top_n        : int = 3,
 ) -> tuple[list[str], list[str]]:
-    diffs         = np.abs(target_vec - candidate_vec)
+    # Normalisation L2 pour aligner les écarts par coordonnée sur la distance cosinus
+    norm_t = np.linalg.norm(target_vec)
+    norm_c = np.linalg.norm(candidate_vec)
+    u_norm = target_vec / norm_t if norm_t > 0 else target_vec
+    v_norm = candidate_vec / norm_c if norm_c > 0 else candidate_vec
+
+    diffs         = np.abs(u_norm - v_norm)
     shared_idx    = np.argsort(diffs)[:top_n]
     diverging_idx = np.argsort(diffs)[-top_n:][::-1]
     return (

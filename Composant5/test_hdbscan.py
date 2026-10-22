@@ -1,4 +1,4 @@
-import pandas as pd
+﻿import pandas as pd
 import numpy as np
 import hdbscan
 from hdbscan import all_points_membership_vectors
@@ -86,33 +86,48 @@ ASSIGNED_SECONDARY_THRESHOLD = 0.15
 # ════════════════════════════════════════════════════════════════════
 # Tee — tout ce qui est print() va aussi dans le fichier texte
 # ════════════════════════════════════════════════════════════════════
+
+# Reconfigurer stdout en UTF-8 AVANT le Tee (Windows cp1252 → crash sur →, ✅, etc.)
+try:
+    sys.__stdout__.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 class Tee:
     def __init__(self, *files):
         self.files = files
     def write(self, obj):
         for f in self.files:
-            f.write(obj)
-            f.flush()
+            try:
+                f.write(obj)
+                f.flush()
+            except Exception:
+                pass
     def flush(self):
         for f in self.files:
-            f.flush()
+            try:
+                f.flush()
+            except Exception:
+                pass
 
 log_file = open("results_3d.txt", "w", encoding="utf-8")
 sys.stdout = Tee(sys.__stdout__, log_file)
 
 # ════════════════════════════════════════════════════════════════════
-# Boucle sur les deux configs : 2D (référence) et 3D (test)
-# ════════════════════════════════════════════════════════════════════
+# On teste uniquement les configs pertinentes (supprimer 2D/3D/6D-eom-mcs40 trop lents)
 configs = [
-    {"n_components": 2, "label": "2D"},
-    {
-    "n_components": 3,
-    "label": "3D",
-    "umap_min_dist": 0.1,   # même que 2D
-    "mcs": 40,               # même que 2D
-    "ms": 3,                 # même que 2D
-    # metric="precomputed" via cosine_distances(coords)
-},
+    # ── Référence : 2D original (production actuelle)
+    {"n_components": 2, "label": "2D",
+     "mcs": 40, "ms": 3, "csm": "eom"},
+    # ── Test 1 : 6D + mcs recalibré + leaf (recommandation principale)
+    {"n_components": 6, "label": "6D_mcs15_leaf",
+     "mcs": 15, "ms": 2, "csm": "leaf"},
+    # ── Test 2 : 4D compromis + leaf
+    {"n_components": 4, "label": "4D_mcs20_leaf",
+     "mcs": 20, "ms": 2, "csm": "leaf"},
+    # ── Test 3 : 6D + eom (mcs recalibré mais sans leaf pour comparer)
+    {"n_components": 6, "label": "6D_mcs15_eom",
+     "mcs": 15, "ms": 2, "csm": "eom"},
 ]
 
 all_results = {}
@@ -141,30 +156,38 @@ for cfg in configs:
     if dim == 2:
         df["umap_x"] = coords[:, 0]
         df["umap_y"] = coords[:, 1]
-    else:
+    elif dim == 3:
         df["umap3_x"] = coords[:, 0]
         df["umap3_y"] = coords[:, 1]
         df["umap3_z"] = coords[:, 2]
+    else:  # 6D et plus
+        for _d in range(dim):
+            df[f"umap{dim}d_{_d}"] = coords[:, _d]
 
-    # ── HDBSCAN ─────────────────────────────────────────────────────
-    if dim == 3:
-        print(f"Clustering HDBSCAN {label} (precomputed cosine, min_cluster_size=40, min_samples=3)...")
+    # ── HDBSCAN (paramètres depuis cfg) ───────────────────────────────────
+    mcs = cfg.get("mcs", 40)
+    ms  = cfg.get("ms",  3)
+    csm = cfg.get("csm", "eom")
+
+    if dim > 2:
+        # Cosine precomputed : seule métrique cohérente sur coords UMAP ≥ 3D
+        print(f"Clustering HDBSCAN {label} (precomputed cosine, mcs={mcs}, ms={ms}, csm={csm})...")
         dist_matrix = cosine_distances(coords).astype(np.float64)
         clusterer = hdbscan.HDBSCAN(
-            min_cluster_size=40,
-            min_samples=3,
+            min_cluster_size=mcs,
+            min_samples=ms,
             metric="precomputed",
-            cluster_selection_method="eom",
+            cluster_selection_method=csm,
         )
         clusterer.fit(dist_matrix)
-        clusterer._prediction_data = PredictionData(coords, clusterer.condensed_tree_, min_samples=3)
+        clusterer._prediction_data = PredictionData(coords, clusterer.condensed_tree_, min_samples=ms)
     else:
-        print(f"Clustering HDBSCAN {label} (min_cluster_size=15, min_samples=2)...")
+        print(f"Clustering HDBSCAN {label} (euclidean, mcs={mcs}, ms={ms}, csm={csm})...")
         clusterer = hdbscan.HDBSCAN(
-            min_cluster_size=40,
-            min_samples=3,
+            min_cluster_size=mcs,
+            min_samples=ms,
             metric="euclidean",
-            cluster_selection_method="eom",
+            cluster_selection_method=csm,
             prediction_data=True,
         )
         clusterer.fit(coords)
@@ -224,10 +247,13 @@ for cfg in configs:
         if dim == 2:
             row["umap_x"] = df.iloc[i]["umap_x"]
             row["umap_y"] = df.iloc[i]["umap_y"]
-        else:
+        elif dim == 3:
             row["umap3_x"] = df.iloc[i]["umap3_x"]
             row["umap3_y"] = df.iloc[i]["umap3_y"]
             row["umap3_z"] = df.iloc[i]["umap3_z"]
+        else:  # 6D+
+            for _d in range(dim):
+                row[f"umap{dim}d_{_d}"] = df.iloc[i][f"umap{dim}d_{_d}"]
 
         soft_rows.append(row)
 
@@ -324,37 +350,65 @@ for cfg in configs:
     }
 
 # ════════════════════════════════════════════════════════════════════
-# COMPARATIF FINAL 2D vs 3D
+# COMPARATIF FINAL : 2D vs 3D vs 6D
 # ════════════════════════════════════════════════════════════════════
-print(f"\n{'='*70}")
-print("COMPARATIF FINAL 2D vs 3D")
-print(f"{'='*70}")
-print(f"{'Métrique':<35} {'2D':>12} {'3D':>12}")
-print("-"*60)
+print(f"\n{'='*80}")
+print("COMPARATIF FINAL : 2D  vs  3D  vs  6D")
+print(f"{'='*80}")
+
+available_labels = [cfg["label"] for cfg in configs]
+col_w = 12
+header = f"{'Métrique':<35}" + "".join(f"{lbl:>{col_w}}" for lbl in available_labels)
+print(header)
+print("-" * (35 + col_w * len(available_labels)))
+
 metrics = [
-    ("Clusters",             "n_clusters"),
-    ("Outliers HDBSCAN",     "n_outliers"),
-    ("% outliers",           "pct"),
-    ("Soft assignés",        "n_soft_ok"),
-    ("Vrais unclassified",   "n_unclassified"),
-    ("Total distants",       "total_distants"),
-    ("Conf moy. assignés",   "avg_conf_assigned"),
-    ("Conf moy. soft",       "avg_conf_soft"),
-    ("Double label",         "double_label"),
+    ("Clusters",           "n_clusters"),
+    ("Outliers HDBSCAN",   "n_outliers"),
+    ("% outliers",         "pct"),
+    ("Soft assignés",      "n_soft_ok"),
+    ("Vrais unclassified", "n_unclassified"),
+    ("Total distants",     "total_distants"),
+    ("Conf moy. assignés", "avg_conf_assigned"),
+    ("Conf moy. soft",     "avg_conf_soft"),
+    ("Double label",       "double_label"),
 ]
+
+ref_label = "2D"  # référence pour les flèches comparatives
+
 for name, key in metrics:
-    v2 = all_results["2D"][key]
-    v3 = all_results["3D"][key]
-    flag = "✅" if (
-        (key in ("n_clusters",) and abs(v3-v2) <= 3) or
-        (key in ("n_outliers","pct","n_unclassified","total_distants") and v3 < v2) or
-        (key in ("n_soft_ok","double_label") and v3 > v2) or
-        (key in ("avg_conf_assigned","avg_conf_soft") and v3 > v2)
-    ) else "→"
-    if isinstance(v2, float):
-        print(f"  {name:<33} {v2:>12.4f} {v3:>12.4f}  {flag}")
-    else:
-        print(f"  {name:<33} {v2:>12} {v3:>12}  {flag}")
+    vals = {lbl: all_results[lbl][key] for lbl in available_labels if lbl in all_results}
+    ref  = vals.get(ref_label)
+    row  = f"  {name:<33}"
+    for lbl in available_labels:
+        v = vals.get(lbl)
+        if v is None:
+            row += f"{'N/A':>{col_w}}"
+            continue
+        # Meilleur que la référence 2D ?
+        better = (
+            (key == "n_clusters"          and ref is not None and abs(v - ref) <= 3) or
+            (key in ("n_outliers", "pct", "n_unclassified", "total_distants") and ref is not None and v < ref) or
+            (key in ("n_soft_ok", "double_label")                              and ref is not None and v > ref) or
+            (key in ("avg_conf_assigned", "avg_conf_soft")                     and ref is not None and v > ref)
+        ) if lbl != ref_label else None
+        flag = "" if lbl == ref_label else (" ✅" if better else " →")
+        if isinstance(v, float):
+            row += f"{v:>{col_w}.4f}{flag}"
+        else:
+            row += f"{v:>{col_w}}{flag}"
+    print(row)
+
+# ── Focus superstars : taux d'outliers sur les known_players ────────
+print(f"\n── OUTLIERS STARS par config ───────────────────────────────────")
+for lbl in available_labels:
+    if lbl not in all_results:
+        continue
+    sdf = all_results[lbl]["soft_df"]
+    n_stars_outlier = ((sdf["player_name"].isin(known_players)) & (sdf["original_label"] == -1)).sum()
+    n_stars_total   = sdf["player_name"].isin(known_players).sum()
+    pct_s = n_stars_outlier / n_stars_total * 100 if n_stars_total else 0
+    print(f"  {lbl} : {n_stars_outlier}/{n_stars_total} stars en outlier ({pct_s:.1f}%)")
 
 # ════════════════════════════════════════════════════════════════════
 # VISUALISATIONS
@@ -407,166 +461,77 @@ plt.savefig("viz_A_2d_reference.png", dpi=150, bbox_inches="tight")
 plt.close()
 print("\n→ viz_A_2d_reference.png")
 
-# ── VIZ B : 3D — 3 projections planes (XY, XZ, YZ) ─────────────────
-soft_3d  = all_results["3D"]["soft_df"]
-clust_3d = all_results["3D"]["clusterer"]
+# ── VIZ B-F : Un overview par config (générique) ────────────────────
+for lbl in available_labels:
+    if lbl == "2D" or lbl not in all_results:
+        continue  # 2D déjà fait en VIZ A
 
-unique_labels_3d = sorted(set(clust_3d.labels_))
-color_map_3d = {
-    lbl: "lightgray" if lbl == -1 else palette[i % 20]
-    for i, lbl in enumerate(unique_labels_3d)
-}
+    res    = all_results[lbl]
+    sdf    = res["soft_df"]
+    clst   = res["clusterer"]
+    dim    = next(c["n_components"] for c in configs if c["label"] == lbl)
 
-projections = [("umap3_x","umap3_y","XY"), ("umap3_x","umap3_z","XZ"), ("umap3_y","umap3_z","YZ")]
-fig, axes = plt.subplots(1, 3, figsize=(22, 8))
-for ax, (px, py, ptitle) in zip(axes, projections):
-    for lbl in unique_labels_3d:
-        mask  = soft_3d["cluster_label"] == lbl
-        alpha = 0.12 if lbl == -1 else 0.65
-        sz    = 8    if lbl == -1 else 16
-        ax.scatter(soft_3d.loc[mask, px], soft_3d.loc[mask, py],
-                   c=[color_map_3d[lbl]], alpha=alpha, s=sz)
-    for _, row in soft_3d[soft_3d["player_name"].isin(known_players)].iterrows():
-        ax.annotate(row["player_name"], (row[px], row[py]),
-                    fontsize=4.5, alpha=0.85, xytext=(2,2), textcoords="offset points")
-    ax.set_title(f"3D projection {ptitle} — {all_results['3D']['n_clusters']} clusters")
-plt.suptitle("3D — Projections planes (XY / XZ / YZ)", fontsize=13)
-plt.tight_layout()
-plt.savefig("viz_B_3d_projections.png", dpi=150, bbox_inches="tight")
-plt.close()
-print("→ viz_B_3d_projections.png")
+    # Axes de projection : toujours les 2 premiers axes UMAP du config
+    if dim == 2:
+        px, py = "umap_x", "umap_y"
+    elif dim == 3:
+        px, py = "umap3_x", "umap3_y"
+    else:
+        px, py = f"umap{dim}d_0", f"umap{dim}d_1"
 
-# ── VIZ C : 3D scatter interactif matplotlib (4 angles) ─────────────
-fig = plt.figure(figsize=(20, 16))
-angles = [(20, 45), (20, 135), (60, 45), (5, 90)]
-for idx, (elev, azim) in enumerate(angles):
-    ax = fig.add_subplot(2, 2, idx+1, projection="3d")
-    for lbl in unique_labels_3d:
-        mask  = soft_3d["cluster_label"] == lbl
-        alpha = 0.10 if lbl == -1 else 0.60
-        sz    = 8    if lbl == -1 else 18
-        ax.scatter(
-            soft_3d.loc[mask,"umap3_x"],
-            soft_3d.loc[mask,"umap3_y"],
-            soft_3d.loc[mask,"umap3_z"],
-            c=[color_map_3d[lbl]], alpha=alpha, s=sz,
-        )
-    # Annoter seulement les stars pour lisibilité
-    for _, row in soft_3d[soft_3d["player_name"].isin(known_players)].iterrows():
-        ax.text(row["umap3_x"], row["umap3_y"], row["umap3_z"],
-                row["player_name"], fontsize=4, alpha=0.8)
-    ax.set_title(f"élév={elev}° azim={azim}°", fontsize=9)
-    ax.view_init(elev=elev, azim=azim)
-    ax.set_xlabel("X", fontsize=7)
-    ax.set_ylabel("Y", fontsize=7)
-    ax.set_zlabel("Z", fontsize=7)
+    if px not in sdf.columns:
+        print(f"[VIZ] colonnes manquantes pour {lbl}, skip")
+        continue
 
-plt.suptitle(f"3D scatter — {all_results['3D']['n_clusters']} clusters HDBSCAN", fontsize=13)
-plt.tight_layout()
-plt.savefig("viz_C_3d_scatter.png", dpi=150, bbox_inches="tight")
-plt.close()
-print("→ viz_C_3d_scatter.png")
+    unique_lbls = sorted(set(clst.labels_))
+    cmap_lbl = {
+        l: "lightgray" if l == -1 else palette[i % 20]
+        for i, l in enumerate(unique_lbls)
+    }
 
-# ── VIZ D : Confiance 2D vs 3D côte à côte ──────────────────────────
-fig, axes = plt.subplots(2, 2, figsize=(18, 14))
+    fig, axes = plt.subplots(1, 3, figsize=(22, 8))
 
-# 2D membership_prob
-sc = axes[0][0].scatter(soft_2d["umap_x"], soft_2d["umap_y"],
-                         c=soft_2d["membership_prob"], cmap="RdYlGn",
-                         alpha=0.7, s=14, vmin=0, vmax=1)
-plt.colorbar(sc, ax=axes[0][0])
-axes[0][0].set_title(f"2D — membership_prob HDBSCAN\nmoy={soft_2d['membership_prob'].mean():.3f}")
+    # Subplot 1 : clusters
+    for l in unique_lbls:
+        mask  = sdf["cluster_label"] == l
+        name  = f"outliers ({mask.sum()})" if l == -1 else f"C{l} ({mask.sum()})"
+        alpha = 0.15 if l == -1 else 0.7
+        sz    = 10   if l == -1 else 18
+        axes[0].scatter(sdf.loc[mask, px], sdf.loc[mask, py],
+                        c=[cmap_lbl[l]], label=name, alpha=alpha, s=sz)
+    for _, row in sdf[sdf["player_name"].isin(known_players)].iterrows():
+        axes[0].annotate(row["player_name"], (row[px], row[py]),
+                         fontsize=5, alpha=0.9, xytext=(3, 3), textcoords="offset points")
+    axes[0].set_title(f"{lbl} — {res['n_clusters']} clusters")
+    axes[0].legend(markerscale=1.2, fontsize=4, ncol=2, loc="upper left")
 
-# 2D archetype_conf
-sc = axes[0][1].scatter(soft_2d["umap_x"], soft_2d["umap_y"],
-                         c=soft_2d["archetype_conf"], cmap="RdYlGn",
-                         alpha=0.7, s=14, vmin=0, vmax=1)
-plt.colorbar(sc, ax=axes[0][1])
-axes[0][1].set_title(f"2D — archetype_conf soft\nmoy={soft_2d['archetype_conf'].mean():.3f}")
+    # Subplot 2 : membership_prob
+    sc = axes[1].scatter(sdf[px], sdf[py], c=sdf["membership_prob"],
+                         cmap="RdYlGn", alpha=0.6, s=15, vmin=0, vmax=1)
+    plt.colorbar(sc, ax=axes[1], label="membership_prob")
+    axes[1].set_title(f"{lbl} — membership_prob\nmoy={sdf['membership_prob'].mean():.3f}")
 
-# 3D projection XY membership_prob
-sc = axes[1][0].scatter(soft_3d["umap3_x"], soft_3d["umap3_y"],
-                         c=soft_3d["membership_prob"], cmap="RdYlGn",
-                         alpha=0.7, s=14, vmin=0, vmax=1)
-plt.colorbar(sc, ax=axes[1][0])
-axes[1][0].set_title(f"3D (proj XY) — membership_prob HDBSCAN\nmoy={soft_3d['membership_prob'].mean():.3f}")
+    # Subplot 3 : archetype_conf
+    sc2 = axes[2].scatter(sdf[px], sdf[py], c=sdf["archetype_conf"],
+                          cmap="RdYlGn", alpha=0.6, s=15, vmin=0, vmax=1)
+    plt.colorbar(sc2, ax=axes[2], label="archetype_conf")
+    axes[2].set_title(f"{lbl} — archetype_conf\nmoy={sdf['archetype_conf'].mean():.3f}")
 
-# 3D projection XY archetype_conf
-sc = axes[1][1].scatter(soft_3d["umap3_x"], soft_3d["umap3_y"],
-                         c=soft_3d["archetype_conf"], cmap="RdYlGn",
-                         alpha=0.7, s=14, vmin=0, vmax=1)
-plt.colorbar(sc, ax=axes[1][1])
-axes[1][1].set_title(f"3D (proj XY) — archetype_conf soft\nmoy={soft_3d['archetype_conf'].mean():.3f}")
+    plt.suptitle(f"UMAP {dim}D + HDBSCAN — {lbl}", fontsize=13)
+    plt.tight_layout()
+    fname = f"viz_{lbl.lower()}_overview.png"
+    plt.savefig(fname, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"-> {fname}")
 
-plt.suptitle("Comparaison confiance 2D vs 3D", fontsize=13)
-plt.tight_layout()
-plt.savefig("viz_D_confidence_comparison.png", dpi=150, bbox_inches="tight")
-plt.close()
-print("→ viz_D_confidence_comparison.png")
-
-# ── VIZ E : Par archetype 3D (projection XY) ────────────────────────
-archetype_list_3d   = sorted(soft_3d["archetype"].unique())
-archetypes_to_plot  = [a for a in archetype_list_3d if a != "unclassified"]
-n_arch = len(archetypes_to_plot)
-ncols  = 3
-nrows  = (n_arch + ncols - 1) // ncols
-
-fig, axes_grid = plt.subplots(nrows, ncols, figsize=(7*ncols, 6*nrows))
-axes_flat = axes_grid.flatten()
-
-for idx, arch in enumerate(archetypes_to_plot):
-    ax = axes_flat[idx]
-    mask_hard      = (soft_3d["archetype"] == arch) & (~soft_3d["is_soft_assigned"])
-    mask_soft_asgn = (soft_3d["archetype"] == arch) & (soft_3d["is_soft_assigned"])
-    mask_low       = mask_hard & (soft_3d["archetype_conf"] < 0.30)
-    mask_good      = mask_hard & (soft_3d["archetype_conf"] >= 0.30)
-    mask_rest      = ~(soft_3d["archetype"] == arch)
-
-    ax.scatter(soft_3d.loc[mask_rest,"umap3_x"], soft_3d.loc[mask_rest,"umap3_y"],
-               c="lightgray", alpha=0.12, s=7)
-    ax.scatter(soft_3d.loc[mask_good,"umap3_x"], soft_3d.loc[mask_good,"umap3_y"],
-               c="steelblue", alpha=0.8, s=20,
-               label=f"conf≥0.30 ({mask_good.sum()})")
-    ax.scatter(soft_3d.loc[mask_low,"umap3_x"], soft_3d.loc[mask_low,"umap3_y"],
-               c="red", alpha=0.9, s=28, marker="X",
-               label=f"⚠ conf<0.30 ({mask_low.sum()})")
-    ax.scatter(soft_3d.loc[mask_soft_asgn,"umap3_x"], soft_3d.loc[mask_soft_asgn,"umap3_y"],
-               c="darkorange", alpha=0.9, s=26, marker="^",
-               label=f"soft ({mask_soft_asgn.sum()})")
-
-    for _, row in soft_3d[(soft_3d["archetype"]==arch) & soft_3d["player_name"].isin(known_players)].iterrows():
-        ax.annotate(f"{row['player_name']}\n({row['archetype_conf']:.2f})",
-                    (row["umap3_x"], row["umap3_y"]),
-                    fontsize=5, color="darkblue", xytext=(4,4), textcoords="offset points")
-    for _, row in soft_3d[mask_low].sort_values("archetype_conf").head(6).iterrows():
-        if row["player_name"] not in known_players:
-            ax.annotate(f"{row['player_name']}\n({row['archetype_conf']:.2f})",
-                        (row["umap3_x"], row["umap3_y"]),
-                        fontsize=4.5, color="darkred", xytext=(4,4), textcoords="offset points")
-
-    total = mask_hard.sum() + mask_soft_asgn.sum()
-    ax.set_title(f"{arch}\n({total} total | {mask_low.sum()} distants)", fontsize=9)
-    ax.legend(fontsize=6, loc="upper left")
-
-for idx in range(n_arch, len(axes_flat)):
-    axes_flat[idx].set_visible(False)
-
-plt.suptitle("3D (proj XY) — Par archetype : assignés / soft / distants", fontsize=14, y=1.01)
-plt.tight_layout()
-plt.savefig("viz_E_3d_per_archetype.png", dpi=150, bbox_inches="tight")
-plt.close()
-print("→ viz_E_3d_per_archetype.png")
+    # Export CSV
+    csv_name = f"soft_assignment_{lbl.lower()}.csv"
+    sdf.to_csv(csv_name, index=False, encoding="utf-8-sig")
+    print(f"-> {csv_name} exporte")
 
 # ── Fermeture log ────────────────────────────────────────────────────
 sys.stdout = sys.__stdout__
 log_file.close()
-print("→ results_3d.txt exporté")
-print("\nFichiers générés :")
-print("  results_3d.txt")
-print("  soft_assignment_2d.csv")
-print("  soft_assignment_3d.csv")
-print("  viz_A_2d_reference.png")
-print("  viz_B_3d_projections.png")
-print("  viz_C_3d_scatter.png")
-print("  viz_D_confidence_comparison.png")
-print("  viz_E_3d_per_archetype.png")
+print("-> results_3d.txt exporte")
+print("\nFini.")
+

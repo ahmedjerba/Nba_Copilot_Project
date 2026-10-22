@@ -43,32 +43,48 @@ def save_model(
     if version is None:
         version = datetime.now().strftime("%Y%m%d_%H%M")
 
+    # Extraire les artéfacts sklearn de fe_flags (non-sérialisables en JSON)
+    # On accepte les deux conventions : 'kmeans' ou 'archetype_kmeans'
+    arch_kmeans  = fe_flags.pop("archetype_kmeans",  fe_flags.pop("kmeans",   None))
+    arch_scaler  = fe_flags.pop("archetype_scaler",  fe_flags.pop("scaler",   None))
+    arch_imputer = fe_flags.pop("archetype_imputer", fe_flags.pop("imputer",  None))
+
     payload = {
-        "model":        model,
-        "fe_flags":     fe_flags,
-        "num_features": num_features,
-        "cat_features": CAT_FEATURES,
-        "alpha":        model.alpha,
-        "version":      version,
+        "model":               model,
+        "fe_flags":            fe_flags,
+        "num_features":        num_features,
+        "cat_features":        CAT_FEATURES,
+        "alpha":               model.alpha,
+        "version":             version,
+        # CORRECTION C3-5 : artéfacts KMeans stockés dans le pkl (pas dans le JSON)
+        "archetype_kmeans":    arch_kmeans,
+        "archetype_scaler":    arch_scaler,
+        "archetype_imputer":   arch_imputer,
     }
 
     pkl_path  = MODELS_DIR / f"model_{version}.pkl"
     json_path = MODELS_DIR / f"model_{version}.json"
 
-    # Sauvegarder le modèle
+    # Sauvegarder le modèle (pkl supporte tous les objets Python)
     joblib.dump(payload, pkl_path)
 
     # Sauvegarder les métadonnées lisibles
+    # Filtrer fe_flags pour ne garder que les types JSON-sérialisables (bool, str, int, float)
+    fe_flags_json = {
+        k: v for k, v in fe_flags.items()
+        if isinstance(v, (bool, str, int, float, type(None)))
+    }
     meta = {
-        "version":       version,
-        "saved_at":      datetime.now().isoformat(),
-        "alpha":         model.alpha,
-        "fe_flags":      fe_flags,
-        "num_features":  num_features,
-        "cat_features":  CAT_FEATURES,
-        "n_features":    len(num_features),
-        "mae_oos":       round(mae_oos),
+        "version":        version,
+        "saved_at":       datetime.now().isoformat(),
+        "alpha":          model.alpha,
+        "fe_flags":       fe_flags_json,
+        "num_features":   num_features,
+        "cat_features":   CAT_FEATURES,
+        "n_features":     len(num_features),
+        "mae_oos":        round(mae_oos),
         "salary_cap_ref": SALARY_CAP_REF,
+        "has_archetype_kmeans": arch_kmeans is not None,
     }
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
@@ -77,6 +93,7 @@ def save_model(
     print(f"[model_registry]    MAE OOS : {mae_oos:,.0f}$")
     print(f"[model_registry]    Features : {len(num_features)} num + {len(CAT_FEATURES)} cat")
     print(f"[model_registry]    alpha Ridge : {model.alpha}")
+    print(f"[model_registry]    KMeans sauvegarde : {arch_kmeans is not None}")
 
     return pkl_path
 
@@ -111,6 +128,15 @@ def load_model(version: str | None = None) -> dict:
     print(f"[model_registry]    Features : {len(payload['num_features'])} num "
           f"+ {len(payload['cat_features'])} cat")
     print(f"[model_registry]    alpha Ridge : {payload['alpha']}")
+    # CORRECTION C3-5 : injecter les artéfacts KMeans dans fe_flags pour build_features
+    payload.setdefault("archetype_kmeans",  None)
+    payload.setdefault("archetype_scaler",  None)
+    payload.setdefault("archetype_imputer", None)
+    payload["fe_flags"].update({
+        "archetype_kmeans":  payload["archetype_kmeans"],
+        "archetype_scaler":  payload["archetype_scaler"],
+        "archetype_imputer": payload["archetype_imputer"],
+    })
 
     return payload
 

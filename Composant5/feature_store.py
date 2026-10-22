@@ -80,31 +80,27 @@ def load_features(
 
 
 # ------------------------------------------------------------------
-# Standardisation
+# Standardisation (Scaler Global Unifié - C5-2 Isométrie)
 # ------------------------------------------------------------------
 
-def fit_scalers(df: pd.DataFrame) -> dict[str, RobustScaler]:
+def fit_scalers(df: pd.DataFrame) -> RobustScaler:
     """
-    Entraîne un RobustScaler par valuation_tier.
-    Entraîné sur tous les tiers y compris low_sample
-    pour pouvoir positionner n'importe quel joueur dans l'espace.
+    Entraîne un RobustScaler global unique sur l'ensemble de la population
+    pour préserver l'isométrie et les distances réelles entre tous les joueurs.
     """
-    scalers = {}
-    for tier, group in df.groupby("valuation_tier"):
-        scaler = RobustScaler()
-        scaler.fit(group[SIMILARITY_FEATURES].fillna(0))
-        scalers[tier] = scaler
-        print(f"[feature_store] scaler entraîné : {tier} ({len(group)} lignes)")
-    return scalers
+    scaler = RobustScaler()
+    scaler.fit(df[SIMILARITY_FEATURES].fillna(0))
+    print(f"[feature_store] scaler global unifié entraîné sur {len(df)} lignes.")
+    return scaler
 
 
-def save_scalers(scalers: dict, path: Path = SCALER_PATH) -> None:
+def save_scalers(scaler: Any, path: Path = SCALER_PATH) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "wb") as f:
-        pickle.dump(scalers, f)
+        pickle.dump(scaler, f)
 
 
-def load_scalers(path: Path = SCALER_PATH) -> dict:
+def load_scalers(path: Path = SCALER_PATH) -> Any:
     if not path.exists():
         raise FileNotFoundError(
             f"[feature_store] scalers introuvables : {path}\n"
@@ -116,14 +112,18 @@ def load_scalers(path: Path = SCALER_PATH) -> dict:
 
 def apply_scalers(
     df: pd.DataFrame,
-    scalers: dict[str, RobustScaler],
+    scalers: Any,
 ) -> pd.DataFrame:
     """
-    Applique le scaler du tier correspondant à chaque ligne.
-    Les lignes dont le tier est absent des scalers sont droppées avec warning.
+    Applique le scaler global unifié à toutes les lignes (ou par tier si dictionnaire legacy).
     """
-    scaled_parts = []
+    if isinstance(scalers, RobustScaler):
+        scaled = df.copy()
+        scaled[SIMILARITY_FEATURES] = scalers.transform(df[SIMILARITY_FEATURES].fillna(0))
+        return scaled
 
+    # Support de repli si dict
+    scaled_parts = []
     for tier, group in df.groupby("valuation_tier"):
         if tier not in scalers:
             print(f"[feature_store] ⚠️ tier sans scaler ignoré : {tier}")

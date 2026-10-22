@@ -13,8 +13,15 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+
 # --- Chargement ---
-df = pd.read_csv("player_stats_contracts.csv")
+csv_path = SCRIPT_DIR / "player_stats_contracts.csv"
+if not csv_path.exists():
+    csv_path = Path("player_stats_contracts.csv")
+df = pd.read_csv(csv_path)
 df['BIRTHDATE'] = pd.to_datetime(df['BIRTHDATE'], errors='coerce').dt.date
 
 def v(x):
@@ -170,8 +177,10 @@ print(f"  {len(rows)} contrats insérés")
 # ============================================================
 # 4. TABLE player_id_map
 # ============================================================
-print("Insertion player_id_map...")
-id_map = pd.read_csv("player_id_map.csv")
+map_path = SCRIPT_DIR / "player_id_map.csv"
+if not map_path.exists():
+    map_path = Path("player_id_map.csv")
+id_map = pd.read_csv(map_path)
 id_map = id_map[id_map['PLAYER_ID'].notna()]
 
 rows = [(

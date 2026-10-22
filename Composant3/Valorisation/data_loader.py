@@ -27,7 +27,7 @@ def load_pairs(segment: str = "market") -> pd.DataFrame:
 
     with engine.connect() as conn:
         df_features = pd.read_sql(text("""
-            SELECT pf.*, p.position, p.draft_year, p.draft_round, p.draft_number
+            SELECT pf.*, p.player_name, p.position, p.draft_year, p.draft_round, p.draft_number, p.team_name
             FROM player_features pf
             LEFT JOIN players p ON pf.player_id = p.player_id
             WHERE pf.feature_version = :v
@@ -36,10 +36,9 @@ def load_pairs(segment: str = "market") -> pd.DataFrame:
         df_contracts = pd.read_sql(text("SELECT * FROM contracts"), conn)
 
     # ── Normaliser la saison du contrat ────────────────────────────────────
-    df_contracts["saison_key"] = df_contracts["saison"].apply(
-        lambda s: f"{int(s[:4]) - 1}-{s[:4][2:]}"
-    )
-    df_contracts["salary_cap"] = df_contracts["saison_key"].map(SALARY_CAP)
+    # CORRECTION C3-1 : mapping direct sur la saison d'exécution du contrat
+    # (suppression du décalage -1 an qui détruisait 2021-22 et faussait tous les cap_hit_pct)
+    df_contracts["salary_cap"] = df_contracts["saison"].map(SALARY_CAP)
     df_contracts["cap_hit_pct"] = df_contracts["cap_hit"] / df_contracts["salary_cap"]
 
     # ── Filtre de segment ──────────────────────────────────────────────────
@@ -68,18 +67,17 @@ def load_pairs(segment: str = "market") -> pd.DataFrame:
     # ── Jointure features ↔ contrat ───────────────────────────────────────
     pairs = df_features.merge(
         contracts_filtered[[
-            "player_id", "saison_key", "cap_hit_pct", "cap_hit",
+            "player_id", "saison", "cap_hit_pct", "cap_hit",
             "salary_cap", "years_remaining"
         ]],
-        left_on=["player_id", "saison"],
-        right_on=["player_id", "saison_key"],
+        on=["player_id", "saison"],
         how="inner"
     )
 
     # ── Pondération temporelle ─────────────────────────────────────────────
     pairs["sample_weight"] = pairs["saison"].map(SEASON_WEIGHTS).fillna(1.0)
 
-    # ── draft_position ─────────────────────────────────────────────────────
+    # ── draft_position et expérience réelle ────────────────────────────────
     pairs["draft_position"] = pairs.apply(
         lambda r: (r["draft_round"] - 1) * 30 + r["draft_number"]
         if pd.notna(r["draft_round"]) and pd.notna(r["draft_number"])
@@ -87,24 +85,37 @@ def load_pairs(segment: str = "market") -> pd.DataFrame:
         axis=1
     )
 
-    pairs = pairs.drop(columns=["saison_key"])
+    # CORRECTION : calcul de l'expérience réelle à la volée (sans toucher la BDD)
+    # Évite le bug du cumcount qui mettait saisons_experience = 0 pour tout le monde en 2021-22
+    season_start = pairs["saison"].str[:4].astype(int)
+    real_exp = season_start - pairs["draft_year"]
+    # Fallback pour joueurs non draftés : estimation via l'âge (entrée vers 20 ans)
+    pairs["saisons_experience"] = real_exp.fillna(
+        (pairs["age_at_date"] - 20).clip(lower=0)
+    ).clip(lower=0)
 
-    # ── Exclusions systématiques ───────────────────────────────────────────
+    # ── Exclusions systématiques pour l'entraînement ───────────────────────
+    # Si segment == 'all' (inférence globale), on conserve tous les profils (superstars, rookies, minimums)
     n_avant = len(pairs)
+    n_twoway = 0
+    n_rookie = 0
 
-    # Two-way contracts
-    mask_twoway = pairs["cap_hit_pct"] < 0.001
-    pairs = pairs[~mask_twoway].copy()
-    n_twoway = int(mask_twoway.sum())
+    if segment != "all":
+        # Two-way contracts (< 0.1% du cap)
+        mask_twoway = pairs["cap_hit_pct"] < 0.001
+        pairs = pairs[~mask_twoway].copy()
+        n_twoway = int(mask_twoway.sum())
 
-    # Rookies (saison 1)
-    mask_rookie = pairs["saisons_experience"] == 0
-    pairs = pairs[~mask_rookie].copy()
-    n_rookie = int(mask_rookie.sum())
+        # Vrais Rookies (uniquement ceux draftés l'année même ou jeunes < 21 ans à exp 0)
+        mask_rookie = (pairs["draft_year"] == season_start) | (
+            pairs["draft_year"].isna() & (pairs["age_at_date"] < 21) & (pairs["saisons_experience"] == 0)
+        )
+        n_rookie = int(mask_rookie.sum())
+        pairs = pairs[~mask_rookie].copy()
 
-    print(f"[data_loader] segment={segment!r}  →  {len(pairs)} paires")
+    print(f"[data_loader] segment={segment!r}  ->  {len(pairs)} paires")
     print(f"  Exclusions : {n_rookie} rookies  |  {n_twoway} two-way  "
-          f"(retiré : {n_avant - len(pairs)})")
+          f"(retire : {n_avant - len(pairs)})")
     print(f"  Par saison :\n{pairs['saison'].value_counts().sort_index().to_string()}")
     print(f"  cap_hit_pct  mean={pairs['cap_hit_pct'].mean():.4f}  "
           f"std={pairs['cap_hit_pct'].std():.4f}  "

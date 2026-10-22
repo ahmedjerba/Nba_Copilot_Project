@@ -17,18 +17,14 @@ from Composant3.schemas import (
 )
 
 # ── Seuils de segment ─────────────────────────────────────────────────────────
-CAP_PCT_MAX        = 0.30   # au-dessus → contrat max, hors modèle
-CAP_PCT_LOW        = 0.05   # en-dessous → utiliser modèle middle_class
-CAP_PCT_TWOWAY     = 0.001  # en-dessous → two-way, hors modèle
+CAP_PCT_MAX        = 0.30   # au-dessus → contrat max / superstar
+CAP_PCT_LOW        = 0.05   # en-dessous → bas salaire / 454545
+CAP_PCT_TWOWAY     = 0.001  # en-dessous → two-way
 
-# ── Chargement des modèles au démarrage ───────────────────────────────────────
-_payload_market = load_model(version="market_v1")
+# ── Chargement du modèle de production au démarrage ───────────────────────────
+_payload_market = load_model(version="market_v2")
 _model_market   = _payload_market["model"]
 _flags_market   = _payload_market["fe_flags"]
-
-_payload_middle = load_model(version="middle_v1")  # ← à créer
-_model_middle   = _payload_middle["model"]
-_flags_middle   = _payload_middle["fe_flags"]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -40,13 +36,11 @@ def get_player_value(
     saison:    str,
 ) -> PlayerValueResponse:
     """
-    Calcule la valeur marché et le surplus d'un joueur.
+    Calcule la juste valeur marché et le surplus d'un joueur NBA.
 
-    Routing des modèles :
-        cap_hit_pct < 0.001  → HORS MODÈLE (two-way)
-        cap_hit_pct < 0.05   → modèle middle_class (rookie/vétéran min)
-        cap_hit_pct ≤ 0.30   → modèle market (coeur)
-        cap_hit_pct > 0.30   → HORS MODÈLE (contrat max)
+    Évaluation robuste :
+        - Modèle market_v2 entraîné sur les 4 saisons historiques avec 45 features épurées
+        - Évaluation de tous les profils (titulaires, rookies, vétérans, superstars)
     """
     engine = create_engine(DB_URL)
 
@@ -83,75 +77,40 @@ def get_player_value(
         return _error(player_id, saison,
                       f"Salary cap inconnu pour {saison}.")
 
-    # ── Routing selon cap_hit_pct ─────────────────────────────────────────
-    if contract_df.empty:
-        # Pas de contrat → modèle market par défaut
-        model_a_utiliser = _model_market
-        flags_a_utiliser = _flags_market
-        cap_hit          = None
-        cap_hit_pct      = None
-        avertissement    = None
+    # ── Correction expérience réelle & draft_position à la volée ───────────
+    season_start = int(saison[:4])
+    real_exp = season_start - season_df["draft_year"]
+    season_df["saisons_experience"] = real_exp.fillna(
+        (season_df["age_at_date"] - 20).clip(lower=0)
+    ).clip(lower=0)
 
+    season_df["draft_position"] = season_df.apply(
+        lambda r: (r["draft_round"] - 1) * 30 + r["draft_number"]
+        if pd.notna(r["draft_round"]) and pd.notna(r["draft_number"])
+        else None,
+        axis=1
+    )
+
+    # ── Routing et contextualisation selon contrat ────────────────────────
+    model_a_utiliser = _model_market
+    flags_a_utiliser = _flags_market
+    avertissement    = None
+
+    if contract_df.empty:
+        cap_hit     = None
+        cap_hit_pct = None
+        avertissement = "Joueur sans contrat actif répertorié pour cette saison."
     else:
         cap_hit     = float(contract_df["cap_hit"].iloc[0])
         cap_hit_pct = cap_hit / cap_saison
 
-        # Two-way
         if cap_hit_pct < CAP_PCT_TWOWAY:
-            return PlayerValueResponse(
-                player_id=player_id,
-                player_name=player_name,
-                saison=saison,
-                valeur_dollars=None,
-                valeur_pct=None,
-                p10_dollars=None,
-                p90_dollars=None,
-                salary_cap=cap_saison,
-                cap_hit=round(cap_hit),
-                surplus=None,
-                signal="HORS MODÈLE 🚫",
-                top_facteurs=[],
-                erreur="Two-way contract — non modélisable.",
-            )
+            avertissement = f"Contrat Two-Way ({cap_hit_pct:.2%} du cap) — valorisation marchande indicative."
+        elif cap_hit_pct > CAP_PCT_MAX:
+            avertissement = f"Contrat Max / Supermax ({cap_hit_pct:.1%} du cap) — valorisation sportive marchande pure."
 
-        # Contrat max
-        if cap_hit_pct > CAP_PCT_MAX:
-            return PlayerValueResponse(
-                player_id=player_id,
-                player_name=player_name,
-                saison=saison,
-                valeur_dollars=None,
-                valeur_pct=None,
-                p10_dollars=None,
-                p90_dollars=None,
-                salary_cap=cap_saison,
-                cap_hit=round(cap_hit),
-                surplus=None,
-                signal="HORS MODÈLE 🚫",
-                top_facteurs=[],
-                erreur=(
-                    f"Contrat max ({cap_hit_pct:.1%} du cap) — "
-                    "valeur non modélisable. Facteurs non-statistiques "
-                    "(franchise player, leadership, marketabilité)."
-                ),
-            )
-
-        # Rookie / vétéran minimum → modèle middle_class
-        if cap_hit_pct < CAP_PCT_LOW:
-            model_a_utiliser = _model_middle
-            flags_a_utiliser = _flags_middle
-            avertissement    = (
-                f"Joueur sous 5% du cap ({cap_hit_pct:.1%}) — "
-                "modèle middle_class utilisé comme proxy."
-            )
-        else:
-            # Coeur du modèle market
-            model_a_utiliser = _model_market
-            flags_a_utiliser = _flags_market
-            avertissement    = None
-
-    # ── Feature engineering ───────────────────────────────────────────────
-    season_fe, _, _ = build_features(season_df, **flags_a_utiliser)
+    # ── Feature engineering (correction déballage à 4 valeurs) ─────────────
+    season_fe, _, _, _ = build_features(season_df, **flags_a_utiliser)
     player_fe = season_fe[season_fe["player_id"] == player_id].copy()
 
     # ── Prédiction ────────────────────────────────────────────────────────
@@ -312,21 +271,31 @@ def get_bulk_valuations(
         for _, r in contracts_df.iterrows()
     }
 
-    # ── 3. Build features une fois par modèle (pas N fois) ───────────────────
+    # ── 3. Expérience réelle, draft_position & Build features ───────────────
+    season_start = int(saison[:4])
+    real_exp = season_start - season_df["draft_year"]
+    season_df["saisons_experience"] = real_exp.fillna(
+        (season_df["age_at_date"] - 20).clip(lower=0)
+    ).clip(lower=0)
+
+    season_df["draft_position"] = season_df.apply(
+        lambda r: (r["draft_round"] - 1) * 30 + r["draft_number"]
+        if pd.notna(r["draft_round"]) and pd.notna(r["draft_number"])
+        else None,
+        axis=1
+    )
+
     try:
-        season_fe_market, _, _ = build_features(season_df, **_flags_market)
+        season_fe_market, _, _, _ = build_features(season_df, **_flags_market)
     except Exception as exc:
         _log.error("get_bulk_valuations : build_features market failed — %s", exc)
         season_fe_market = pd.DataFrame()
 
-    try:
-        season_fe_middle, _, _ = build_features(season_df, **_flags_middle)
-    except Exception as exc:
-        _log.error("get_bulk_valuations : build_features middle failed — %s", exc)
-        season_fe_middle = pd.DataFrame()
-
     # ── 4. Prédiction par joueur ──────────────────────────────────────────────
     results: dict[int, int | None] = {}
+
+    if season_fe_market.empty:
+        return {pid: None for pid in player_ids}
 
     for player_id in player_ids:
         try:
@@ -335,31 +304,12 @@ def get_bulk_valuations(
                 results[player_id] = None
                 continue
 
-            cap_hit_pct = cap_hit / cap_saison
-
-            # Hors modèle : two-way ou max contract
-            if cap_hit_pct < CAP_PCT_TWOWAY or cap_hit_pct > CAP_PCT_MAX:
-                results[player_id] = None
-                continue
-
-            # Choix du modèle
-            if cap_hit_pct < CAP_PCT_LOW:
-                fe_season = season_fe_middle
-                model     = _model_middle
-            else:
-                fe_season = season_fe_market
-                model     = _model_market
-
-            if fe_season.empty:
-                results[player_id] = None
-                continue
-
-            player_fe = fe_season[fe_season["player_id"] == player_id].copy()
+            player_fe = season_fe_market[season_fe_market["player_id"] == player_id].copy()
             if player_fe.empty:
                 results[player_id] = None
                 continue
 
-            pred    = model.predict_player(player_fe, salary_cap=cap_saison)
+            pred    = _model_market.predict_player(player_fe, salary_cap=cap_saison)
             surplus = pred["valeur_dollars"] - cap_hit
             results[player_id] = round(surplus)
 

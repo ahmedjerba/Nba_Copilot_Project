@@ -4,1146 +4,3170 @@ CONFIG 2D — UMAP n_components=2
 ======================================================================
 Pool : 2277 joueurs-saisons
 Calcul UMAP 2D...
-Clustering HDBSCAN 2D (min_cluster_size=15, min_samples=2)...
-→ 18 clusters, 305 outliers (13.4%)
+Clustering HDBSCAN 2D (euclidean, mcs=40, ms=3, csm=eom)...
+→ 16 clusters, 335 outliers (14.7%)
 Calcul soft membership vectors 2D...
 
 ── MÉTRIQUES 2D ──────────────────────────────────────────
-Clusters                 : 18
-Outliers HDBSCAN         : 305 (13.4%)
-Soft assignés (≥0.10)    : 213
-Vrais unclassified       : 92
-Double label             : 161 / 1972
-Conf moy. assignés       : 0.6524
-Conf moy. soft           : 0.1815
+Clusters                 : 16
+Outliers HDBSCAN         : 335 (14.7%)
+Soft assignés (≥0.10)    : 242
+Vrais unclassified       : 93
+Double label             : 146 / 1942
+Conf moy. assignés       : 0.6812
+Conf moy. soft           : 0.1888
 
 ── OUTLIERS STARS 2D ─────────────────────────────────────
-          player_name  saison        archetype  archetype_conf archetype_secondary  archetype_secondary_conf
-         LeBron James 2023-24      star_fading          0.3571    franchise_player                    0.0613
-           Trae Young 2023-24      star_fading          0.2816    franchise_player                    0.0859
-    Victor Wembanyama 2025-26    rim_protector          0.2537                None                       NaN
-          Bam Adebayo 2023-24 franchise_player          0.2244                None                       NaN
-Giannis Antetokounmpo 2023-24 franchise_player          0.2169         star_fading                    0.0942
-         Jayson Tatum 2023-24      star_fading          0.1965    franchise_player                    0.1191
-          Bam Adebayo 2024-25      star_fading          0.1765    franchise_player                    0.1265
-   Karl-Anthony Towns 2025-26      star_fading          0.1752    franchise_player                    0.1327
-        Anthony Davis 2024-25    rim_protector          0.1727        shot_blocker                    0.0789
-          Bam Adebayo 2022-23 franchise_player          0.1458         star_fading                    0.0754
-            Ja Morant 2024-25        superstar          0.1416                None                       NaN
-        Chet Holmgren 2023-24     shot_blocker          0.1384       rim_protector                    0.0804
-        Anthony Davis 2023-24     shot_blocker          0.1342       rim_protector                    0.0749
-        Chet Holmgren 2024-25     shot_blocker          0.1334       rim_protector                    0.0786
-    Victor Wembanyama 2023-24     shot_blocker          0.1225       rim_protector                    0.0924
-    Victor Wembanyama 2024-25     shot_blocker          0.1221       rim_protector                    0.0941
-        Anthony Davis 2021-22     shot_blocker          0.1137       rim_protector                    0.0944
-       Draymond Green 2022-23     unclassified          0.0620                None                       NaN
-       Draymond Green 2024-25     unclassified          0.0601                None                       NaN
+          player_name  saison      archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+Giannis Antetokounmpo 2023-24   shot_blocker          0.3337                None                       NaN
+          Joel Embiid 2025-26   shot_blocker          0.1746      ascending_wing                    0.0835
+         Devin Booker 2022-23   shot_blocker          0.1654      ascending_wing                    0.0858
+        Stephen Curry 2025-26   shot_blocker          0.1643      ascending_wing                    0.0833
+         Jayson Tatum 2022-23   shot_blocker          0.1380      ascending_wing                    0.0850
+          Bam Adebayo 2025-26   shot_blocker          0.1331      ascending_wing                    0.0814
+   Karl-Anthony Towns 2024-25    scoring_big          0.1194                None                       NaN
+       Draymond Green 2023-24 solid_rotation          0.1122                None                       NaN
+   Karl-Anthony Towns 2023-24   shot_blocker          0.1054      ascending_wing                    0.0768
+       Draymond Green 2022-23   unclassified          0.0776                None                       NaN
+       Draymond Green 2024-25   unclassified          0.0764                None                       NaN
 
 ── DISTRIBUTION OUTLIERS 2D ──────────────────────────────
 archetype
-unclassified         92
-3and_d_specialist    48
-shot_blocker         37
-star_fading          27
-rim_protector        19
-physical_big         14
-ascending_wing       12
-franchise_player     12
-superstar            10
-raw_prospect          9
-3and_d_wing           6
+unclassified         93
+superstar            50
+3and_d_wing          35
+shot_blocker         31
+declining_vet        28
+solid_rotation       24
+franchise_player     18
+physical_big         13
+declining_star       12
+rim_protector         7
+ascending_wing        6
+raw_prospect          6
 scoring_big           5
-declining_vet         5
-spot_up_shooter       2
-declining_star        2
-developmental_big     2
-solid_rotation        2
-replacement_level     1
+replacement_level     3
+star_fading           3
+fringe_rotation       1
 
 ── DOUBLE LABEL STARS 2D ─────────────────────────────────
-          player_name  saison        archetype  archetype_conf archetype_secondary  archetype_secondary_conf
-       Paolo Banchero 2022-23 franchise_player          0.3954           superstar                    0.1787
-Giannis Antetokounmpo 2025-26 franchise_player          0.2507           superstar                    0.1638
-          Bam Adebayo 2025-26        superstar          0.3126    franchise_player                    0.1611
-Giannis Antetokounmpo 2022-23 franchise_player          0.2368           superstar                    0.1595
-          Joel Embiid 2025-26        superstar          0.3263    franchise_player                    0.1587
+   player_name  saison         archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+ Klay Thompson 2023-24      raw_prospect          0.1994   replacement_level                    0.3009
+  LeBron James 2023-24 replacement_level          0.2142        shot_blocker                    0.2146
+  Devin Booker 2023-24 replacement_level          0.1996        shot_blocker                    0.2118
+  Jayson Tatum 2023-24 replacement_level          0.1784        shot_blocker                    0.1942
+ Stephen Curry 2022-23    ascending_wing          0.2522        shot_blocker                    0.1830
+Draymond Green 2025-26     declining_vet          0.0617        shot_blocker                    0.1763
+Draymond Green 2021-22     declining_vet          0.0633        shot_blocker                    0.1570
+ Anthony Davis 2021-22       3and_d_wing          0.3429         scoring_big                    0.1551
 
 ── MEMBRES DISTANTS PAR ARCHETYPE 2D (conf < 0.30) ───────
 
-  3and_d_specialist — 15 distants :
+  3and_d_wing — 34 distants :
+       player_name  saison  archetype_conf
+  Domantas Sabonis 2022-23          0.1467
+         Josh Hart 2021-22          0.1569
+  Domantas Sabonis 2024-25          0.1570
+  Domantas Sabonis 2021-22          0.1596
+       Dario Saric 2022-23          0.1639
+        Kevin Love 2021-22          0.1748
+Karl-Anthony Towns 2025-26          0.1768
+     Tobias Harris 2021-22          0.1777
+     Cedric Coward 2025-26          0.1782
+     Moritz Wagner 2021-22          0.1815
+       Darius Days 2022-23          0.1950
+     Dexter Dennis 2023-24          0.1984
+    Nikola Vučević 2022-23          0.2000
+        Kyle Kuzma 2021-22          0.2080
+      Bobby Portis 2024-25          0.2207
+    Nikola Vučević 2021-22          0.2244
+        Danny Wolf 2025-26          0.2262
+       Derik Queen 2025-26          0.2277
+  Boban Marjanovic 2023-24          0.2300
+Wendell Carter Jr. 2021-22          0.2322
+Aleksej Pokusevski 2021-22          0.2442
+  Boban Marjanovic 2021-22          0.2511
+    Christian Wood 2021-22          0.2541
+      Bobby Portis 2025-26          0.2573
+   Jaylin Williams 2025-26          0.2650
+ Jonas Valančiūnas 2021-22          0.2665
+        Trey Lyles 2021-22          0.2688
+       Cody Zeller 2022-23          0.2705
+      Jerami Grant 2021-22          0.2773
+ Jaren Jackson Jr. 2023-24          0.2776
+      Santi Aldama 2025-26          0.2837
+      Bobby Portis 2023-24          0.2859
+     Deandre Ayton 2021-22          0.2945
+      Myles Turner 2024-25          0.2953
+
+  ascending_wing — 21 distants :
+            player_name  saison  archetype_conf
+        Dennis Schröder 2023-24          0.1683
+          Killian Hayes 2022-23          0.1879
+      Russell Westbrook 2025-26          0.1992
+              Tre Jones 2022-23          0.2109
+          Julius Randle 2025-26          0.2135
+            Luka Dončić 2022-23          0.2228
+           Kyrie Irving 2022-23          0.2303
+Shai Gilgeous-Alexander 2024-25          0.2357
+       Donovan Mitchell 2022-23          0.2426
+           Tyrese Maxey 2025-26          0.2495
+       Jimmy Butler III 2022-23          0.2521
+          Stephen Curry 2022-23          0.2522
+           Bradley Beal 2022-23          0.2592
+              Tre Jones 2025-26          0.2609
+      Tyrese Haliburton 2022-23          0.2702
+        Trey Murphy III 2025-26          0.2704
+            CJ McCollum 2023-24          0.2732
+           Jared Butler 2024-25          0.2773
+          Amen Thompson 2025-26          0.2841
+         T.J. McConnell 2023-24          0.2920
+         Isaiah Collier 2025-26          0.2948
+
+  declining_vet — 52 distants :
+       player_name  saison  archetype_conf
+         Tre Jones 2024-25          0.0454
+        Tyus Jones 2022-23          0.0465
+        Tyus Jones 2021-22          0.0500
+         Tre Jones 2021-22          0.0613
+    Draymond Green 2025-26          0.0617
+        Tyus Jones 2024-25          0.0621
+     Kyle Anderson 2022-23          0.0626
+    Draymond Green 2021-22          0.0633
+  Patrick Beverley 2021-22          0.0638
+       Ben Simmons 2022-23          0.0641
+        Tyus Jones 2023-24          0.0642
+      Lou Williams 2021-22          0.0646
+       Pat Spencer 2025-26          0.0663
+     Marcus Sasser 2023-24          0.0719
+     Ryan Nembhard 2025-26          0.0726
+         Raul Neto 2021-22          0.0731
+    Vasilije Micic 2023-24          0.0732
+  Collin Gillespie 2025-26          0.0745
+   Andrew Nembhard 2024-25          0.0772
+Walter Clayton Jr. 2025-26          0.0782
+    Isaiah Collier 2024-25          0.0784
+   Andrew Nembhard 2022-23          0.0808
+       Jamal Shead 2024-25          0.0808
+     Aaron Holiday 2021-22          0.0812
+   Davion Mitchell 2021-22          0.0830
+      Shake Milton 2021-22          0.0852
+  Tomas Satoransky 2021-22          0.0871
+      Nikola Topić 2025-26          0.0873
+       Cory Joseph 2021-22          0.0893
+      Nolan Traore 2025-26          0.0923
+         Ish Smith 2021-22          0.0962
+       Xavier Moon 2021-22          0.0988
+       Jalen Suggs 2021-22          0.1085
+      Marcus Smart 2021-22          0.1120
+         Ben Saraf 2025-26          0.1126
+  Terquavion Smith 2023-24          0.1249
+       Buddy Hield 2024-25          0.1311
+  Dennis Smith Jr. 2022-23          0.1330
+      Eric Bledsoe 2021-22          0.1345
+     Markus Howard 2021-22          0.1430
+      VJ Edgecombe 2025-26          0.1609
+     Killian Hayes 2021-22          0.1612
+       Buddy Hield 2025-26          0.1792
+   Kelly Oubre Jr. 2021-22          0.1859
+  Facundo Campazzo 2021-22          0.2011
+   Larry Nance Jr. 2023-24          0.2071
+    Gary Trent Jr. 2022-23          0.2125
+   Kadary Richmond 2025-26          0.2353
+    Gary Trent Jr. 2021-22          0.2453
+   Otto Porter Jr. 2021-22          0.2509
+     Javonte Green 2021-22          0.2793
+  Josh Christopher 2021-22          0.2900
+
+  developmental_big — 114 distants :
         player_name  saison  archetype_conf
-          KZ Okpala 2021-22          0.1325
-        Maxi Kleber 2023-24          0.1365
-      Carter Bryant 2025-26          0.1403
-      James Johnson 2021-22          0.1449
-            JT Thor 2023-24          0.1489
-       Torrey Craig 2022-23          0.1667
-    Jaden McDaniels 2021-22          0.1856
-   Patrick Williams 2023-24          0.1898
-   Taylor Hendricks 2023-24          0.2030
-    Kessler Edwards 2021-22          0.2093
-          Ryan Dunn 2024-25          0.2098
-       Torrey Craig 2021-22          0.2166
-   Maurice Harkless 2021-22          0.2573
-Dorian Finney-Smith 2023-24          0.2643
-        Bruce Brown 2024-25          0.2796
+         Alex Ducas 2024-25          0.0238
+    Jamorko Pickett 2021-22          0.0421
+        Kris Murray 2024-25          0.0421
+       Rayan Rupert 2025-26          0.0452
+        Kris Murray 2023-24          0.0466
+     Ja'Kobe Walter 2024-25          0.0470
+   Denzel Valentine 2021-22          0.0482
+     Tidjane Salaün 2024-25          0.0485
+     Justin Edwards 2024-25          0.0498
+     Garrett Temple 2024-25          0.0499
+        Micah Peavy 2025-26          0.0524
+          CJ Elleby 2021-22          0.0528
+Talen Horton-Tucker 2021-22          0.0532
+ Kevin McCullar Jr. 2025-26          0.0547
+     Nique Clifford 2025-26          0.0595
+      Alijah Martin 2025-26          0.0648
+    Payton Sandfort 2025-26          0.0891
+      Jacob Gilyard 2022-23          0.0924
+       Amari Bailey 2023-24          0.0939
+       Joe Wieskamp 2021-22          0.0971
+      Armoni Brooks 2021-22          0.0974
+      Devin Cannady 2021-22          0.1012
+        Cole Swider 2022-23          0.1160
+        Miles Kelly 2025-26          0.1182
+    Dariq Whitehead 2025-26          0.1210
+   Lucas Williamson 2025-26          0.1215
+       Hunter Tyson 2023-24          0.1224
+         KJ Simpson 2024-25          0.1243
+       Joshua Primo 2021-22          0.1269
+      Cody Williams 2024-25          0.1287
+       Jacob Toppin 2024-25          0.1295
+    Jahmi'us Ramsey 2023-24          0.1295
+Patrick Baldwin Jr. 2022-23          0.1299
+   Patrick Williams 2025-26          0.1337
+  Charlie Brown Jr. 2021-22          0.1353
+        Malik Fitts 2021-22          0.1354
+     Dakota Mathias 2021-22          0.1361
+     Garrett Temple 2021-22          0.1373
+    DaQuan Jeffries 2021-22          0.1376
+        Theo Pinson 2021-22          0.1382
+        A.J. Lawson 2022-23          0.1438
+         Toby Okani 2025-26          0.1495
+        Bruce Brown 2024-25          0.1495
+         Alex Fudge 2023-24          0.1511
+          Matt Ryan 2024-25          0.1559
+        Rob Edwards 2021-22          0.1615
+     Trevor Hudgins 2022-23          0.1618
+       Trevor Keels 2022-23          0.1632
+       Sean Pedulla 2025-26          0.1653
+     Justin Jackson 2021-22          0.1677
+     Emanuel Miller 2025-26          0.1702
+      Stanley Umude 2025-26          0.1718
+           Kyle Guy 2021-22          0.1727
+        Emoni Bates 2023-24          0.1746
+        Sam Merrill 2021-22          0.1751
+      Buddy Boeheim 2025-26          0.1757
+      Kevin Knox II 2021-22          0.1759
+       Didi Louzada 2021-22          0.1764
+        D'Moi Hodge 2023-24          0.1773
+      Vlatko Cancar 2024-25          0.1776
+       Luka Samanic 2022-23          0.1776
+     Quincy Olivari 2024-25          0.1792
+   Alfonzo McKinnie 2021-22          0.1795
+         Sam Dekker 2021-22          0.1798
+       Nikola Jović 2022-23          0.1802
+         Taze Moore 2023-24          0.1808
+     Kyshawn George 2024-25          0.1813
+      Tyson Etienne 2024-25          0.1830
+        Abdel Nader 2021-22          0.1849
+    Cassius Stanley 2021-22          0.1868
+     Bub Carrington 2024-25          0.1891
+      Scottie Lewis 2021-22          0.1908
+    Markieff Morris 2023-24          0.1910
+       R.J. Hampton 2021-22          0.1938
+        Paul Watson 2021-22          0.1942
+  Haywood Highsmith 2021-22          0.1950
+      Isaiah Thomas 2023-24          0.1963
+    John Butler Jr. 2022-23          0.1973
+     Marcus Garrett 2024-25          0.1999
+        Matt Mooney 2021-22          0.2007
+      Javonte Smart 2023-24          0.2016
+        Isaiah Wong 2023-24          0.2050
+       Noa Essengue 2025-26          0.2056
+   Alondes Williams 2023-24          0.2071
+     Zylan Cheatham 2021-22          0.2071
+       Ryan Rollins 2022-23          0.2101
+   Arnoldas Kulboka 2021-22          0.2156
+         Tyler Hall 2021-22          0.2185
+   Hunter Dickinson 2025-26          0.2218
+ Michael Foster Jr. 2022-23          0.2225
+       Trevon Scott 2025-26          0.2255
+       Johni Broome 2025-26          0.2279
+           CJ Miles 2021-22          0.2279
+  Nigel Hayes-Davis 2025-26          0.2294
+        Colby Jones 2023-24          0.2297
+     Sharife Cooper 2021-22          0.2310
+     Zavier Simpson 2021-22          0.2329
+        Aaron Henry 2021-22          0.2429
+      Jaylen Nowell 2024-25          0.2446
+     Jordan Goodwin 2021-22          0.2496
+    Dariq Whitehead 2023-24          0.2515
+      Jesse Edwards 2024-25          0.2532
+     Brodric Thomas 2021-22          0.2534
+         Aleem Ford 2021-22          0.2599
+   Brandon Williams 2023-24          0.2726
+           Miye Oni 2021-22          0.2732
+       Bronny James 2024-25          0.2765
+     Marcus Garrett 2021-22          0.2768
+      DeJon Jarreau 2025-26          0.2773
+   Mouhamadou Gueye 2023-24          0.2805
+      Tyrese Martin 2022-23          0.2821
+ Melvin Frazier Jr. 2021-22          0.2916
+       Theo Maledon 2021-22          0.2942
+      Jaysean Paige 2021-22          0.2988
 
-  3and_d_wing — 19 distants :
-      player_name  saison  archetype_conf
-    Kevin Huerter 2024-25          0.1261
-      Gary Harris 2023-24          0.1871
-   Quentin Grimes 2023-24          0.2219
-     Gabe Vincent 2025-26          0.2238
-    Grayson Allen 2022-23          0.2324
-Haywood Highsmith 2024-25          0.2333
-      Eric Gordon 2024-25          0.2362
-       Josh Green 2024-25          0.2435
-     Gabe Vincent 2022-23          0.2503
-        Dean Wade 2022-23          0.2514
-    Aaron Holiday 2025-26          0.2548
-   Gary Trent Jr. 2024-25          0.2563
-      Eric Gordon 2023-24          0.2660
-      Isaac Okoro 2024-25          0.2696
-      Gary Harris 2022-23          0.2700
-     Quinten Post 2025-26          0.2717
-      Moses Moody 2024-25          0.2766
-    Nicolas Batum 2023-24          0.2905
-   Isaiah Stewart 2023-24          0.2985
-
-  ascending_wing — 28 distants :
+  franchise_player — 10 distants :
              player_name  saison  archetype_conf
-           Aaron Holiday 2024-25          0.1369
-           Aaron Wiggins 2023-24          0.1703
-           Moritz Wagner 2023-24          0.1877
-          Keldon Johnson 2025-26          0.1952
-          Bryce McGowens 2023-24          0.1985
-         Harrison Barnes 2024-25          0.2083
-           Caleb Houstan 2023-24          0.2094
-           Landry Shamet 2025-26          0.2137
-            Ben Sheppard 2025-26          0.2199
-           Corey Kispert 2025-26          0.2200
-         De'Andre Hunter 2022-23          0.2228
-          Shaedon Sharpe 2023-24          0.2273
-            Jordan Nwora 2022-23          0.2274
-            Max Christie 2024-25          0.2278
-            Max Christie 2025-26          0.2324
-             Amir Coffey 2023-24          0.2326
-              Seth Curry 2024-25          0.2335
-           Dillon Brooks 2024-25          0.2345
-             Amir Coffey 2024-25          0.2393
-          Shaedon Sharpe 2024-25          0.2434
-              Obi Toppin 2024-25          0.2556
-Nickeil Alexander-Walker 2024-25          0.2564
-           Royce O'Neale 2024-25          0.2609
-         Jaden McDaniels 2022-23          0.2668
-           Aaron Wiggins 2022-23          0.2736
-              OG Anunoby 2024-25          0.2779
-             Isaac Okoro 2023-24          0.2798
-            Bones Hyland 2024-25          0.2870
+           Cason Wallace 2023-24          0.1909
+          Taurean Prince 2021-22          0.1918
+        Kenrich Williams 2022-23          0.2131
+         Josh Richardson 2021-22          0.2338
+Kentavious Caldwell-Pope 2023-24          0.2402
+             Danny Green 2021-22          0.2430
+           Tyrese Martin 2024-25          0.2464
+            John Konchar 2021-22          0.2543
+      Brandin Podziemski 2023-24          0.2738
+           Nicolas Batum 2024-25          0.2912
 
-  declining_star — 2 distants :
-  player_name  saison  archetype_conf
-Miles Bridges 2025-26          0.2723
-     Rudy Gay 2022-23          0.2987
+  fringe_rotation — 20 distants :
+      player_name  saison  archetype_conf
+    Royce O'Neale 2022-23          0.1134
+   Grant Williams 2023-24          0.1289
+       Vít Krejčí 2022-23          0.2060
+   Garrett Temple 2025-26          0.2129
+     Caleb Martin 2023-24          0.2243
+    Justin Minaya 2024-25          0.2291
+ Facundo Campazzo 2022-23          0.2296
+      Dalen Terry 2024-25          0.2348
+   Romeo Langford 2022-23          0.2356
+     Dillon Jones 2025-26          0.2369
+   David Duke Jr. 2022-23          0.2405
+      Jae Crowder 2024-25          0.2433
+      T.J. Warren 2023-24          0.2496
+  Frank Ntilikina 2023-24          0.2580
+Justin Champagnie 2022-23          0.2630
+ Ryan Arcidiacono 2022-23          0.2794
+    James Johnson 2022-23          0.2862
+       Vít Krejčí 2025-26          0.2879
+     Gabe Vincent 2023-24          0.2920
+      Sam Merrill 2023-24          0.2970
 
-  declining_vet — 6 distants :
+  physical_big — 22 distants :
+        player_name  saison  archetype_conf
+   MarJon Beauchamp 2024-25          0.1467
+      Kevin Knox II 2024-25          0.1803
+Patrick Baldwin Jr. 2024-25          0.1836
+        Chuma Okeke 2024-25          0.1867
+      Nate Williams 2025-26          0.1867
+      Royce O'Neale 2023-24          0.1972
+      Pelle Larsson 2025-26          0.2042
+      James Wiseman 2024-25          0.2054
+      Kevin Huerter 2025-26          0.2068
+        Moses Brown 2024-25          0.2101
+    James Bouknight 2023-24          0.2266
+    Jaylin Williams 2024-25          0.2404
+      Nate Williams 2023-24          0.2430
+    Jaylin Williams 2023-24          0.2437
+    Enrique Freeman 2025-26          0.2552
+          Ty Jerome 2024-25          0.2584
+        Josh Minott 2023-24          0.2599
+         Kyle Kuzma 2025-26          0.2702
+      Jordan Miller 2025-26          0.2835
+        Skylar Mays 2022-23          0.2840
+      Dylan Windler 2022-23          0.2844
+      Malachi Flynn 2023-24          0.2882
+
+  raw_prospect — 32 distants :
+             player_name  saison  archetype_conf
+             Mike Conley 2022-23          0.0948
+           Yuki Kawamura 2025-26          0.0962
+        Donte DiVincenzo 2024-25          0.1079
+            Marcus Smart 2022-23          0.1156
+             Jaden Hardy 2023-24          0.1806
+         Daeqwon Plowden 2025-26          0.1960
+             Mike Conley 2024-25          0.1980
+           Klay Thompson 2023-24          0.1994
+       Bogdan Bogdanović 2022-23          0.2031
+              Cam Thomas 2025-26          0.2052
+              Kyle Lowry 2022-23          0.2145
+         Khris Middleton 2025-26          0.2222
+        Jonathan Kuminga 2025-26          0.2232
+           Aaron Nesmith 2025-26          0.2259
+         Dejounte Murray 2022-23          0.2268
+           Fred VanVleet 2024-25          0.2282
+              Alec Burks 2024-25          0.2314
+              Taj Gibson 2023-24          0.2411
+          Victor Oladipo 2022-23          0.2476
+            Luke Kennard 2024-25          0.2483
+             Tyler Smith 2025-26          0.2511
+           Grayson Allen 2022-23          0.2546
+Nickeil Alexander-Walker 2022-23          0.2755
+             Zach LaVine 2025-26          0.2764
+           Chris Boucher 2025-26          0.2819
+             Dario Saric 2024-25          0.2833
+            Jrue Holiday 2024-25          0.2844
+              Kyle Lowry 2023-24          0.2853
+              Obi Toppin 2022-23          0.2866
+             Bruce Brown 2023-24          0.2896
+           Dalano Banton 2025-26          0.2908
+            Chris Duarte 2022-23          0.2997
+
+  replacement_level — 18 distants :
+        player_name  saison  archetype_conf
+  Scotty Pippen Jr. 2024-25          0.1336
+     Markelle Fultz 2022-23          0.1637
+         RJ Barrett 2025-26          0.1770
+       Jayson Tatum 2023-24          0.1784
+        Jalen Suggs 2025-26          0.1934
+     Scottie Barnes 2022-23          0.1960
+       Devin Booker 2023-24          0.1996
+       LeBron James 2023-24          0.2142
+  Scotty Pippen Jr. 2025-26          0.2169
+  Russell Westbrook 2024-25          0.2204
+     T.J. McConnell 2024-25          0.2253
+      Kawhi Leonard 2024-25          0.2306
+      Julius Randle 2023-24          0.2318
+Talen Horton-Tucker 2023-24          0.2497
+      Fred VanVleet 2023-24          0.2784
+     Darius Garland 2023-24          0.2850
+     Gordon Hayward 2022-23          0.2955
+      Mikal Bridges 2023-24          0.2984
+
+  rim_protector — 9 distants :
+    player_name  saison  archetype_conf
+Cassius Winston 2021-22          0.1224
+  Yuki Kawamura 2024-25          0.1333
+ Jahmyl Telfort 2025-26          0.1369
+   Nik Stauskas 2021-22          0.1382
+  Jalen Bridges 2024-25          0.1480
+    Jeremy Lamb 2021-22          0.1589
+    Isaac Bonga 2021-22          0.1815
+  Rayjon Tucker 2021-22          0.2322
+      Gabe York 2021-22          0.2976
+
+  scoring_big — 31 distants :
+        player_name  saison  archetype_conf
+       Santi Aldama 2023-24          0.1197
+     Walker Kessler 2024-25          0.1243
+        Nic Claxton 2022-23          0.1433
+        Luke Kornet 2023-24          0.1603
+  Derrick Jones Jr. 2022-23          0.1697
+       Jaxson Hayes 2025-26          0.1731
+     Wenyen Gabriel 2022-23          0.1844
+Robert Williams III 2025-26          0.2044
+       Jaxson Hayes 2024-25          0.2076
+      Jabari Walker 2024-25          0.2122
+      Amen Thompson 2024-25          0.2184
+   Dereck Lively II 2024-25          0.2226
+       Goga Bitadze 2024-25          0.2238
+      Jalen Johnson 2024-25          0.2249
+        Jalen Duren 2025-26          0.2271
+      Moritz Wagner 2023-24          0.2322
+  Jaren Jackson Jr. 2022-23          0.2381
+      Derrick White 2022-23          0.2400
+  Jarred Vanderbilt 2022-23          0.2427
+      Alize Johnson 2022-23          0.2542
+       Olivier Sarr 2023-24          0.2555
+      Derrick White 2025-26          0.2555
+         Taj Gibson 2025-26          0.2698
+      Chris Boucher 2024-25          0.2731
+  Jaren Jackson Jr. 2024-25          0.2755
+       Aaron Gordon 2022-23          0.2774
+      Nick Richards 2022-23          0.2859
+      Derrick White 2024-25          0.2938
+  Marvin Bagley III 2023-24          0.2952
+      Derrick White 2023-24          0.2953
+       Oso Ighodaro 2025-26          0.2968
+
+  shot_blocker — 3 distants :
    player_name  saison  archetype_conf
-   Mike Conley 2022-23          0.1219
- Jose Alvarado 2022-23          0.1240
-Rob Dillingham 2025-26          0.1269
-  Marcus Smart 2022-23          0.1360
-Victor Oladipo 2022-23          0.2576
-  John Konchar 2022-23          0.2719
+  Cole Anthony 2024-25          0.2525
+Jeremiah Fears 2025-26          0.2644
+   LaMelo Ball 2025-26          0.2779
 
-  developmental_big — 11 distants :
-    player_name  saison  archetype_conf
-     Tacko Fall 2021-22          0.0715
-  Alize Johnson 2021-22          0.1176
- Eugene Omoruyi 2021-22          0.1220
-    Noah Vonleh 2022-23          0.1633
-  Petr Cornelie 2021-22          0.1635
-    Luke Kornet 2021-22          0.1839
-Cameron McGriff 2021-22          0.1873
-   N'Faly Dante 2025-26          0.1944
-   Terry Taylor 2023-24          0.1948
-    Chris Silva 2021-22          0.2134
-       Ed Davis 2021-22          0.2567
-
-  franchise_player — 110 distants :
-          player_name  saison  archetype_conf
-     Dennis Smith Jr. 2022-23          0.0324
-          Jalen Suggs 2021-22          0.0387
-     Patrick Beverley 2021-22          0.0412
-      Nemanja Bjelica 2021-22          0.0413
-         Gabe Vincent 2021-22          0.0419
-       Draymond Green 2023-24          0.0423
-            Ben Saraf 2025-26          0.0424
-        Kyle Anderson 2022-23          0.0425
-       Draymond Green 2021-22          0.0427
-          Ben Simmons 2022-23          0.0444
-      Devonte' Graham 2022-23          0.0449
-         Marcus Smart 2021-22          0.0464
-            Ty Jerome 2022-23          0.0467
-          Ayo Dosunmu 2024-25          0.0482
-         Monte Morris 2022-23          0.0489
-          Ben Simmons 2024-25          0.0509
-            Tre Jones 2023-24          0.0521
-      Davion Mitchell 2024-25          0.0522
-        Jose Alvarado 2025-26          0.0525
-           Chris Paul 2023-24          0.0531
-        Killian Hayes 2023-24          0.0538
-            Ish Smith 2021-22          0.0559
-         Nolan Traore 2025-26          0.0571
-         Nikola Topić 2025-26          0.0580
-            Ty Jerome 2021-22          0.0581
-      Devonte' Graham 2021-22          0.0585
-          Jamal Shead 2025-26          0.0600
-          Pat Spencer 2025-26          0.0605
-           Chris Paul 2024-25          0.0607
-         Theo Maledon 2022-23          0.0615
-       Draymond Green 2025-26          0.0616
-      Andrew Nembhard 2022-23          0.0618
-        Aaron Holiday 2021-22          0.0622
-      Davion Mitchell 2021-22          0.0625
-          Jamal Shead 2024-25          0.0626
-          Cory Joseph 2021-22          0.0627
-            Raul Neto 2021-22          0.0639
-     Tomas Satoransky 2021-22          0.0645
-         Lou Williams 2021-22          0.0655
-      Andrew Nembhard 2024-25          0.0656
-           Tyus Jones 2024-25          0.0657
-   Walter Clayton Jr. 2025-26          0.0664
-           Tyus Jones 2023-24          0.0674
-        Marcus Sasser 2023-24          0.0675
-        Ryan Nembhard 2025-26          0.0678
-            Tre Jones 2021-22          0.0680
-       Isaiah Collier 2024-25          0.0689
-          Cory Joseph 2022-23          0.0690
-       Vasilije Micic 2023-24          0.0695
-        Marcus Sasser 2024-25          0.0700
-      Andrew Nembhard 2023-24          0.0718
-            Tre Jones 2024-25          0.0720
-     Collin Gillespie 2025-26          0.0733
-           Tyus Jones 2021-22          0.0766
-      Davion Mitchell 2025-26          0.0785
-          Mike Conley 2023-24          0.0839
-     Kevin Porter Jr. 2025-26          0.0859
-   Vince Williams Jr. 2025-26          0.0867
-          Ricky Rubio 2021-22          0.0980
-    Tyrese Haliburton 2021-22          0.1022
-           Chris Paul 2021-22          0.1035
-          Mike Conley 2021-22          0.1046
-          Javon Small 2025-26          0.1161
-        Cameron Payne 2024-25          0.1235
-      Dejounte Murray 2021-22          0.1283
-           Kyle Lowry 2021-22          0.1291
-         Kemba Walker 2021-22          0.1293
-         Jrue Holiday 2021-22          0.1299
-          LaMelo Ball 2021-22          0.1319
-        Fred VanVleet 2021-22          0.1322
-      Dennis Schröder 2025-26          0.1449
-          Josh Giddey 2021-22          0.1581
-      Cade Cunningham 2025-26          0.1676
-          Jalen Green 2025-26          0.1742
-      Dennis Schröder 2024-25          0.1775
-         Cole Anthony 2022-23          0.1779
-        Pascal Siakam 2022-23          0.1793
-         Cole Anthony 2024-25          0.1884
-           Trae Young 2024-25          0.1931
-     Kevin Porter Jr. 2021-22          0.1973
-        Cameron Payne 2021-22          0.2072
-     Lance Stephenson 2021-22          0.2091
-       Keyonte George 2023-24          0.2167
-       Andrew Wiggins 2021-22          0.2175
-         Jaylen Brown 2022-23          0.2192
-            John Wall 2022-23          0.2204
-        Cameron Payne 2022-23          0.2257
-      Dennis Schröder 2021-22          0.2286
-          Josh Giddey 2025-26          0.2318
-Giannis Antetokounmpo 2022-23          0.2368
-      Scoot Henderson 2023-24          0.2381
-    Spencer Dinwiddie 2021-22          0.2416
-          Josh Giddey 2024-25          0.2443
-Giannis Antetokounmpo 2025-26          0.2507
-    Russell Westbrook 2022-23          0.2533
-    Tyrese Haliburton 2023-24          0.2552
-      Cade Cunningham 2021-22          0.2578
-      Anthony Edwards 2024-25          0.2605
-    Russell Westbrook 2021-22          0.2643
-         Cole Anthony 2021-22          0.2694
-         James Harden 2022-23          0.2744
-          Will Barton 2021-22          0.2773
-          Joel Embiid 2022-23          0.2833
-         James Harden 2025-26          0.2838
-         Dylan Harper 2025-26          0.2841
-           Jaden Ivey 2022-23          0.2841
-         Desmond Bane 2023-24          0.2896
-          Joel Embiid 2023-24          0.2909
-         Kevin Durant 2025-26          0.2998
-Giannis Antetokounmpo 2024-25          0.2999
-
-  fringe_rotation — 69 distants :
-          player_name  saison  archetype_conf
-        Grayson Allen 2024-25          0.0233
-       Toumani Camara 2025-26          0.0285
-           Vít Krejčí 2025-26          0.0488
-    Admiral Schofield 2023-24          0.0521
-       Grant Williams 2023-24          0.0628
-  TyTy Washington Jr. 2023-24          0.0738
-      Otto Porter Jr. 2022-23          0.0788
-            PJ Dozier 2022-23          0.1050
-       Garrett Temple 2022-23          0.1628
-        Nassir Little 2022-23          0.1629
-      Khris Middleton 2025-26          0.1709
-          P.J. Tucker 2024-25          0.1732
-        Armoni Brooks 2023-24          0.1744
-         Caleb Martin 2023-24          0.1777
-      Otto Porter Jr. 2023-24          0.1817
-     Facundo Campazzo 2022-23          0.1836
-       Romeo Langford 2022-23          0.1845
-        Jabari Walker 2025-26          0.1856
-     Orlando Robinson 2025-26          0.1867
-           Vít Krejčí 2022-23          0.1870
-      Daeqwon Plowden 2025-26          0.1901
-        Dylan Windler 2023-24          0.1920
-         Ryan Rollins 2024-25          0.1924
-          Jae Crowder 2024-25          0.2010
-         Dillon Jones 2025-26          0.2032
-          Tyler Smith 2025-26          0.2073
-        Justin Minaya 2024-25          0.2091
-         Micah Potter 2023-24          0.2093
-    Justin Champagnie 2022-23          0.2095
-        Lamar Stevens 2024-25          0.2120
-      Frank Ntilikina 2023-24          0.2174
-     Alondes Williams 2025-26          0.2180
-       Leonard Miller 2025-26          0.2186
-     Trey Jemison III 2025-26          0.2191
-        James Johnson 2022-23          0.2212
-   Kenneth Lofton Jr. 2023-24          0.2237
-           Khem Birch 2022-23          0.2266
-       David Duke Jr. 2022-23          0.2291
-        Chris Boucher 2025-26          0.2317
-       Jaden Springer 2022-23          0.2320
-       Omer Yurtseven 2022-23          0.2322
-          Dario Saric 2024-25          0.2333
-    Wendell Moore Jr. 2025-26          0.2349
-          Braxton Key 2023-24          0.2359
-         Kelly Olynyk 2024-25          0.2362
-          Chris Silva 2022-23          0.2382
-          Moses Brown 2023-24          0.2415
-         Adama Sanogo 2024-25          0.2417
-              PJ Hall 2025-26          0.2418
-  Patrick Baldwin Jr. 2025-26          0.2422
-Juan Toscano-Anderson 2023-24          0.2444
-        James Wiseman 2025-26          0.2470
-     MarJon Beauchamp 2025-26          0.2496
-         Nikola Jović 2025-26          0.2526
-         Nerlens Noel 2022-23          0.2545
-       Sterling Brown 2022-23          0.2599
-         Usman Garuba 2023-24          0.2615
-          Cody Martin 2022-23          0.2692
-        Dalano Banton 2025-26          0.2735
-          Serge Ibaka 2022-23          0.2768
-       Omer Yurtseven 2025-26          0.2773
-       Oshae Brissett 2024-25          0.2784
-       Udoka Azubuike 2023-24          0.2830
-       Greg Brown III 2022-23          0.2835
-       Isaiah Stevens 2025-26          0.2844
-         Bradley Beal 2025-26          0.2861
-          Cody Martin 2025-26          0.2868
-        Vlatko Cancar 2024-25          0.2879
-     Josh Christopher 2022-23          0.2952
-
-  raw_prospect — 6 distants :
-    player_name  saison  archetype_conf
-  Jeremy Sochan 2022-23          0.1886
-  Emanuel Terry 2021-22          0.2037
- Mouhamed Gueye 2023-24          0.2345
-     BJ Johnson 2021-22          0.2414
-     Jack White 2022-23          0.2710
-Harry Giles III 2023-24          0.2901
-
-  replacement_level — 23 distants :
+  solid_rotation — 22 distants :
         player_name  saison  archetype_conf
-       Micah Potter 2021-22          0.0739
- Shaquille Harrison 2023-24          0.1009
-      Jalen Johnson 2021-22          0.1182
-      Armoni Brooks 2021-22          0.1229
-      Udonis Haslem 2021-22          0.1306
-   Chris Livingston 2023-24          0.1307
-Willie Cauley-Stein 2021-22          0.1440
-   Denzel Valentine 2021-22          0.1635
-        Isaac Bonga 2021-22          0.1778
-   Andersson Garcia 2025-26          0.1988
-    Darius Brown II 2025-26          0.2132
-      Devin Cannady 2021-22          0.2225
-       Joe Wieskamp 2021-22          0.2297
-        Jeremy Lamb 2021-22          0.2303
-      Alijah Martin 2025-26          0.2414
-    Payton Sandfort 2025-26          0.2435
-       Amari Bailey 2023-24          0.2435
-       Jared Rhoden 2022-23          0.2520
-    Cassius Winston 2021-22          0.2599
-     Garrett Temple 2025-26          0.2645
-      Jacob Gilyard 2022-23          0.2746
-    Jamorko Pickett 2021-22          0.2823
-   Chris Youngblood 2025-26          0.2891
+        Paul George 2025-26          0.0973
+       Ryan Rollins 2025-26          0.1266
+        Buddy Hield 2022-23          0.1430
+Talen Horton-Tucker 2022-23          0.1693
+    Duncan Robinson 2023-24          0.1736
+        Amir Coffey 2023-24          0.1788
+       Jrue Holiday 2025-26          0.2108
+      Kevin Knox II 2022-23          0.2193
+   Julian Strawther 2025-26          0.2217
+         Obi Toppin 2024-25          0.2460
+       Jake LaRavia 2023-24          0.2599
+    Christian Braun 2023-24          0.2603
+         Josh Green 2025-26          0.2605
+   Patrick Beverley 2023-24          0.2669
+      Cody Williams 2025-26          0.2784
+  Admiral Schofield 2023-24          0.2839
+    Trey Murphy III 2023-24          0.2849
+       Ochai Agbaji 2024-25          0.2858
+      Ish Wainright 2023-24          0.2904
+    Bilal Coulibaly 2024-25          0.2959
+      Johnny Juzang 2024-25          0.2961
+  Haywood Highsmith 2025-26          0.2980
 
-  shot_blocker — 70 distants :
-          player_name  saison  archetype_conf
-     Montrezl Harrell 2021-22          0.0785
-       Mamadi Diakite 2021-22          0.0799
-          Jalen Duren 2024-25          0.0877
-       Bruno Fernando 2021-22          0.0906
-         Oso Ighodaro 2024-25          0.0913
-        Jarrett Allen 2021-22          0.0921
-        Nick Richards 2024-25          0.0961
-        Jarrett Allen 2024-25          0.0971
-          Rudy Gobert 2022-23          0.1010
-          Jalen Duren 2022-23          0.1012
-        Dwight Powell 2022-23          0.1013
-        Mark Williams 2025-26          0.1044
-       Brandon Clarke 2022-23          0.1064
-         Jakob Poeltl 2025-26          0.1070
-         Jusuf Nurkić 2022-23          0.1073
-         Jaxson Hayes 2023-24          0.1097
-       Moussa Diabaté 2024-25          0.1115
-          Ivica Zubac 2025-26          0.1117
-       Brandon Clarke 2024-25          0.1125
-        Jarrett Allen 2022-23          0.1129
-        Dwight Howard 2021-22          0.1132
-         Jericho Sims 2022-23          0.1147
-       Richaun Holmes 2021-22          0.1150
-       Onyeka Okongwu 2025-26          0.1151
-Sandro Mamukelashvili 2025-26          0.1158
-          Rudy Gobert 2024-25          0.1200
-          Ivica Zubac 2021-22          0.1212
-        Deandre Ayton 2025-26          0.1214
-        Deandre Ayton 2024-25          0.1233
-         Drew Eubanks 2021-22          0.1237
-        Mason Plumlee 2024-25          0.1246
-    Marvin Bagley III 2025-26          0.1248
-       Charles Bassey 2021-22          0.1265
-          Jalen Smith 2025-26          0.1274
-       Brandon Clarke 2023-24          0.1306
-        Deandre Ayton 2023-24          0.1314
-         Clint Capela 2022-23          0.1321
-         Clint Capela 2021-22          0.1330
-          Ivica Zubac 2022-23          0.1347
-          Luke Kornet 2025-26          0.1388
-          Rudy Gobert 2025-26          0.1409
-       Dewayne Dedmon 2021-22          0.1473
-          Jalen Smith 2022-23          0.1481
-       Day'Ron Sharpe 2024-25          0.1493
-       Onyeka Okongwu 2023-24          0.1502
-        Nick Richards 2023-24          0.1503
-        James Wiseman 2023-24          0.1529
- Trayce Jackson-Davis 2024-25          0.1542
-         Clint Capela 2024-25          0.1613
-       Alperen Sengun 2021-22          0.1710
-           Al Horford 2025-26          0.1755
-          Rudy Gobert 2021-22          0.1812
-      Trendon Watford 2021-22          0.1908
-          Brook Lopez 2022-23          0.2006
-         Jaxson Hayes 2021-22          0.2049
-            Paul Reed 2023-24          0.2061
-         Zach Collins 2023-24          0.2091
-         Goga Bitadze 2024-25          0.2123
-   Aleksej Pokusevski 2021-22          0.2129
-          Rudy Gobert 2023-24          0.2133
-          Nic Claxton 2025-26          0.2150
-         Clint Capela 2023-24          0.2240
-    Derrick Jones Jr. 2022-23          0.2340
-         Anthony Gill 2025-26          0.2345
-        Darius Bazley 2021-22          0.2484
-         Jaxson Hayes 2024-25          0.2665
-          Isaiah Roby 2021-22          0.2712
-         Jakob Poeltl 2023-24          0.2742
-         Santi Aldama 2023-24          0.2805
-        Nick Richards 2022-23          0.2863
+  star_fading — 20 distants :
+     player_name  saison  archetype_conf
+  Troy Brown Jr. 2023-24          0.1047
+ Wesley Matthews 2022-23          0.1162
+  Bryce McGowens 2022-23          0.1278
+    Jalen Wilson 2025-26          0.1312
+   Aaron Wiggins 2021-22          0.1345
+    Max Christie 2023-24          0.1358
+   Austin Reaves 2021-22          0.1476
+ Wesley Matthews 2021-22          0.1544
+      Tony Snell 2021-22          0.1657
+   Caleb Houstan 2022-23          0.1659
+      Jeff Green 2023-24          0.1691
+Tristan da Silva 2024-25          0.1763
+      Jeff Green 2022-23          0.1769
+     David Roddy 2022-23          0.1817
+  Justin Holiday 2021-22          0.2046
+    Jordan Nwora 2021-22          0.2230
+    Monte Morris 2021-22          0.2300
+Payton Pritchard 2021-22          0.2797
+  Grant Williams 2022-23          0.2918
+      Dante Exum 2023-24          0.2949
 
-  solid_rotation — 26 distants :
-        player_name  saison  archetype_conf
-    Duncan Robinson 2023-24          0.0625
-         GG Jackson 2025-26          0.0839
-       Santi Aldama 2024-25          0.0995
-      Kevin Huerter 2025-26          0.1054
-       Jared Butler 2022-23          0.1212
-Patrick Baldwin Jr. 2024-25          0.1270
-        Buddy Hield 2022-23          0.1279
-      Javonte Green 2023-24          0.1308
-  Haywood Highsmith 2022-23          0.1517
-      Spencer Jones 2025-26          0.1560
-          Ryan Dunn 2025-26          0.1569
-   MarJon Beauchamp 2024-25          0.1600
-          Ty Jerome 2024-25          0.1655
-    Julian Phillips 2024-25          0.1697
-       Chris Duarte 2024-25          0.1708
-      Kevin Knox II 2024-25          0.1769
-     Trevelin Queen 2023-24          0.1883
-    James Bouknight 2023-24          0.1891
-       Jared Rhoden 2024-25          0.1893
-        David Roddy 2025-26          0.1951
-      Jordan Miller 2025-26          0.1972
-       Anthony Lamb 2022-23          0.1985
-         JD Davison 2025-26          0.2124
-      Dylan Windler 2022-23          0.2443
-        Cam Spencer 2025-26          0.2539
-         Kyle Kuzma 2025-26          0.2714
-
-  spot_up_shooter — 81 distants :
-           player_name  saison  archetype_conf
-       Bilal Coulibaly 2023-24          0.0664
-      Keita Bates-Diop 2021-22          0.0700
-          Torrey Craig 2023-24          0.0706
-           Deni Avdija 2022-23          0.0714
-Jeremiah Robinson-Earl 2022-23          0.0739
-            Trey Lyles 2024-25          0.0777
-       Jaylin Williams 2022-23          0.0789
-        Oshae Brissett 2021-22          0.0841
-      Jonathan Kuminga 2021-22          0.0882
-    Bennedict Mathurin 2023-24          0.0904
-      Patrick Williams 2025-26          0.0907
-    Bennedict Mathurin 2024-25          0.0915
-         Blake Griffin 2021-22          0.0916
-             CJ Elleby 2021-22          0.0918
-Jeremiah Robinson-Earl 2021-22          0.0924
-    Bennedict Mathurin 2022-23          0.0928
-            RJ Barrett 2021-22          0.0948
-             KJ Martin 2024-25          0.0951
-            RJ Barrett 2022-23          0.0953
-          Franz Wagner 2021-22          0.0966
-       Harrison Barnes 2021-22          0.0968
-              Tre Mann 2021-22          0.0985
-           Buddy Hield 2021-22          0.1023
-         Rui Hachimura 2021-22          0.1027
-            Saddiq Bey 2022-23          0.1038
-        Tidjane Salaün 2024-25          0.1044
-     Marcus Morris Sr. 2021-22          0.1057
-            GG Jackson 2023-24          0.1073
-      Bojan Bogdanovic 2021-22          0.1081
-        Keldon Johnson 2021-22          0.1085
-          Ben McLemore 2021-22          0.1088
-         Kendrick Nunn 2022-23          0.1098
-        Brandon Miller 2023-24          0.1102
-      Lonnie Walker IV 2021-22          0.1112
-            Cam Thomas 2021-22          0.1121
-            Caleb Love 2025-26          0.1151
-  Duane Washington Jr. 2021-22          0.1176
-            Saddiq Bey 2021-22          0.1176
-         Luguentz Dort 2021-22          0.1177
-           Jalen Green 2021-22          0.1202
-            Will Riley 2025-26          0.1221
-          Joshua Primo 2021-22          0.1278
-            Ace Bailey 2025-26          0.1312
-         Cody Williams 2024-25          0.1345
-    Zaccharie Risacher 2024-25          0.1449
-          Shake Milton 2021-22          0.1464
-           Gradey Dick 2023-24          0.1612
-         Johnny Juzang 2024-25          0.1772
-           Isaac Okoro 2025-26          0.1968
-         Austin Reaves 2021-22          0.1994
-          Drake Powell 2025-26          0.2039
-          Monte Morris 2021-22          0.2053
-           Jaden Hardy 2025-26          0.2078
-         Aaron Wiggins 2021-22          0.2082
-        Bub Carrington 2024-25          0.2132
-        Bryce McGowens 2022-23          0.2136
-          Goran Dragic 2022-23          0.2223
-          Max Christie 2023-24          0.2237
-        Bub Carrington 2025-26          0.2279
-        Malaki Branham 2022-23          0.2312
-           David Roddy 2023-24          0.2347
-           Tre Johnson 2025-26          0.2348
-         Frank Jackson 2021-22          0.2362
-       Davion Mitchell 2023-24          0.2442
-     Simone Fontecchio 2022-23          0.2483
-        Jordan Hawkins 2024-25          0.2495
-            Tony Snell 2021-22          0.2519
-      Tim Hardaway Jr. 2023-24          0.2522
-         Terrence Ross 2021-22          0.2544
-          Shake Milton 2022-23          0.2600
-         Caleb Houstan 2022-23          0.2606
-          Jalen Wilson 2025-26          0.2613
-        Shaedon Sharpe 2022-23          0.2675
-        Malaki Branham 2023-24          0.2722
-           David Roddy 2022-23          0.2801
-      Tristan da Silva 2024-25          0.2811
-       De'Andre Hunter 2021-22          0.2832
-        Nick Smith Jr. 2024-25          0.2844
-       Wesley Matthews 2021-22          0.2921
-          Jevon Carter 2021-22          0.2958
-           Bryn Forbes 2021-22          0.2997
-
-  superstar — 21 distants :
-        player_name  saison  archetype_conf
-       Jrue Holiday 2025-26          0.1479
-      Killian Hayes 2022-23          0.1675
-Talen Horton-Tucker 2022-23          0.1715
-  Russell Westbrook 2025-26          0.1821
-  Bogdan Bogdanović 2023-24          0.1869
-          Tre Jones 2022-23          0.1888
-       Caris LeVert 2023-24          0.1920
-       Jared Butler 2024-25          0.1939
-     T.J. McConnell 2023-24          0.1957
-     Isaiah Collier 2025-26          0.2219
-       Jordan Poole 2024-25          0.2333
-       Cam Whitmore 2023-24          0.2357
-  Tyrese Haliburton 2022-23          0.2391
- Brandin Podziemski 2025-26          0.2399
-          Tre Jones 2025-26          0.2534
-  Spencer Dinwiddie 2024-25          0.2563
-    Dennis Schröder 2023-24          0.2634
-    Kelly Oubre Jr. 2022-23          0.2713
-   Kevin Porter Jr. 2022-23          0.2733
-  Immanuel Quickley 2023-24          0.2877
-      Naji Marshall 2025-26          0.2951
-
-Total distants toutes catégories : 487
+Total distants toutes catégories : 408
 
 ── CLUSTERS DÉTAIL 2D ─────────────────────────────────────
-  OUTLIERS unclassified           n=305   conf_moy=0.151  stars=['LeBron James', 'Anthony Davis', 'Draymond Green', 'Giannis Antetokounmpo']
-  C0   fringe_rotation        n=144   conf_moy=0.521  stars=[]
-  C1   replacement_level      n=241   conf_moy=0.667  stars=[]
-  C2   raw_prospect           n=56    conf_moy=0.831  stars=[]
-  C3   developmental_big      n=60    conf_moy=0.778  stars=[]
-  C4   rim_protector          n=56    conf_moy=0.899  stars=['Anthony Davis', 'Chet Holmgren']
-  C5   shot_blocker           n=147   conf_moy=0.459  stars=['Rudy Gobert']
-  C6   physical_big           n=55    conf_moy=0.987  stars=[]
-  C7   scoring_big            n=52    conf_moy=0.970  stars=['Karl-Anthony Towns']
-  C8   declining_vet          n=71    conf_moy=0.740  stars=[]
-  C9   solid_rotation         n=115   conf_moy=0.624  stars=[]
-  C10  ascending_wing         n=134   conf_moy=0.601  stars=[]
-  C11  3and_d_wing            n=77    conf_moy=0.749  stars=[]
-  C12  superstar              n=121   conf_moy=0.727  stars=['Stephen Curry', 'Damian Lillard', 'Joel Embiid', 'Karl-Anthony Towns']
-  C13  declining_star         n=60    conf_moy=0.905  stars=['Klay Thompson']
-  C14  star_fading            n=47    conf_moy=0.921  stars=['LeBron James', 'Kevin Durant', 'Stephen Curry', 'Damian Lillard']
-  C15  franchise_player       n=217   conf_moy=0.426  stars=['LeBron James', 'Kevin Durant', 'Stephen Curry', 'Klay Thompson']
-  C16  3and_d_specialist      n=161   conf_moy=0.785  stars=[]
-  C17  spot_up_shooter        n=158   conf_moy=0.431  stars=['Klay Thompson', 'Franz Wagner']
+  OUTLIERS unclassified           n=335   conf_moy=0.157  stars=['Stephen Curry', 'Draymond Green', 'Giannis Antetokounmpo', 'Joel Embiid']
+  C0   fringe_rotation        n=119   conf_moy=0.641  stars=[]
+  C1   replacement_level      n=83    conf_moy=0.671  stars=['LeBron James', 'Kevin Durant', 'Stephen Curry', 'Klay Thompson']
+  C2   raw_prospect           n=211   conf_moy=0.699  stars=['Klay Thompson']
+  C3   developmental_big      n=257   conf_moy=0.461  stars=[]
+  C4   rim_protector          n=66    conf_moy=0.852  stars=[]
+  C5   shot_blocker           n=173   conf_moy=0.834  stars=['LeBron James', 'Kevin Durant', 'Stephen Curry', 'Klay Thompson']
+  C6   physical_big           n=102   conf_moy=0.725  stars=[]
+  C7   scoring_big            n=84    conf_moy=0.632  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+  C8   declining_vet          n=110   conf_moy=0.510  stars=['Draymond Green']
+  C9   solid_rotation         n=137   conf_moy=0.621  stars=[]
+  C10  ascending_wing         n=105   conf_moy=0.673  stars=['Stephen Curry', 'Damian Lillard', 'Devin Booker', 'Tyrese Haliburton']
+  C11  3and_d_wing            n=245   conf_moy=0.712  stars=['Anthony Davis', 'Rudy Gobert', 'Karl-Anthony Towns', 'Chet Holmgren']
+  C12  superstar              n=40    conf_moy=1.000  stars=[]
+  C13  declining_star         n=52    conf_moy=0.993  stars=['Klay Thompson', 'Franz Wagner']
+  C14  star_fading            n=83    conf_moy=0.719  stars=[]
+  C15  franchise_player       n=75    conf_moy=0.800  stars=[]
 
 → soft_assignment_2d.csv exporté
 
 ======================================================================
-CONFIG 3D — UMAP n_components=3
+CONFIG 6D_mcs15_leaf — UMAP n_components=6
 ======================================================================
 Pool : 2277 joueurs-saisons
-Calcul UMAP 3D...
-Clustering HDBSCAN 3D (precomputed cosine, min_cluster_size=40, min_samples=3)...
-→ 12 clusters, 299 outliers (13.1%)
-Calcul soft membership vectors 3D...
+Calcul UMAP 6D_mcs15_leaf...
+Clustering HDBSCAN 6D_mcs15_leaf (precomputed cosine, mcs=15, ms=2, csm=leaf)...
+→ 43 clusters, 813 outliers (35.7%)
+Calcul soft membership vectors 6D_mcs15_leaf...
 
-── MÉTRIQUES 3D ──────────────────────────────────────────
-Clusters                 : 12
-Outliers HDBSCAN         : 299 (13.1%)
-Soft assignés (≥0.10)    : 179
-Vrais unclassified       : 120
-Double label             : 141 / 1978
-Conf moy. assignés       : 0.6252
-Conf moy. soft           : 0.1834
+── MÉTRIQUES 6D_mcs15_leaf ──────────────────────────────────────────
+Clusters                 : 43
+Outliers HDBSCAN         : 813 (35.7%)
+Soft assignés (≥0.10)    : 126
+Vrais unclassified       : 687
+Double label             : 23 / 1464
+Conf moy. assignés       : 0.5467
+Conf moy. soft           : 0.1748
 
-── OUTLIERS STARS 3D ─────────────────────────────────────
-      player_name  saison    archetype  archetype_conf archetype_secondary  archetype_secondary_conf
-Victor Wembanyama 2025-26 raw_prospect          0.1284                None                       NaN
+── OUTLIERS STARS 6D_mcs15_leaf ─────────────────────────────────────
+          player_name  saison        archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+    Tyrese Haliburton 2024-25        superstar          0.2010                None                       NaN
+           Trae Young 2023-24        superstar          0.1822      declining_star                    0.0830
+           Trae Young 2024-25       cluster_36          0.1253          cluster_37                    0.0955
+         Jayson Tatum 2021-22 franchise_player          0.1141          cluster_38                    0.0615
+            Ja Morant 2022-23     unclassified          0.0979                None                       NaN
+        Stephen Curry 2024-25     unclassified          0.0913                None                       NaN
+       Damian Lillard 2024-25     unclassified          0.0861                None                       NaN
+            Ja Morant 2021-22     unclassified          0.0857                None                       NaN
+          Bam Adebayo 2022-23     unclassified          0.0853                None                       NaN
+        Klay Thompson 2021-22     unclassified          0.0852                None                       NaN
+Giannis Antetokounmpo 2023-24     unclassified          0.0835                None                       NaN
+       Damian Lillard 2023-24     unclassified          0.0805                None                       NaN
+        Klay Thompson 2023-24     unclassified          0.0798                None                       NaN
+         Jayson Tatum 2024-25     unclassified          0.0760                None                       NaN
+          Bam Adebayo 2023-24     unclassified          0.0663                None                       NaN
+         LeBron James 2022-23     unclassified          0.0598                None                       NaN
+          Bam Adebayo 2021-22     unclassified          0.0597                None                       NaN
+         Jayson Tatum 2022-23     unclassified          0.0563                None                       NaN
+         LeBron James 2024-25     unclassified          0.0427                None                       NaN
+        Stephen Curry 2023-24     unclassified          0.0412                None                       NaN
+          Rudy Gobert 2025-26     unclassified          0.0367                None                       NaN
+          Joel Embiid 2025-26     unclassified          0.0360                None                       NaN
+   Karl-Anthony Towns 2025-26     unclassified          0.0353                None                       NaN
+         Devin Booker 2022-23     unclassified          0.0345                None                       NaN
+        Stephen Curry 2025-26     unclassified          0.0308                None                       NaN
+            Ja Morant 2024-25     unclassified          0.0303                None                       NaN
+          Bam Adebayo 2025-26     unclassified          0.0261                None                       NaN
+       Draymond Green 2023-24     unclassified          0.0243                None                       NaN
+   Karl-Anthony Towns 2023-24     unclassified          0.0226                None                       NaN
+         Devin Booker 2023-24     unclassified          0.0210                None                       NaN
+        Klay Thompson 2022-23     unclassified          0.0207                None                       NaN
+         Jayson Tatum 2023-24     unclassified          0.0168                None                       NaN
+         LeBron James 2023-24     unclassified          0.0156                None                       NaN
+          Bam Adebayo 2024-25     unclassified          0.0076                None                       NaN
+   Karl-Anthony Towns 2024-25     unclassified          0.0039                None                       NaN
 
-── DISTRIBUTION OUTLIERS 3D ──────────────────────────────
+── DISTRIBUTION OUTLIERS 6D_mcs15_leaf ──────────────────────────────
 archetype
-unclassified         120
-solid_rotation        55
-ascending_wing        27
-shot_blocker          18
-physical_big          13
-scoring_big           13
-3and_d_wing           12
-rim_protector         11
-declining_vet         10
-replacement_level     10
-raw_prospect           8
-developmental_big      2
+unclassified        687
+cluster_41           22
+cluster_42           14
+declining_vet         9
+superstar             8
+cluster_34            8
+cluster_37            8
+3and_d_wing           6
+ascending_wing        6
+scoring_big           6
+cluster_36            5
+cluster_38            5
+solid_rotation        4
+physical_big          4
+cluster_35            3
+declining_star        3
+shot_blocker          2
+spot_up_shooter       2
+cluster_33            2
+cluster_39            2
+cluster_20            2
+cluster_22            1
+franchise_player      1
+cluster_21            1
+cluster_27            1
+cluster_23            1
 
-── DOUBLE LABEL STARS 3D ─────────────────────────────────
-      player_name  saison    archetype  archetype_conf archetype_secondary  archetype_secondary_conf
-Tyrese Haliburton 2021-22 physical_big          0.2314      ascending_wing                    0.1795
+── DOUBLE LABEL STARS 6D_mcs15_leaf ─────────────────────────────────
+  player_name  saison  archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+Stephen Curry 2021-22 cluster_37          0.1134          cluster_38                    0.1972
 
-── MEMBRES DISTANTS PAR ARCHETYPE 3D (conf < 0.30) ───────
+── MEMBRES DISTANTS PAR ARCHETYPE 6D_mcs15_leaf (conf < 0.30) ───────
 
-  3and_d_wing — 62 distants :
-        player_name  saison  archetype_conf
-    Trey Murphy III 2021-22          0.0940
-        George Hill 2022-23          0.1053
-      Luguentz Dort 2024-25          0.1070
-        Gary Harris 2021-22          0.1076
-   Jabari Smith Jr. 2024-25          0.1099
-  Haywood Highsmith 2022-23          0.1137
-   Bojan Bogdanovic 2021-22          0.1153
-      Ish Wainright 2022-23          0.1155
-        Ayo Dosunmu 2021-22          0.1184
-      Rui Hachimura 2022-23          0.1193
-           Rudy Gay 2021-22          0.1232
- Michael Porter Jr. 2023-24          0.1297
- Zaccharie Risacher 2025-26          0.1338
-   Tim Hardaway Jr. 2021-22          0.1346
-          Max Strus 2023-24          0.1351
-         GG Jackson 2023-24          0.1405
-         Coby White 2022-23          0.1420
-  Baylor Scheierman 2025-26          0.1434
-     Keldon Johnson 2021-22          0.1534
-           Tre Mann 2021-22          0.1565
-  Marcus Morris Sr. 2021-22          0.1595
-    Pat Connaughton 2021-22          0.1645
-Kasparas Jakučionis 2025-26          0.1704
-           Tre Mann 2022-23          0.1706
-      Malik Beasley 2022-23          0.1714
- Reggie Bullock Jr. 2021-22          0.1731
-      Davis Bertans 2021-22          0.1770
-      Rui Hachimura 2021-22          0.1770
-      Corey Kispert 2021-22          0.1871
-      Jalen Pickett 2023-24          0.1898
-        Buddy Hield 2021-22          0.1940
-         Ace Bailey 2025-26          0.1979
-    Wayne Ellington 2021-22          0.1982
-       Shake Milton 2021-22          0.2008
-      Keegan Murray 2022-23          0.2034
-    Ziaire Williams 2021-22          0.2034
-         Saddiq Bey 2022-23          0.2071
- Zaccharie Risacher 2024-25          0.2113
-         Joe Ingles 2022-23          0.2200
-       Ochai Agbaji 2022-23          0.2220
-     Jamison Battle 2024-25          0.2310
-         AJ Griffin 2022-23          0.2311
-     Brandon Miller 2023-24          0.2335
-       Ben McLemore 2021-22          0.2386
-         Will Riley 2025-26          0.2402
-       Jaylen Wells 2024-25          0.2447
-      Kendrick Nunn 2022-23          0.2447
-   Lonnie Walker IV 2021-22          0.2453
-       Goran Dragic 2022-23          0.2455
-         Caleb Love 2025-26          0.2461
-     Bub Carrington 2025-26          0.2535
-      Johnny Juzang 2024-25          0.2709
-    Hassani Gravett 2021-22          0.2736
-         Saddiq Bey 2021-22          0.2740
-        Jalen Green 2021-22          0.2749
-     Furkan Korkmaz 2021-22          0.2778
-       Jalen Wilson 2024-25          0.2788
-     Bub Carrington 2024-25          0.2790
-      Luguentz Dort 2021-22          0.2806
-         Cam Thomas 2021-22          0.2827
-       Luke Kennard 2025-26          0.2909
-        Gradey Dick 2023-24          0.2915
+  3and_d_specialist — 10 distants :
+      player_name  saison  archetype_conf
+ Patrick Williams 2024-25          0.0600
+  Christian Braun 2025-26          0.0616
+       Saddiq Bey 2023-24          0.0782
+    Rui Hachimura 2024-25          0.0849
+          JT Thor 2022-23          0.1166
+    Isaiah Livers 2022-23          0.1640
+    Devin Vassell 2025-26          0.1682
+   Gary Trent Jr. 2024-25          0.1969
+  Pat Connaughton 2022-23          0.2284
+Simone Fontecchio 2024-25          0.2695
 
-  ascending_wing — 18 distants :
-    player_name  saison  archetype_conf
-     Tyus Jones 2025-26          0.1368
-    Daishen Nix 2022-23          0.1622
-   Luke Kennard 2024-25          0.1788
-     Egor Dëmin 2025-26          0.1797
-      Tre Jones 2024-25          0.1915
-Andrew Nembhard 2024-25          0.1954
-     Tyus Jones 2022-23          0.2021
-     Tyus Jones 2021-22          0.2054
-     Kyle Lowry 2023-24          0.2062
-    Mike Conley 2025-26          0.2411
-Dominick Barlow 2025-26          0.2503
-   Usman Garuba 2022-23          0.2790
- Mouhamed Gueye 2025-26          0.2804
- Draymond Green 2025-26          0.2829
-      Raul Neto 2021-22          0.2854
-Devonte' Graham 2021-22          0.2856
-   Lou Williams 2021-22          0.2939
-  Naji Marshall 2022-23          0.2952
-
-  declining_vet — 2 distants :
-  player_name  saison  archetype_conf
-Rui Hachimura 2024-25           0.260
-   Trey Lyles 2023-24           0.283
-
-  developmental_big — 31 distants :
-       player_name  saison  archetype_conf
-  Denzel Valentine 2021-22          0.0982
-       Malik Fitts 2021-22          0.1076
-   Jeff Dowtin Jr. 2021-22          0.1076
-      Hunter Tyson 2023-24          0.1132
-   Payton Sandfort 2025-26          0.1171
-      Yuri Collins 2024-25          0.1198
-Shaquille Harrison 2021-22          0.1491
-   Lester Quinones 2024-25          0.1752
-      Nikola Jović 2022-23          0.1797
-      Jack McVeigh 2024-25          0.1800
-     Tyler Johnson 2021-22          0.1948
-     James Johnson 2024-25          0.2096
- Langston Galloway 2021-22          0.2112
-       Sam Merrill 2021-22          0.2219
-   Jamorko Pickett 2021-22          0.2275
-       Pat Spencer 2023-24          0.2275
-        Taze Moore 2023-24          0.2308
-       Cole Swider 2022-23          0.2338
-       Miles Kelly 2025-26          0.2350
-    Carsen Edwards 2021-22          0.2351
-     Jacob Gilyard 2022-23          0.2361
-         Matt Hurt 2023-24          0.2421
-   Markieff Morris 2023-24          0.2459
-         MJ Walker 2021-22          0.2546
-    Jamaree Bouyea 2023-24          0.2563
-        Seth Lundy 2023-24          0.2584
- Nigel Hayes-Davis 2025-26          0.2610
-      Jacob Toppin 2024-25          0.2650
-    Tyrone Wallace 2021-22          0.2768
-        Alex Fudge 2023-24          0.2924
-       Kobe Bufkin 2023-24          0.2970
-
-  fringe_rotation — 54 distants :
-           player_name  saison  archetype_conf
-            Alex Ducas 2024-25          0.0084
-          Kelly Olynyk 2024-25          0.0594
-        Grant Williams 2023-24          0.0807
-       Khris Middleton 2025-26          0.0853
-          Ryan Rollins 2024-25          0.1021
-         Jabari Walker 2025-26          0.1052
-           Isaac Jones 2025-26          0.1065
-       Otto Porter Jr. 2023-24          0.1088
-          Micah Potter 2023-24          0.1094
-         Dylan Windler 2023-24          0.1101
-        Leonard Miller 2025-26          0.1111
-          Trevon Scott 2025-26          0.1128
-               PJ Hall 2025-26          0.1141
-         Nassir Little 2022-23          0.1144
-       Daeqwon Plowden 2025-26          0.1147
-    Kenneth Lofton Jr. 2023-24          0.1149
-      Alondes Williams 2025-26          0.1169
-           Braxton Key 2023-24          0.1175
-           Tyler Smith 2025-26          0.1177
-        Omer Yurtseven 2022-23          0.1188
-           Moses Brown 2023-24          0.1201
-          Bradley Beal 2025-26          0.1205
-           Chris Silva 2022-23          0.1213
-        Jaden Springer 2022-23          0.1227
-         Chris Boucher 2025-26          0.1230
-      MarJon Beauchamp 2025-26          0.1252
-           Dario Saric 2024-25          0.1269
-         James Wiseman 2025-26          0.1271
-           Serge Ibaka 2022-23          0.1271
-          Adama Sanogo 2024-25          0.1308
-          Nikola Jović 2025-26          0.1337
-        Omer Yurtseven 2025-26          0.1338
-        Udoka Azubuike 2023-24          0.1339
-   Patrick Baldwin Jr. 2025-26          0.1344
-         Dalano Banton 2025-26          0.1422
-             PJ Dozier 2022-23          0.1517
-        Isaiah Stevens 2025-26          0.1533
-        Brandon Clarke 2025-26          0.1596
-           Braxton Key 2024-25          0.1607
-       Bismack Biyombo 2025-26          0.1620
-       Otto Porter Jr. 2022-23          0.1714
-         Nate Williams 2024-25          0.1782
-   TyTy Washington Jr. 2023-24          0.1969
-          Noah Clowney 2024-25          0.1994
-Thanasis Antetokounmpo 2022-23          0.2030
-            JD Davison 2024-25          0.2292
-      Orlando Robinson 2025-26          0.2397
-           Danny Green 2023-24          0.2417
-            Vít Krejčí 2025-26          0.2488
-        Mamadi Diakite 2022-23          0.2556
-     Justin Champagnie 2022-23          0.2709
-           RayJ Dennis 2025-26          0.2726
-            Joe Harris 2023-24          0.2963
-         Ousmane Dieng 2025-26          0.2981
-
-  physical_big — 137 distants :
-             player_name  saison  archetype_conf
-          Keldon Johnson 2023-24          0.0258
-        Jonathan Kuminga 2025-26          0.0457
-             Zach LaVine 2025-26          0.0475
-           Klay Thompson 2023-24          0.0488
-             Zach LaVine 2023-24          0.0635
-           Cedric Coward 2025-26          0.0636
-              Kevin Love 2021-22          0.0639
-             Dario Saric 2022-23          0.0646
-           Moritz Wagner 2021-22          0.0646
-           Tobias Harris 2021-22          0.0652
-              Cam Thomas 2025-26          0.0662
-           Klay Thompson 2022-23          0.0671
-             Jaden Hardy 2023-24          0.0717
-           Kyle Anderson 2025-26          0.0738
-           Miles Bridges 2025-26          0.0758
-            Caris LeVert 2024-25          0.0764
-           Jose Alvarado 2024-25          0.0786
-          Damian Lillard 2023-24          0.0807
-                Tre Mann 2023-24          0.0825
-            Caleb Martin 2025-26          0.0849
-               Ish Smith 2021-22          0.0876
-           Cason Wallace 2023-24          0.0895
-         Jordan Clarkson 2023-24          0.0903
-             Dalen Terry 2024-25          0.0905
-Kentavious Caldwell-Pope 2024-25          0.0922
-             Tyler Herro 2022-23          0.0925
-          Garrett Temple 2024-25          0.0941
-          Taurean Prince 2021-22          0.0955
-         Anfernee Simons 2024-25          0.1001
-             Tyler Herro 2025-26          0.1041
-          Markelle Fultz 2022-23          0.1055
-             Jalen Duren 2025-26          0.1070
-            Jaylen Clark 2025-26          0.1103
-           Kyle Anderson 2023-24          0.1156
-          Darius Garland 2023-24          0.1165
-          Alperen Sengun 2023-24          0.1185
-            Jerami Grant 2022-23          0.1236
-            Desmond Bane 2025-26          0.1255
-           Moritz Wagner 2023-24          0.1308
-             Jalen Suggs 2025-26          0.1336
-           Jalen Johnson 2024-25          0.1343
-         Dejounte Murray 2022-23          0.1347
-           Javonte Green 2021-22          0.1349
-          Paolo Banchero 2025-26          0.1352
-           Julius Randle 2024-25          0.1354
-            Jamal Murray 2024-25          0.1363
-          Brandon Miller 2024-25          0.1385
-      Karl-Anthony Towns 2022-23          0.1386
-             Jalen Suggs 2021-22          0.1392
-         Zion Williamson 2025-26          0.1496
-        Dennis Smith Jr. 2022-23          0.1505
-           Dalano Banton 2024-25          0.1508
-         Trendon Watford 2023-24          0.1527
-          Ja'Kobe Walter 2025-26          0.1558
-         Lauri Markkanen 2023-24          0.1560
-             Jaden Hardy 2024-25          0.1566
-            Kelly Olynyk 2022-23          0.1580
-           Moritz Wagner 2022-23          0.1585
-         Scoot Henderson 2024-25          0.1594
-           Jalen Johnson 2025-26          0.1614
-            Kevin Durant 2023-24          0.1626
-       Russell Westbrook 2024-25          0.1650
-         Dennis Schröder 2025-26          0.1680
-            Franz Wagner 2025-26          0.1694
-          T.J. McConnell 2024-25          0.1705
-          Brandon Ingram 2023-24          0.1755
-              Chris Paul 2022-23          0.1804
-       Scotty Pippen Jr. 2024-25          0.1845
-           Jaylen Nowell 2022-23          0.1848
-             CJ McCollum 2024-25          0.1861
-           Jalen Johnson 2023-24          0.1866
-     Talen Horton-Tucker 2023-24          0.1868
-        Jimmy Butler III 2023-24          0.1883
-            Will Richard 2025-26          0.1917
-           Collin Sexton 2024-25          0.1938
-           DeMar DeRozan 2024-25          0.1948
-           DeMar DeRozan 2022-23          0.1963
-            Kyrie Irving 2024-25          0.1974
-           DeMar DeRozan 2025-26          0.1999
-        Kenrich Williams 2021-22          0.2001
-         Zion Williamson 2023-24          0.2004
-         Trendon Watford 2024-25          0.2015
-           DeMar DeRozan 2023-24          0.2017
-            Jaylen Brown 2023-24          0.2024
-            Devin Booker 2024-25          0.2037
-            Jrue Holiday 2021-22          0.2051
-           Kawhi Leonard 2022-23          0.2082
-           Stephen Curry 2023-24          0.2107
-           Mikal Bridges 2023-24          0.2111
-            Terry Rozier 2022-23          0.2120
-           Cameron Payne 2024-25          0.2126
-           Kawhi Leonard 2023-24          0.2133
-             Will Barton 2021-22          0.2153
-          Draymond Green 2022-23          0.2173
-           Jalen Brunson 2024-25          0.2177
-             CJ McCollum 2022-23          0.2203
-             Ricky Rubio 2021-22          0.2221
-         Lauri Markkanen 2025-26          0.2227
-             Mike Conley 2021-22          0.2242
-          T.J. McConnell 2025-26          0.2253
-              Chris Paul 2021-22          0.2269
-            LeBron James 2023-24          0.2305
-             Javon Small 2025-26          0.2308
-       Tyrese Haliburton 2021-22          0.2314
-             Josh Giddey 2023-24          0.2339
-          T.J. McConnell 2022-23          0.2362
-            Kelly Olynyk 2023-24          0.2369
-        Kevin Porter Jr. 2025-26          0.2409
-       Scotty Pippen Jr. 2025-26          0.2428
-         Anfernee Simons 2022-23          0.2440
-             Buddy Hield 2025-26          0.2444
-        Jaime Jaquez Jr. 2024-25          0.2461
-           Julius Randle 2022-23          0.2531
-           Fred VanVleet 2022-23          0.2577
-            Devin Booker 2023-24          0.2606
-           Herbert Jones 2025-26          0.2620
-             Luka Dončić 2024-25          0.2661
-       Russell Westbrook 2023-24          0.2663
-          Gary Trent Jr. 2022-23          0.2731
-        Kevin Porter Jr. 2024-25          0.2733
-        Jimmy Butler III 2024-25          0.2756
-         Dejounte Murray 2021-22          0.2785
-           Javonte Green 2023-24          0.2787
-         Dejounte Murray 2024-25          0.2792
-        Collin Gillespie 2023-24          0.2793
-       Spencer Dinwiddie 2024-25          0.2793
-          Keyonte George 2023-24          0.2814
-            VJ Edgecombe 2025-26          0.2844
-             Josh Giddey 2022-23          0.2852
-     Talen Horton-Tucker 2021-22          0.2868
-          Gary Trent Jr. 2021-22          0.2881
-            James Harden 2023-24          0.2898
-              GG Jackson 2025-26          0.2910
-           Fred VanVleet 2021-22          0.2919
-              RJ Barrett 2025-26          0.2958
-            LeBron James 2025-26          0.2959
-       Immanuel Quickley 2023-24          0.2977
-
-  raw_prospect — 81 distants :
-        player_name  saison  archetype_conf
-      Kyle Anderson 2021-22          0.0442
-        Bruce Brown 2021-22          0.0608
-       Aaron Gordon 2022-23          0.0797
-       Jusuf Nurkić 2025-26          0.0834
-      Mason Plumlee 2025-26          0.1003
-       Bobby Portis 2025-26          0.1004
-  Jarred Vanderbilt 2021-22          0.1033
-      Chimezie Metu 2021-22          0.1093
-     Jonathan Mogbo 2024-25          0.1118
-      Derrick White 2021-22          0.1151
-      Derrick White 2025-26          0.1170
-      Derrick White 2022-23          0.1174
-     Xavier Tillman 2022-23          0.1175
-      Amen Thompson 2023-24          0.1189
-      Derrick White 2024-25          0.1207
-      Derrick White 2023-24          0.1223
-       Kelly Olynyk 2021-22          0.1239
-    Justise Winslow 2021-22          0.1240
-       Jerami Grant 2021-22          0.1246
-     JaMychal Green 2021-22          0.1256
- Kristaps Porziņģis 2022-23          0.1270
-Robert Williams III 2023-24          0.1272
-         Tari Eason 2022-23          0.1273
-  Jaren Jackson Jr. 2023-24          0.1281
-  Jaren Jackson Jr. 2024-25          0.1320
-  Marvin Bagley III 2025-26          0.1334
- Kristaps Porziņģis 2025-26          0.1337
- Kristaps Porziņģis 2024-25          0.1344
- Wendell Carter Jr. 2025-26          0.1351
-      Darius Bazley 2023-24          0.1352
- Kristaps Porziņģis 2021-22          0.1365
-     DeAndre Jordan 2025-26          0.1370
-         Al Horford 2025-26          0.1396
-           Jay Huff 2024-25          0.1411
-       Jusuf Nurkić 2024-25          0.1421
-   Tristan Vukcevic 2023-24          0.1431
-     Jonathan Isaac 2022-23          0.1455
-      Anthony Davis 2021-22          0.1466
-  Jarred Vanderbilt 2022-23          0.1476
-      Anthony Davis 2024-25          0.1484
-     Scottie Barnes 2025-26          0.1485
-       Myles Turner 2023-24          0.1488
-  Jaren Jackson Jr. 2022-23          0.1494
- Kristaps Porziņģis 2023-24          0.1501
-  Victor Wembanyama 2024-25          0.1510
-         Taj Gibson 2025-26          0.1531
-  Victor Wembanyama 2023-24          0.1533
-      Anthony Davis 2023-24          0.1555
-           Naz Reid 2025-26          0.1560
-  Jaren Jackson Jr. 2021-22          0.1567
-      Jabari Walker 2024-25          0.1596
-       Jericho Sims 2022-23          0.1600
-      Jeremy Sochan 2024-25          0.1626
-           Naz Reid 2023-24          0.1635
-           Naz Reid 2024-25          0.1649
-        Evan Mobley 2025-26          0.1657
-      Chet Holmgren 2024-25          0.1659
-      Chet Holmgren 2023-24          0.1679
-     Ausar Thompson 2023-24          0.1683
-     Day'Ron Sharpe 2025-26          0.1704
-           Naz Reid 2021-22          0.1757
-     Andre Drummond 2023-24          0.1848
-       John Collins 2024-25          0.1853
-  Justin Champagnie 2025-26          0.1864
-     Andre Drummond 2022-23          0.1879
-    Kyle Filipowski 2025-26          0.1887
-     Andre Drummond 2021-22          0.2011
-       Myles Turner 2021-22          0.2012
-   Orlando Robinson 2024-25          0.2159
-       Jusuf Nurkić 2021-22          0.2212
-     Jonathan Isaac 2024-25          0.2247
-      Dwight Powell 2023-24          0.2333
-       Jaxson Hayes 2024-25          0.2408
-        Nic Claxton 2025-26          0.2496
-     Jonathan Isaac 2023-24          0.2515
-      Darius Bazley 2021-22          0.2536
-     Alperen Sengun 2021-22          0.2673
-      Nick Richards 2024-25          0.2784
-       Myles Turner 2024-25          0.2922
-      Nick Richards 2022-23          0.2929
-     Mamadi Diakite 2021-22          0.2953
-
-  replacement_level — 6 distants :
+  3and_d_wing — 7 distants :
    player_name  saison  archetype_conf
- Emanuel Terry 2021-22          0.1642
- Jeremy Sochan 2022-23          0.1681
-    BJ Johnson 2021-22          0.1695
-    Jack White 2022-23          0.2194
-Ulrich Chomche 2024-25          0.2255
-Mouhamed Gueye 2023-24          0.2275
+  Noah Clowney 2024-25          0.1424
+ Ousmane Dieng 2025-26          0.1522
+Mamadi Diakite 2022-23          0.2149
+  Joshua Primo 2023-24          0.2584
+ Udonis Haslem 2022-23          0.2725
+    Kyle Lowry 2025-26          0.2735
+    Joe Ingles 2024-25          0.2881
 
-  rim_protector — 19 distants :
+  ascending_wing — 2 distants :
+    player_name  saison  archetype_conf
+    Isaiah Todd 2022-23          0.2727
+Marko Simonovic 2022-23          0.2851
+
+  cluster_19 — 41 distants :
        player_name  saison  archetype_conf
-      Alex Morales 2025-26          0.0633
-   Javin DeLaurier 2021-22          0.1028
-     Jason Preston 2023-24          0.1103
-     Jahlil Okafor 2024-25          0.1178
-      Amari Bailey 2023-24          0.1257
-   Malcolm Cazalon 2023-24          0.1277
-     DeJon Jarreau 2021-22          0.1344
-    Garrett Temple 2025-26          0.1678
-    Dereon Seabron 2022-23          0.1712
-       Isaac Bonga 2021-22          0.1963
-      Curtis Jones 2025-26          0.1997
-     Dwight Powell 2025-26          0.2078
-       Luke Kornet 2021-22          0.2153
-        Tyler Cook 2021-22          0.2188
-      Olivier Sarr 2025-26          0.2237
-    Amari Williams 2025-26          0.2380
-      N'Faly Dante 2025-26          0.2404
-       RayJ Dennis 2024-25          0.2784
-Chandler Hutchison 2021-22          0.2914
+   Kelly Oubre Jr. 2024-25          0.0187
+   DaQuan Jeffries 2024-25          0.0201
+      Ochai Agbaji 2023-24          0.0206
+     Lamar Stevens 2022-23          0.0213
+Zaccharie Risacher 2025-26          0.0218
+     Keegan Murray 2024-25          0.0239
+ Julian Champagnie 2023-24          0.0241
+       Zach LaVine 2023-24          0.0244
+   P.J. Washington 2023-24          0.0254
+      Quinten Post 2025-26          0.0264
+        Trey Lyles 2022-23          0.0286
+      Bradley Beal 2023-24          0.0308
+    Keldon Johnson 2023-24          0.0312
+      John Collins 2022-23          0.0342
+   Kelly Oubre Jr. 2023-24          0.0371
+    Andrew Wiggins 2025-26          0.0374
+      John Collins 2025-26          0.0376
+     Tobias Harris 2024-25          0.0409
+    Andrew Wiggins 2023-24          0.0442
+    Christian Wood 2023-24          0.0452
+  Jonathan Kuminga 2022-23          0.0461
+       Zach LaVine 2025-26          0.0467
+      Mike Muscala 2022-23          0.0476
+      Bradley Beal 2024-25          0.0478
+       Paul George 2024-25          0.0505
+      Jerami Grant 2024-25          0.0506
+  Bojan Bogdanovic 2023-24          0.0530
+      Caris LeVert 2022-23          0.0560
+      Jordan Poole 2023-24          0.0649
+    Quentin Grimes 2025-26          0.0724
+        Kevin Love 2022-23          0.0814
+    Reggie Jackson 2022-23          0.0843
+       Buddy Hield 2023-24          0.0930
+Kenneth Lofton Jr. 2023-24          0.0961
+     Tobias Harris 2022-23          0.1063
+     Jaylen Nowell 2023-24          0.1517
+  Ricky Council IV 2024-25          0.2044
+     Luguentz Dort 2022-23          0.2441
+      Jrue Holiday 2023-24          0.2486
+      Terry Rozier 2024-25          0.2664
+     Norman Powell 2023-24          0.2686
 
-  solid_rotation — 1 distants :
+  cluster_20 — 32 distants :
+             player_name  saison  archetype_conf
+         Daeqwon Plowden 2025-26          0.0279
+           Aaron Nesmith 2025-26          0.0310
+         Khris Middleton 2025-26          0.0312
+             Tyler Smith 2025-26          0.0339
+          Victor Oladipo 2022-23          0.0378
+         Dejounte Murray 2022-23          0.0427
+            Chris Duarte 2022-23          0.0441
+              Taj Gibson 2023-24          0.0450
+             Dario Saric 2024-25          0.0451
+           Chris Boucher 2025-26          0.0452
+           Drew Peterson 2024-25          0.0465
+           Luguentz Dort 2023-24          0.0482
+             Bruce Brown 2023-24          0.0483
+           Dalano Banton 2025-26          0.0557
+             Gradey Dick 2025-26          0.0567
+         Davion Mitchell 2022-23          0.0582
+Nickeil Alexander-Walker 2023-24          0.0590
+            Terance Mann 2025-26          0.0647
+         Justise Winslow 2022-23          0.0739
+              Tari Eason 2025-26          0.0741
+              Tyus Jones 2025-26          0.0757
+             Daishen Nix 2022-23          0.0766
+              OG Anunoby 2023-24          0.0874
+             Mike Conley 2025-26          0.1038
+           Terence Davis 2022-23          0.1081
+         Nae'Qwan Tomlin 2025-26          0.1151
+           Aaron Holiday 2022-23          0.1658
+          Markelle Fultz 2023-24          0.1749
+Kentavious Caldwell-Pope 2022-23          0.1756
+        Patrick Beverley 2022-23          0.1785
+        Lindy Waters III 2024-25          0.1841
+          Thaddeus Young 2022-23          0.2393
+
+  cluster_21 — 32 distants :
+           player_name  saison  archetype_conf
+     Mfiondu Kabengele 2022-23          0.0117
+        Malik Williams 2023-24          0.0119
+         Jeremy Sochan 2022-23          0.0208
+    Guerschon Yabusele 2024-25          0.0208
+           Ahmad Caver 2021-22          0.0209
+           Jordan Ford 2023-24          0.0231
+       Daeqwon Plowden 2024-25          0.0235
+         Emanuel Terry 2021-22          0.0237
+         Bobi Klintman 2024-25          0.0237
+      Jarrell Brantley 2022-23          0.0240
+            Obi Toppin 2023-24          0.0246
+       Kyle Filipowski 2024-25          0.0255
+            BJ Johnson 2021-22          0.0263
+           D.J. Wilson 2023-24          0.0266
+        Meyers Leonard 2022-23          0.0266
+          Anthony Gill 2025-26          0.0269
+       Trendon Watford 2022-23          0.0289
+         Drew Peterson 2023-24          0.0300
+        Mouhamed Gueye 2023-24          0.0304
+              Jay Huff 2023-24          0.0315
+       DaRon Holmes II 2025-26          0.0331
+            Jack White 2022-23          0.0331
+        Cameron Oliver 2021-22          0.0378
+  Jermaine Samuels Jr. 2023-24          0.0432
+Quinndary Weatherspoon 2021-22          0.0440
+       Harry Giles III 2023-24          0.0449
+          Jaylen Hoard 2021-22          0.0571
+          Reggie Perry 2021-22          0.0629
+         Jae'Sean Tate 2021-22          0.0720
+          Jahmir Young 2024-25          0.0985
+           Craig Sword 2021-22          0.1046
+       Skal Labissiere 2024-25          0.1529
+
+  cluster_23 — 29 distants :
+       player_name  saison  archetype_conf
+   Sekou Doumbouya 2021-22          0.0210
+David Jones Garcia 2025-26          0.0277
+    Frank Kaminsky 2021-22          0.0292
+Isaiah Hartenstein 2025-26          0.0338
+    Emanuel Miller 2024-25          0.0556
+       Nate Hinton 2023-24          0.0567
+   Tristan Enaruna 2025-26          0.0630
+      Tony Bradley 2024-25          0.0644
+        Luka Garza 2025-26          0.0653
+        Luka Garza 2023-24          0.0662
+     Petr Cornelie 2021-22          0.0697
+   Cameron McGriff 2021-22          0.0738
+        Tolu Smith 2024-25          0.0758
+  Keita Bates-Diop 2021-22          0.0814
+   Nae'Qwan Tomlin 2024-25          0.0817
+        Luka Garza 2024-25          0.0819
+      N'Faly Dante 2025-26          0.0835
+ Willy Hernangomez 2021-22          0.0840
+        Paris Bass 2021-22          0.0872
+   James Ennis III 2021-22          0.0895
+    Oscar Tshiebwe 2023-24          0.0962
+    Scottie Barnes 2021-22          0.0967
+      Adama Sanogo 2023-24          0.1053
+       Luke Kornet 2021-22          0.1338
+ Freddie Gillespie 2021-22          0.1368
+      Kevon Looney 2024-25          0.1903
+   Markquis Nowell 2023-24          0.1906
+      Kevon Looney 2023-24          0.2320
+      Kevon Looney 2022-23          0.2808
+
+  cluster_24 — 16 distants :
+         player_name  saison  archetype_conf
+         Rudy Gobert 2024-25          0.0781
+      Andre Drummond 2025-26          0.0848
+       Nick Richards 2023-24          0.0907
+        Zach Collins 2024-25          0.0978
+        Jusuf Nurkić 2023-24          0.0986
+       Jalen Johnson 2022-23          0.1003
+Trayce Jackson-Davis 2024-25          0.1031
+         Ivica Zubac 2022-23          0.1035
+        Kelly Olynyk 2024-25          0.1215
+    Precious Achiuwa 2023-24          0.1262
+        Daniel Theis 2023-24          0.1276
+       Thomas Bryant 2024-25          0.1346
+           Adem Bona 2025-26          0.1421
+      Onyeka Okongwu 2023-24          0.1489
+       James Wiseman 2023-24          0.1609
+        Drew Eubanks 2022-23          0.1791
+
+  cluster_25 — 32 distants :
+       player_name  saison  archetype_conf
+      Jalen Wilson 2024-25          0.0185
+ Marcus Morris Sr. 2023-24          0.0231
+      Jordan Nwora 2021-22          0.0269
+  Kenrich Williams 2022-23          0.0315
+       David Roddy 2022-23          0.0332
+         Josh Hart 2023-24          0.0334
+  Tristan da Silva 2024-25          0.0335
+       Isaac Okoro 2022-23          0.0338
+Brandin Podziemski 2023-24          0.0344
+         Dean Wade 2023-24          0.0346
+    Justin Holiday 2021-22          0.0354
+     Dyson Daniels 2022-23          0.0354
+     Nicolas Batum 2024-25          0.0381
+     Caleb Houstan 2022-23          0.0396
+      John Konchar 2021-22          0.0409
+       Isaac Okoro 2021-22          0.0416
+        Tony Snell 2021-22          0.0426
+      Max Christie 2023-24          0.0430
+     Austin Reaves 2021-22          0.0464
+      Jevon Carter 2021-22          0.0481
+      Terance Mann 2024-25          0.0488
+     Hugo González 2025-26          0.0517
+         Dean Wade 2025-26          0.0584
+   Wesley Matthews 2021-22          0.0611
+   Wesley Matthews 2022-23          0.0680
+      Ben Sheppard 2024-25          0.0693
+     Ish Wainright 2022-23          0.0934
+    Taurean Prince 2024-25          0.0970
+     Luguentz Dort 2024-25          0.1214
+       P.J. Tucker 2021-22          0.1795
+         Dean Wade 2024-25          0.2438
+     Mikal Bridges 2021-22          0.2617
+
+  cluster_26 — 25 distants :
+       player_name  saison  archetype_conf
+    Grant Williams 2022-23          0.0395
+        AJ Griffin 2022-23          0.0489
+   Ziaire Williams 2021-22          0.0678
+        Josh Green 2022-23          0.0699
+   Pat Connaughton 2021-22          0.0809
+      Luke Kennard 2021-22          0.0913
+         Max Strus 2021-22          0.0954
+     Davis Bertans 2021-22          0.0961
+    Svi Mykhailiuk 2025-26          0.0984
+    Furkan Korkmaz 2021-22          0.1009
+        Sam Hauser 2023-24          0.1028
+  Ryan Arcidiacono 2021-22          0.1032
+   Trey Murphy III 2021-22          0.1060
+Reggie Bullock Jr. 2021-22          0.1122
+       Moses Moody 2022-23          0.1342
+   Wayne Ellington 2021-22          0.1549
+        Joe Harris 2022-23          0.1656
+     Corey Kispert 2021-22          0.1720
+      Ochai Agbaji 2022-23          0.1937
+      Jaylen Wells 2024-25          0.2083
+   Duncan Robinson 2025-26          0.2113
+        Damion Lee 2022-23          0.2179
+    Jamison Battle 2024-25          0.2401
+     Corey Kispert 2022-23          0.2978
+     Keegan Murray 2022-23          0.2979
+
+  cluster_27 — 14 distants :
+         player_name  saison  archetype_conf
+       Evan Fournier 2021-22          0.1292
+    Tim Hardaway Jr. 2021-22          0.1327
+       Malik Beasley 2022-23          0.1483
+          Caleb Love 2025-26          0.1592
+         Buddy Hield 2021-22          0.1711
+       Kendrick Nunn 2022-23          0.2024
+       Luguentz Dort 2021-22          0.2159
+         Jalen Green 2021-22          0.2216
+        Ben McLemore 2021-22          0.2231
+    Lonnie Walker IV 2021-22          0.2385
+          Saddiq Bey 2021-22          0.2501
+          Cam Thomas 2021-22          0.2787
+Duane Washington Jr. 2021-22          0.2958
+            Tre Mann 2021-22          0.2989
+
+  cluster_28 — 13 distants :
+       player_name  saison  archetype_conf
+       Evan Mobley 2021-22          0.0302
+           Bol Bol 2022-23          0.0456
+          Mo Bamba 2021-22          0.0553
+        Duop Reath 2023-24          0.0560
+         Alex Sarr 2024-25          0.0607
+        Al Horford 2021-22          0.0721
+       Brook Lopez 2024-25          0.0740
+     Matas Buzelis 2024-25          0.0765
+      Myles Turner 2021-22          0.1018
+          Naz Reid 2021-22          0.1208
+      Jerami Grant 2021-22          0.2079
+ Jaren Jackson Jr. 2023-24          0.2111
+Kristaps Porziņģis 2022-23          0.2484
+
+  cluster_29 — 11 distants :
+     player_name  saison  archetype_conf
+    VJ Edgecombe 2025-26          0.0439
+    Marcus Smart 2021-22          0.0676
+    Eric Bledsoe 2021-22          0.0682
+Dennis Smith Jr. 2022-23          0.0719
+    Lou Williams 2021-22          0.0945
+   Jason Preston 2022-23          0.0948
+     Xavier Moon 2021-22          0.1283
+       Tre Jones 2021-22          0.1838
+     Cory Joseph 2021-22          0.2131
+       Raul Neto 2021-22          0.2273
+   Aaron Holiday 2021-22          0.2491
+
+  cluster_30 — 11 distants :
+      player_name  saison  archetype_conf
+   Stephon Castle 2025-26          0.0296
+   T.J. McConnell 2025-26          0.0333
+  Scoot Henderson 2024-25          0.0340
+     Kelly Olynyk 2023-24          0.0363
+      Josh Giddey 2025-26          0.0381
+     James Harden 2021-22          0.0428
+      Josh Giddey 2024-25          0.0465
+     James Harden 2022-23          0.0520
+Russell Westbrook 2022-23          0.0527
+Tyrese Haliburton 2023-24          0.0702
+        Tre Jones 2024-25          0.2171
+
+  cluster_31 — 17 distants :
+        player_name  saison  archetype_conf
+       Jericho Sims 2022-23          0.1201
+       Jericho Sims 2025-26          0.1209
+    Trendon Watford 2021-22          0.1373
+Robert Williams III 2023-24          0.1398
+        Josh Minott 2022-23          0.1513
+      Dwight Powell 2021-22          0.1523
+     DeAndre Jordan 2025-26          0.1541
+     Marques Bolden 2023-24          0.1607
+        Nic Claxton 2025-26          0.1628
+        Cody Zeller 2022-23          0.1640
+     Brandon Clarke 2022-23          0.1762
+   Vladislav Goldin 2025-26          0.1837
+     Keshad Johnson 2024-25          0.1859
+        D.J. Wilson 2021-22          0.1895
+     Rocco Zikarsky 2025-26          0.2458
+        Isaiah Roby 2021-22          0.2561
+       N'Faly Dante 2024-25          0.2809
+
+  cluster_32 — 47 distants :
+         player_name  saison  archetype_conf
+    Dereck Lively II 2024-25          0.0294
+        Goga Bitadze 2024-25          0.0300
+        Jaxson Hayes 2024-25          0.0301
+      Wenyen Gabriel 2022-23          0.0302
+ Robert Williams III 2025-26          0.0305
+        Jaxson Hayes 2025-26          0.0323
+   Derrick Jones Jr. 2022-23          0.0333
+         Luke Kornet 2023-24          0.0359
+         Nic Claxton 2022-23          0.0391
+      Walker Kessler 2024-25          0.0413
+         Jalen Smith 2024-25          0.0418
+         Rudy Gobert 2021-22          0.0435
+   LaMarcus Aldridge 2021-22          0.0476
+         Luke Kornet 2022-23          0.0515
+      Karlo Matković 2025-26          0.0528
+       Peyton Watson 2022-23          0.0579
+      Isaiah Stewart 2024-25          0.0597
+         Jalen Smith 2021-22          0.0660
+       Darius Bazley 2023-24          0.0891
+    Christian Koloko 2022-23          0.0938
+          Yves Missi 2025-26          0.0959
+         Nic Claxton 2023-24          0.0967
+         Luke Kornet 2024-25          0.0990
+  Isaiah Hartenstein 2021-22          0.1109
+Collin Murray-Boyles 2025-26          0.1236
+     Donovan Clingan 2024-25          0.1280
+      Isaiah Jackson 2025-26          0.1313
+      Dylan Cardwell 2025-26          0.1328
+      Daniel Gafford 2023-24          0.1441
+      Ariel Hukporti 2024-25          0.1451
+          Ibou Badji 2023-24          0.1482
+        Jaxson Hayes 2021-22          0.1524
+        JaVale McGee 2021-22          0.1534
+     Jalen McDaniels 2021-22          0.1554
+          Yves Missi 2024-25          0.1610
+          Taj Gibson 2021-22          0.1684
+         Rudy Gobert 2023-24          0.1717
+   Derrick Jones Jr. 2021-22          0.1784
+        Goga Bitadze 2023-24          0.1875
+       Chris Boucher 2022-23          0.2165
+      Walker Kessler 2022-23          0.2239
+        Damian Jones 2021-22          0.2264
+       Chris Boucher 2021-22          0.2299
+         Kel'el Ware 2024-25          0.2316
+           Zach Edey 2024-25          0.2659
+        Drew Eubanks 2023-24          0.2846
+      Daniel Gafford 2022-23          0.2861
+
+  cluster_33 — 31 distants :
+       player_name  saison  archetype_conf
+     Neemias Queta 2025-26          0.0383
+      Oso Ighodaro 2025-26          0.0394
+     Nick Richards 2022-23          0.0395
+Isaiah Hartenstein 2023-24          0.0402
+ Jaren Jackson Jr. 2024-25          0.0405
+      Olivier Sarr 2023-24          0.0410
+    Isaiah Jackson 2023-24          0.0428
+     Anthony Davis 2024-25          0.0506
+       Evan Mobley 2023-24          0.0553
+ Victor Wembanyama 2025-26          0.0692
+       Kel'el Ware 2025-26          0.0733
+         Paul Reed 2025-26          0.0746
+      Jakob Poeltl 2024-25          0.0919
+       Evan Mobley 2022-23          0.1098
+       Ivica Zubac 2023-24          0.1148
+     Chet Holmgren 2025-26          0.1186
+         Alex Sarr 2025-26          0.1274
+    JaMychal Green 2022-23          0.1277
+          Naz Reid 2022-23          0.1384
+   P.J. Washington 2022-23          0.1495
+    Daniel Gafford 2024-25          0.1622
+     Jarrett Allen 2025-26          0.1881
+     Matas Buzelis 2025-26          0.2098
+       Evan Mobley 2024-25          0.2146
+        Al Horford 2025-26          0.2320
+   Donovan Clingan 2025-26          0.2562
+  Precious Achiuwa 2025-26          0.2569
+     Keegan Murray 2025-26          0.2673
+     Anthony Davis 2022-23          0.2717
+    Christian Wood 2022-23          0.2789
+      John Collins 2024-25          0.2969
+
+  cluster_35 — 2 distants :
+      player_name  saison  archetype_conf
+De'Anthony Melton 2025-26          0.2253
+        Dru Smith 2025-26          0.2644
+
+  cluster_37 — 14 distants :
+    player_name  saison  archetype_conf
+   Terry Rozier 2021-22          0.0779
+  Stephen Curry 2021-22          0.1134
+Anfernee Simons 2021-22          0.1370
+   Kon Knueppel 2025-26          0.1391
+   Tyrese Maxey 2021-22          0.1432
+    Tyler Herro 2021-22          0.1618
+   Jordan Poole 2021-22          0.1836
+   Jordan Poole 2022-23          0.1952
+  Jaylen Nowell 2021-22          0.2245
+Khris Middleton 2021-22          0.2281
+ Victor Oladipo 2021-22          0.2297
+ Gordon Hayward 2021-22          0.2383
+  Jalen Brunson 2025-26          0.2459
+     Malik Monk 2023-24          0.2482
+
+  cluster_38 — 3 distants :
+ player_name  saison  archetype_conf
+Devin Booker 2021-22          0.2151
+Jared Harper 2021-22          0.2276
+Jaylen Brown 2021-22          0.2910
+
+  cluster_39 — 56 distants :
+            player_name  saison  archetype_conf
+      De'Anthony Melton 2024-25          0.0299
+          Grayson Allen 2025-26          0.0458
+Shai Gilgeous-Alexander 2024-25          0.0533
+            Luka Dončić 2022-23          0.0542
+          Julius Randle 2025-26          0.0597
+           Jrue Holiday 2025-26          0.0599
+       Jimmy Butler III 2022-23          0.0603
+       Donovan Mitchell 2022-23          0.0688
+           Kyrie Irving 2022-23          0.0738
+       Jimmy Butler III 2025-26          0.0753
+    Talen Horton-Tucker 2022-23          0.0798
+        Trey Murphy III 2025-26          0.0814
+           Ryan Rollins 2025-26          0.0823
+          Kawhi Leonard 2025-26          0.0885
+          Stephen Curry 2022-23          0.0887
+           Bradley Beal 2022-23          0.0912
+           Caris LeVert 2023-24          0.0954
+          Julius Randle 2022-23          0.0955
+            CJ McCollum 2023-24          0.0964
+            Deni Avdija 2024-25          0.0974
+       Donovan Mitchell 2025-26          0.1000
+           Tyrese Maxey 2025-26          0.1034
+              Tre Jones 2025-26          0.1048
+      Tyrese Haliburton 2022-23          0.1103
+      Spencer Dinwiddie 2022-23          0.1150
+           Jamal Murray 2023-24          0.1232
+         Keyonte George 2024-25          0.1252
+      Immanuel Quickley 2023-24          0.1261
+          Austin Reaves 2023-24          0.1284
+         Jalen Williams 2024-25          0.1303
+           James Harden 2024-25          0.1317
+            Luka Dončić 2025-26          0.1319
+        Quenton Jackson 2025-26          0.1483
+       Kevin Porter Jr. 2022-23          0.1507
+        Andrew Nembhard 2025-26          0.1532
+             RJ Barrett 2023-24          0.1564
+             Coby White 2024-25          0.1624
+          Jalen Brunson 2022-23          0.1639
+        Scoot Henderson 2025-26          0.1654
+         Darius Garland 2024-25          0.1683
+        Anthony Edwards 2022-23          0.1688
+         Paolo Banchero 2024-25          0.1711
+           Bones Hyland 2022-23          0.1777
+        Anfernee Simons 2023-24          0.1822
+         Paolo Banchero 2023-24          0.1861
+        Anthony Edwards 2023-24          0.1903
+          Miles Bridges 2024-25          0.1917
+Shai Gilgeous-Alexander 2022-23          0.1965
+             Coby White 2025-26          0.1983
+           Kemba Walker 2022-23          0.2007
+         Brandon Miller 2025-26          0.2010
+           Jaylen Brown 2025-26          0.2159
+           Franz Wagner 2023-24          0.2318
+      Immanuel Quickley 2022-23          0.2330
+           Franz Wagner 2024-25          0.2481
+           Jordan Poole 2024-25          0.2719
+
+  cluster_40 — 75 distants :
+        player_name  saison  archetype_conf
+      Javonte Green 2023-24          0.0110
+        Dario Saric 2023-24          0.0114
+         Kevin Love 2023-24          0.0119
+         GG Jackson 2025-26          0.0145
+       Tony Bradley 2022-23          0.0156
+       Santi Aldama 2024-25          0.0169
+       Jared Rhoden 2024-25          0.0179
+      Jeremy Sochan 2023-24          0.0186
+  Haywood Highsmith 2022-23          0.0193
+          Ryan Dunn 2025-26          0.0196
+Patrick Baldwin Jr. 2024-25          0.0200
+        Chuma Okeke 2024-25          0.0208
+      Spencer Jones 2025-26          0.0213
+      Malachi Flynn 2023-24          0.0234
+    Julian Phillips 2024-25          0.0243
+      Nate Williams 2025-26          0.0245
+       Anthony Lamb 2022-23          0.0261
+        Skylar Mays 2022-23          0.0278
+    James Bouknight 2023-24          0.0279
+        David Roddy 2025-26          0.0298
+   Taylor Hendricks 2025-26          0.0304
+       Shake Milton 2024-25          0.0309
+      Dylan Windler 2022-23          0.0354
+    Jaden McDaniels 2024-25          0.0363
+          Ty Jerome 2024-25          0.0374
+ Vince Williams Jr. 2025-26          0.0386
+        Kobe Bufkin 2024-25          0.0431
+         Vít Krejčí 2024-25          0.0438
+           Tre Mann 2023-24          0.0442
+   Chris Livingston 2024-25          0.0451
+       Kobi Simmons 2023-24          0.0461
+         Taze Moore 2024-25          0.0461
+   Vernon Carey Jr. 2022-23          0.0461
+      Kevin Knox II 2024-25          0.0476
+     Jarrett Culver 2022-23          0.0478
+      James Wiseman 2024-25          0.0482
+      Isaiah Mobley 2024-25          0.0483
+       Luke Travers 2025-26          0.0485
+      Buddy Boeheim 2023-24          0.0489
+       Blake Wesley 2023-24          0.0491
+        Moses Brown 2024-25          0.0518
+   MarJon Beauchamp 2024-25          0.0518
+    Jalen McDaniels 2024-25          0.0542
+    Isaiah Crawford 2025-26          0.0548
+      Pacôme Dadiet 2025-26          0.0556
+      Johnny Juzang 2025-26          0.0559
+     Ron Harper Jr. 2024-25          0.0589
+      Nate Williams 2023-24          0.0591
+       Nikola Jović 2023-24          0.0612
+     Trey Alexander 2025-26          0.0617
+    Ziaire Williams 2023-24          0.0635
+     Brandon Boston 2024-25          0.0666
+       Santi Aldama 2022-23          0.0668
+    Enrique Freeman 2025-26          0.0701
+         Kyle Kuzma 2025-26          0.0859
+     Xavier Tillman 2025-26          0.0887
+  Simone Fontecchio 2023-24          0.1021
+TyTy Washington Jr. 2025-26          0.1051
+        Mac McClung 2025-26          0.1256
+      Jordan Miller 2025-26          0.1370
+         Joe Ingles 2025-26          0.1456
+       Chris Duarte 2024-25          0.1458
+       Xavier Sneed 2022-23          0.1473
+     Dereon Seabron 2023-24          0.1653
+     Bryce McGowens 2025-26          0.2060
+         Pete Nance 2024-25          0.2140
+    Trentyn Flowers 2025-26          0.2192
+     Daniss Jenkins 2025-26          0.2193
+ Shaquille Harrison 2022-23          0.2197
+     Jordan Goodwin 2022-23          0.2239
+        Sam Merrill 2022-23          0.2350
+ Vince Williams Jr. 2023-24          0.2504
+    Jeff Dowtin Jr. 2023-24          0.2594
+         Jay Scrubb 2022-23          0.2864
+        Zyon Pullin 2025-26          0.2871
+
+  cluster_41 — 19 distants :
+            player_name  saison  archetype_conf
+        Lauri Markkanen 2025-26          0.1026
+          Mikal Bridges 2022-23          0.1243
+          Naji Marshall 2024-25          0.1487
+           Jerami Grant 2025-26          0.1559
+           Joshua Primo 2022-23          0.1705
+          Killian Hayes 2024-25          0.1732
+       Keita Bates-Diop 2022-23          0.1792
+            Ayo Dosunmu 2025-26          0.1997
+     Michael Porter Jr. 2022-23          0.2078
+Olivier-Maxence Prosper 2025-26          0.2151
+          Cody Williams 2025-26          0.2264
+             Gui Santos 2025-26          0.2282
+       Kenrich Williams 2024-25          0.2433
+          Ish Wainright 2023-24          0.2471
+           Micah Potter 2025-26          0.2520
+       Garrison Mathews 2024-25          0.2724
+       Patrick Beverley 2023-24          0.2796
+           Noah Clowney 2025-26          0.2849
+        Trey Murphy III 2023-24          0.2992
+
+  cluster_42 — 4 distants :
+             player_name  saison  archetype_conf
+           Aaron Wiggins 2024-25          0.1481
+             Daishen Nix 2023-24          0.1773
+Nickeil Alexander-Walker 2025-26          0.2128
+         Cameron Johnson 2022-23          0.2162
+
+  declining_star — 4 distants :
+    player_name  saison  archetype_conf
+  DeMar DeRozan 2023-24          0.2305
+  DeMar DeRozan 2025-26          0.2421
+  DeMar DeRozan 2024-25          0.2770
+Trendon Watford 2024-25          0.2923
+
+  developmental_big — 25 distants :
+        player_name  saison  archetype_conf
+            Cui Cui 2024-25          0.0310
+  Robert Woodard II 2021-22          0.0441
+     Jordan Schakel 2021-22          0.0443
+        Andrew Funk 2023-24          0.0475
+         Cat Barber 2021-22          0.0490
+      Jason Preston 2023-24          0.0527
+       Curtis Jones 2025-26          0.0611
+TyTy Washington Jr. 2024-25          0.0612
+     Brodric Thomas 2021-22          0.0664
+  Dmytro Skapintsev 2023-24          0.0686
+    Phillip Wheeler 2024-25          0.0701
+        Zyon Pullin 2024-25          0.0716
+       Solomon Hill 2021-22          0.0727
+      Jaylen Morris 2021-22          0.0782
+     Jalen Crutcher 2023-24          0.0791
+    Jerome Robinson 2023-24          0.0876
+          Matt Ryan 2021-22          0.1065
+     Jazian Gortman 2024-25          0.1458
+        Henri Drell 2023-24          0.1462
+         Jay Scrubb 2021-22          0.1732
+       Trevor Keels 2025-26          0.1758
+      Armoni Brooks 2023-24          0.1893
+         Joel Ayayi 2021-22          0.1920
+       Alex Morales 2025-26          0.2508
+       Anthony Lamb 2021-22          0.2904
+
+  franchise_player — 10 distants :
+   player_name  saison  archetype_conf
+  Nikola Jokić 2025-26          0.0797
+  Nikola Jokić 2024-25          0.0882
+Alperen Sengun 2025-26          0.0983
+Scottie Barnes 2024-25          0.1121
+  Nikola Jokić 2023-24          0.1133
+  Nikola Jokić 2021-22          0.1184
+  Cooper Flagg 2025-26          0.1414
+  LeBron James 2021-22          0.1618
+ Pascal Siakam 2021-22          0.1687
+ Julius Randle 2021-22          0.2420
+
+  fringe_rotation — 20 distants :
+       player_name  saison  archetype_conf
+     Mason Plumlee 2025-26          0.0307
+       Chris Silva 2021-22          0.0313
+          Ed Davis 2021-22          0.0319
+    Amari Williams 2025-26          0.0358
+        Tyler Cook 2021-22          0.0371
+     Dwight Powell 2025-26          0.0394
+      Olivier Sarr 2025-26          0.0429
+         Kai Jones 2021-22          0.0705
+       Adou Thiero 2025-26          0.0764
+    Omer Yurtseven 2025-26          0.0818
+      Grant Nelson 2025-26          0.0942
+Chandler Hutchison 2021-22          0.1075
+      Sidy Cissoko 2023-24          0.1607
+        Mark Sears 2025-26          0.1975
+       Mason Jones 2021-22          0.2051
+   Lester Quinones 2022-23          0.2053
+    Filip Petrusev 2023-24          0.2271
+Alex Antetokounmpo 2025-26          0.2279
+     Stanley Umude 2022-23          0.2365
+         PJ Dozier 2024-25          0.2812
+
+  physical_big — 3 distants :
   player_name  saison  archetype_conf
-Royce O'Neale 2025-26          0.2453
+ Jahmir Young 2025-26          0.1982
+Nate Williams 2024-25          0.2473
+   JD Davison 2024-25          0.2891
 
-Total distants toutes catégories : 411
+  raw_prospect — 19 distants :
+           player_name  saison  archetype_conf
+       Jamorko Pickett 2021-22          0.0217
+          Jared Rhoden 2022-23          0.0307
+        Tidjane Salaün 2024-25          0.0347
+         Blake Griffin 2021-22          0.0412
+   Dorian Finney-Smith 2023-24          0.0509
+       Bilal Coulibaly 2023-24          0.0750
+        Oshae Brissett 2021-22          0.0770
+           Deni Avdija 2022-23          0.0873
+Jeremiah Robinson-Earl 2021-22          0.0916
+            Kobe Brown 2025-26          0.0941
+       Jaylin Williams 2022-23          0.0956
+Jeremiah Robinson-Earl 2024-25          0.1052
+   Willie Cauley-Stein 2021-22          0.1065
+          Terry Taylor 2023-24          0.1132
+            Trey Lyles 2024-25          0.1141
+           Noah Vonleh 2022-23          0.1194
+            Wes Iwundu 2021-22          0.1281
+           Deni Avdija 2021-22          0.1362
+         James Johnson 2021-22          0.2361
 
-── CLUSTERS DÉTAIL 3D ─────────────────────────────────────
-  OUTLIERS unclassified           n=299   conf_moy=0.135  stars=['Victor Wembanyama']
-  C0   fringe_rotation        n=139   conf_moy=0.525  stars=[]
-  C1   replacement_level      n=56    conf_moy=0.863  stars=[]
-  C2   raw_prospect           n=332   conf_moy=0.576  stars=['Anthony Davis', 'Rudy Gobert', 'Karl-Anthony Towns', 'Chet Holmgren']
-  C3   developmental_big      n=132   conf_moy=0.589  stars=[]
-  C4   rim_protector          n=78    conf_moy=0.667  stars=[]
-  C5   shot_blocker           n=49    conf_moy=0.966  stars=[]
-  C6   physical_big           n=793   conf_moy=0.595  stars=['LeBron James', 'Kevin Durant', 'Stephen Curry', 'Klay Thompson']
-  C7   scoring_big            n=45    conf_moy=0.949  stars=['Klay Thompson']
-  C8   declining_vet          n=57    conf_moy=0.874  stars=[]
-  C9   solid_rotation         n=48    conf_moy=0.924  stars=[]
-  C10  ascending_wing         n=101   conf_moy=0.658  stars=['Draymond Green', 'Franz Wagner']
-  C11  3and_d_wing            n=148   conf_moy=0.486  stars=['Klay Thompson']
+  rim_protector — 52 distants :
+        player_name  saison  archetype_conf
+       E.J. Liddell 2023-24          0.0259
+        Mason Jones 2023-24          0.0273
+       Hunter Tyson 2025-26          0.0284
+     Tremont Waters 2021-22          0.0305
+       Anton Watson 2024-25          0.0333
+       Nikola Jović 2022-23          0.0347
+      Maxwell Lewis 2023-24          0.0362
+       Jacob Toppin 2024-25          0.0383
+      Kevin Knox II 2021-22          0.0401
+    Jahmi'us Ramsey 2021-22          0.0418
+      Pacôme Dadiet 2024-25          0.0421
+       Miles Norris 2024-25          0.0434
+         Seth Lundy 2023-24          0.0448
+    Markieff Morris 2023-24          0.0448
+   Alondes Williams 2022-23          0.0470
+        Isaiah Todd 2021-22          0.0477
+   Lucas Williamson 2025-26          0.0477
+ Chaundee Brown Jr. 2021-22          0.0489
+ Vince Williams Jr. 2022-23          0.0490
+        Theo Pinson 2021-22          0.0506
+         Louis King 2021-22          0.0534
+       Josh Jackson 2021-22          0.0556
+         Aleem Ford 2021-22          0.0558
+      Javonte Cooke 2025-26          0.0611
+       Armel Traore 2024-25          0.0670
+      Scotty Hopson 2021-22          0.0672
+           Miye Oni 2021-22          0.0707
+     Chucky Hepburn 2025-26          0.0710
+  Deividas Sirvydis 2021-22          0.0720
+         Taze Moore 2023-24          0.0735
+        George King 2021-22          0.0757
+        Jordan Hall 2022-23          0.0770
+    Dariq Whitehead 2023-24          0.0786
+    Payton Sandfort 2025-26          0.0830
+         Alex Fudge 2023-24          0.0860
+       Kobi Simmons 2022-23          0.0872
+     Emanuel Miller 2025-26          0.0981
+         Sam Dekker 2021-22          0.1024
+      Stanley Umude 2025-26          0.1090
+    Trentyn Flowers 2024-25          0.1131
+     Dakota Mathias 2021-22          0.1276
+Patrick Baldwin Jr. 2022-23          0.1376
+Jalen Hood-Schifino 2023-24          0.1383
+       Carlik Jones 2021-22          0.1415
+         Pete Nance 2023-24          0.1494
+      Jaysean Paige 2021-22          0.1534
+     Sharife Cooper 2021-22          0.1773
+     Justin Jackson 2021-22          0.1781
+      Javonte Smart 2023-24          0.1820
+       Didi Louzada 2021-22          0.1890
+      David Johnson 2021-22          0.1959
+        A.J. Lawson 2022-23          0.2700
 
-→ soft_assignment_3d.csv exporté
+  scoring_big — 2 distants :
+     player_name  saison  archetype_conf
+Trey Jemison III 2025-26          0.1852
+  Garrett Temple 2025-26          0.2600
+
+  spot_up_shooter — 1 distants :
+    player_name  saison  archetype_conf
+Justise Winslow 2021-22           0.213
+
+  star_fading — 16 distants :
+       player_name  saison  archetype_conf
+  Domantas Sabonis 2022-23          0.0461
+ Marvin Bagley III 2022-23          0.0511
+     Tobias Harris 2021-22          0.0555
+  Domantas Sabonis 2024-25          0.0584
+         Josh Hart 2021-22          0.0586
+  Domantas Sabonis 2021-22          0.0594
+Aleksej Pokusevski 2021-22          0.0704
+     Cedric Coward 2025-26          0.0719
+     James Wiseman 2022-23          0.0765
+    Maxime Raynaud 2025-26          0.0787
+       Dario Saric 2022-23          0.0815
+     Moritz Wagner 2021-22          0.0911
+        Kevin Love 2021-22          0.0938
+ Marvin Bagley III 2021-22          0.0954
+ Jonas Valančiūnas 2024-25          0.1090
+       Darius Days 2022-23          0.2439
+
+Total distants toutes catégories : 695
+
+── CLUSTERS DÉTAIL 6D_mcs15_leaf ─────────────────────────────────────
+  OUTLIERS unclassified           n=813   conf_moy=0.065  stars=['LeBron James', 'Stephen Curry', 'Klay Thompson', 'Damian Lillard']
+  C0   fringe_rotation        n=37    conf_moy=0.489  stars=[]
+  C1   replacement_level      n=16    conf_moy=0.965  stars=[]
+  C2   raw_prospect           n=35    conf_moy=0.491  stars=[]
+  C3   developmental_big      n=48    conf_moy=0.434  stars=[]
+  C4   rim_protector          n=81    conf_moy=0.345  stars=[]
+  C5   shot_blocker           n=16    conf_moy=1.000  stars=['Draymond Green']
+  C6   physical_big           n=20    conf_moy=0.828  stars=[]
+  C7   scoring_big            n=19    conf_moy=0.882  stars=[]
+  C8   declining_vet          n=19    conf_moy=0.965  stars=[]
+  C9   solid_rotation         n=16    conf_moy=0.975  stars=[]
+  C10  ascending_wing         n=19    conf_moy=0.856  stars=[]
+  C11  3and_d_wing            n=26    conf_moy=0.709  stars=[]
+  C12  superstar              n=15    conf_moy=1.000  stars=['LeBron James', 'Devin Booker', 'Trae Young']
+  C13  declining_star         n=22    conf_moy=0.810  stars=['Kevin Durant', 'Karl-Anthony Towns', 'Franz Wagner', 'Paolo Banchero']
+  C14  star_fading            n=31    conf_moy=0.527  stars=[]
+  C15  franchise_player       n=27    conf_moy=0.679  stars=['LeBron James', 'Kevin Durant', 'Giannis Antetokounmpo', 'Joel Embiid']
+  C16  3and_d_specialist      n=28    conf_moy=0.626  stars=[]
+  C17  spot_up_shooter        n=23    conf_moy=0.966  stars=[]
+  C18  cluster_18             n=15    conf_moy=1.000  stars=[]
+  C19  cluster_19             n=57    conf_moy=0.322  stars=['Klay Thompson']
+  C20  cluster_20             n=48    conf_moy=0.378  stars=[]
+  C21  cluster_21             n=52    conf_moy=0.409  stars=[]
+  C22  cluster_22             n=15    conf_moy=1.000  stars=['Franz Wagner']
+  C23  cluster_23             n=46    conf_moy=0.401  stars=[]
+  C24  cluster_24             n=35    conf_moy=0.577  stars=['Rudy Gobert']
+  C25  cluster_25             n=48    conf_moy=0.376  stars=[]
+  C26  cluster_26             n=43    conf_moy=0.487  stars=[]
+  C27  cluster_27             n=37    conf_moy=0.702  stars=['Klay Thompson']
+  C28  cluster_28             n=30    conf_moy=0.594  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+  C29  cluster_29             n=26    conf_moy=0.632  stars=[]
+  C30  cluster_30             n=26    conf_moy=0.602  stars=['Tyrese Haliburton']
+  C31  cluster_31             n=36    conf_moy=0.575  stars=[]
+  C32  cluster_32             n=63    conf_moy=0.332  stars=['Rudy Gobert']
+  C33  cluster_33             n=53    conf_moy=0.421  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+  C34  cluster_34             n=16    conf_moy=0.959  stars=[]
+  C35  cluster_35             n=18    conf_moy=0.881  stars=[]
+  C36  cluster_36             n=15    conf_moy=1.000  stars=[]
+  C37  cluster_37             n=30    conf_moy=0.596  stars=['Stephen Curry', 'Damian Lillard', 'Trae Young']
+  C38  cluster_38             n=19    conf_moy=0.847  stars=['Devin Booker']
+  C39  cluster_39             n=76    conf_moy=0.336  stars=['Stephen Curry', 'Damian Lillard', 'Devin Booker', 'Tyrese Haliburton']
+  C40  cluster_40             n=101   conf_moy=0.255  stars=[]
+  C41  cluster_41             n=40    conf_moy=0.530  stars=[]
+  C42  cluster_42             n=21    conf_moy=0.845  stars=['Franz Wagner']
+
+→ soft_assignment_6d_mcs15_leaf.csv exporté
 
 ======================================================================
-COMPARATIF FINAL 2D vs 3D
+CONFIG 4D_mcs20_leaf — UMAP n_components=4
 ======================================================================
-Métrique                                      2D           3D
-------------------------------------------------------------
-  Clusters                                    18           12  →
-  Outliers HDBSCAN                           305          299  ✅
-  % outliers                             13.4000      13.1000  ✅
-  Soft assignés                              213          179  →
-  Vrais unclassified                          92          120  →
-  Total distants                             487          411  ✅
-  Conf moy. assignés                      0.6524       0.6252  →
-  Conf moy. soft                          0.1815       0.1834  ✅
-  Double label                               161          141  →
+Pool : 2277 joueurs-saisons
+Calcul UMAP 4D_mcs20_leaf...
+Clustering HDBSCAN 4D_mcs20_leaf (precomputed cosine, mcs=20, ms=2, csm=leaf)...
+→ 30 clusters, 883 outliers (38.8%)
+Calcul soft membership vectors 4D_mcs20_leaf...
+
+── MÉTRIQUES 4D_mcs20_leaf ──────────────────────────────────────────
+Clusters                 : 30
+Outliers HDBSCAN         : 883 (38.8%)
+Soft assignés (≥0.10)    : 296
+Vrais unclassified       : 587
+Double label             : 31 / 1394
+Conf moy. assignés       : 0.5948
+Conf moy. soft           : 0.1611
+
+── OUTLIERS STARS 4D_mcs20_leaf ─────────────────────────────────────
+       player_name  saison         archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+     Stephen Curry 2021-22    ascending_wing          0.2821      solid_rotation                    0.1228
+      LeBron James 2024-25    ascending_wing          0.2314      solid_rotation                    0.0932
+     Klay Thompson 2025-26 3and_d_specialist          0.2050    franchise_player                    0.0908
+       Joel Embiid 2025-26         superstar          0.1831      ascending_wing                    0.0710
+      Jayson Tatum 2022-23         superstar          0.1741      ascending_wing                    0.0857
+ Victor Wembanyama 2025-26        cluster_26          0.1655                None                       NaN
+     Stephen Curry 2025-26         superstar          0.1569      ascending_wing                    0.0961
+      Devin Booker 2022-23         superstar          0.1516      ascending_wing                    0.1033
+       Bam Adebayo 2025-26         superstar          0.1440      ascending_wing                    0.0693
+ Tyrese Haliburton 2022-23        cluster_26          0.1356                None                       NaN
+Karl-Anthony Towns 2023-24         superstar          0.1273      ascending_wing                    0.0669
+      Franz Wagner 2022-23        cluster_26          0.1130          cluster_20                    0.0800
+       Rudy Gobert 2025-26        cluster_27          0.1081          cluster_28                    0.0964
+     Anthony Davis 2024-25        cluster_26          0.1045          cluster_29                    0.0726
+     Stephen Curry 2022-23         superstar          0.1032          cluster_26                    0.0982
+     Klay Thompson 2024-25      raw_prospect          0.1020                None                       NaN
+ Tyrese Haliburton 2021-22      unclassified          0.0605                None                       NaN
+        Trae Young 2024-25      unclassified          0.0297                None                       NaN
+    Paolo Banchero 2022-23      unclassified          0.0286                None                       NaN
+     Stephen Curry 2024-25      unclassified          0.0282                None                       NaN
+     Klay Thompson 2023-24      unclassified          0.0224                None                       NaN
+    Draymond Green 2021-22      unclassified          0.0204                None                       NaN
+    Draymond Green 2025-26      unclassified          0.0200                None                       NaN
+    Draymond Green 2022-23      unclassified          0.0193                None                       NaN
+    Draymond Green 2024-25      unclassified          0.0188                None                       NaN
+     Stephen Curry 2023-24      unclassified          0.0174                None                       NaN
+      Devin Booker 2023-24      unclassified          0.0157                None                       NaN
+      Jayson Tatum 2023-24      unclassified          0.0149                None                       NaN
+    Draymond Green 2023-24      unclassified          0.0141                None                       NaN
+     Klay Thompson 2022-23      unclassified          0.0134                None                       NaN
+      LeBron James 2023-24      unclassified          0.0125                None                       NaN
+Karl-Anthony Towns 2024-25      unclassified          0.0114                None                       NaN
+
+── DISTRIBUTION OUTLIERS 4D_mcs20_leaf ──────────────────────────────
+archetype
+unclassified         587
+cluster_20            52
+cluster_26            25
+superstar             17
+declining_star        16
+cluster_27            15
+star_fading           14
+cluster_18            14
+developmental_big     14
+rim_protector         14
+cluster_24            14
+cluster_23            13
+raw_prospect          11
+cluster_21            10
+cluster_29             9
+3and_d_specialist      8
+solid_rotation         8
+cluster_28             7
+cluster_19             7
+ascending_wing         6
+cluster_22             5
+physical_big           5
+cluster_25             5
+franchise_player       3
+shot_blocker           3
+3and_d_wing            1
+
+── DOUBLE LABEL STARS 4D_mcs20_leaf ─────────────────────────────────
+Empty DataFrame
+Columns: [player_name, saison, archetype, archetype_conf, archetype_secondary, archetype_secondary_conf]
+Index: []
+
+── MEMBRES DISTANTS PAR ARCHETYPE 4D_mcs20_leaf (conf < 0.30) ───────
+
+  3and_d_specialist — 2 distants :
+    player_name  saison  archetype_conf
+    Jaden Hardy 2025-26          0.2532
+De'Andre Hunter 2021-22          0.2786
+
+  3and_d_wing — 49 distants :
+          player_name  saison  archetype_conf
+         Cole Anthony 2023-24          0.0082
+         LeBron James 2021-22          0.0087
+         Cooper Flagg 2025-26          0.0098
+        Pascal Siakam 2021-22          0.0098
+            Ja Morant 2024-25          0.0105
+     Brandon Williams 2025-26          0.0106
+       Scottie Barnes 2024-25          0.0106
+         Cole Anthony 2022-23          0.0107
+           RJ Barrett 2024-25          0.0107
+         Nikola Jokić 2024-25          0.0110
+         Nikola Jokić 2025-26          0.0110
+         Terry Rozier 2023-24          0.0112
+         Nikola Jokić 2023-24          0.0114
+         Nikola Jokić 2021-22          0.0118
+       Alperen Sengun 2025-26          0.0130
+Giannis Antetokounmpo 2023-24          0.0132
+       Alperen Sengun 2024-25          0.0157
+          Bam Adebayo 2021-22          0.0186
+     Domantas Sabonis 2023-24          0.0292
+     Domantas Sabonis 2022-23          0.0358
+          Bam Adebayo 2024-25          0.0366
+            Josh Hart 2021-22          0.0397
+     Domantas Sabonis 2024-25          0.0411
+     Domantas Sabonis 2021-22          0.0412
+        Tobias Harris 2021-22          0.0420
+   Karl-Anthony Towns 2025-26          0.0466
+        Cedric Coward 2025-26          0.0475
+          Dario Saric 2022-23          0.0491
+        Moritz Wagner 2021-22          0.0497
+           Kevin Love 2021-22          0.0501
+          Bam Adebayo 2022-23          0.0562
+          Rudy Gobert 2024-25          0.0659
+        Nick Richards 2023-24          0.0840
+     Boban Marjanovic 2023-24          0.0906
+         Bobby Portis 2025-26          0.1264
+ Trayce Jackson-Davis 2024-25          0.1315
+    Jonas Valančiūnas 2022-23          0.1549
+        Mason Plumlee 2024-25          0.1909
+          Ivica Zubac 2022-23          0.2087
+         Kelly Olynyk 2024-25          0.2095
+   Wendell Carter Jr. 2024-25          0.2121
+        James Wiseman 2023-24          0.2197
+       Onyeka Okongwu 2023-24          0.2376
+            Adem Bona 2025-26          0.2402
+         Drew Eubanks 2022-23          0.2442
+      Dominick Barlow 2025-26          0.2522
+        Thomas Bryant 2024-25          0.2778
+         Jock Landale 2023-24          0.2831
+      Bismack Biyombo 2023-24          0.2986
+
+  cluster_19 — 23 distants :
+      player_name  saison  archetype_conf
+     John Konchar 2023-24          0.0172
+ Robert Covington 2021-22          0.0297
+ Donte DiVincenzo 2022-23          0.0325
+ Kenrich Williams 2021-22          0.0340
+     Will Richard 2025-26          0.0347
+  Josh Richardson 2022-23          0.0389
+ Collin Gillespie 2023-24          0.0401
+     Jaylen Clark 2025-26          0.0410
+    Killian Hayes 2021-22          0.0439
+       Josh Green 2021-22          0.0451
+   Justin Edwards 2025-26          0.0504
+ Facundo Campazzo 2021-22          0.0548
+ Donte DiVincenzo 2021-22          0.0566
+    Naji Marshall 2023-24          0.0613
+       Keon Ellis 2025-26          0.0702
+  Jalen McDaniels 2022-23          0.0704
+    Jose Alvarado 2021-22          0.0738
+    Devin Vassell 2021-22          0.0923
+        Dru Smith 2025-26          0.0970
+Jordan McLaughlin 2021-22          0.0987
+      Chuma Okeke 2021-22          0.1045
+  DeAndre' Bembry 2021-22          0.1631
+      Cody Martin 2021-22          0.2305
+
+  cluster_20 — 47 distants :
+        player_name  saison  archetype_conf
+      Nate Williams 2023-24          0.0819
+       Chris Duarte 2024-25          0.0915
+    Enrique Freeman 2025-26          0.0937
+         Vít Krejčí 2024-25          0.0950
+      Dylan Windler 2022-23          0.0951
+     Moussa Diabaté 2023-24          0.0960
+          Ty Jerome 2024-25          0.0972
+      James Wiseman 2024-25          0.0988
+      Jordan Miller 2025-26          0.0998
+        Moses Brown 2024-25          0.0999
+         Kyle Kuzma 2025-26          0.1017
+        David Roddy 2025-26          0.1101
+      Kevin Knox II 2024-25          0.1148
+   MarJon Beauchamp 2024-25          0.1158
+       Santi Aldama 2024-25          0.1282
+Patrick Baldwin Jr. 2024-25          0.1297
+       Jared Rhoden 2024-25          0.1421
+       Tony Bradley 2022-23          0.1423
+         GG Jackson 2025-26          0.1558
+   Julian Strawther 2025-26          0.1632
+      Anthony Black 2024-25          0.1655
+        Isaac Okoro 2023-24          0.1695
+      Corey Kispert 2023-24          0.1739
+        Dario Saric 2023-24          0.1770
+    Trey Murphy III 2023-24          0.1875
+       Ochai Agbaji 2024-25          0.1876
+      Landry Shamet 2022-23          0.1925
+   Tim Hardaway Jr. 2025-26          0.2043
+        Sam Merrill 2025-26          0.2089
+         Isaiah Joe 2022-23          0.2111
+        Moses Moody 2025-26          0.2115
+      Aaron Nesmith 2024-25          0.2204
+      Miles McBride 2025-26          0.2223
+ Brandin Podziemski 2024-25          0.2334
+  Julian Champagnie 2024-25          0.2463
+        Josh Okogie 2022-23          0.2512
+   Patrick Beverley 2023-24          0.2543
+      Caleb Houstan 2025-26          0.2571
+         Isaiah Joe 2025-26          0.2571
+      Cody Williams 2025-26          0.2582
+      Ish Wainright 2023-24          0.2643
+      Tobias Harris 2025-26          0.2775
+         Gui Santos 2025-26          0.2801
+   Garrison Mathews 2024-25          0.2833
+  De'Anthony Melton 2024-25          0.2888
+       Jake LaRavia 2023-24          0.2937
+   Kenrich Williams 2024-25          0.2942
+
+  cluster_21 — 44 distants :
+        player_name  saison  archetype_conf
+  Haywood Highsmith 2022-23          0.0522
+          Ryan Dunn 2025-26          0.0523
+      Spencer Jones 2025-26          0.0583
+      Nate Williams 2025-26          0.0639
+      Malachi Flynn 2023-24          0.0723
+        Skylar Mays 2022-23          0.0739
+       Jordan Walsh 2025-26          0.0817
+       Anthony Lamb 2022-23          0.0877
+   Boban Marjanovic 2022-23          0.0941
+      Jeremy Sochan 2023-24          0.1060
+       Shake Milton 2024-25          0.1077
+TyTy Washington Jr. 2025-26          0.1102
+   Jaime Jaquez Jr. 2024-25          0.1148
+         Taze Moore 2024-25          0.1149
+        Kobe Bufkin 2024-25          0.1173
+   Vernon Carey Jr. 2022-23          0.1198
+     Xavier Tillman 2025-26          0.1218
+    Ziaire Williams 2023-24          0.1226
+       Kobi Simmons 2023-24          0.1239
+      Isaiah Mobley 2024-25          0.1269
+     Jarrett Culver 2022-23          0.1287
+   Chris Livingston 2024-25          0.1317
+    Isaiah Crawford 2025-26          0.1331
+      Johnny Juzang 2025-26          0.1357
+       Luke Travers 2025-26          0.1408
+       Blake Wesley 2023-24          0.1436
+    Jalen McDaniels 2024-25          0.1442
+     Ron Harper Jr. 2024-25          0.1451
+     Trey Alexander 2025-26          0.1576
+      Pacôme Dadiet 2025-26          0.1601
+       Santi Aldama 2022-23          0.1870
+    Julian Phillips 2024-25          0.2222
+     Jamaree Bouyea 2024-25          0.2299
+        Mac McClung 2025-26          0.2313
+    Jeff Dowtin Jr. 2023-24          0.2330
+         Jay Scrubb 2022-23          0.2335
+        Braxton Key 2022-23          0.2354
+     Bryce McGowens 2025-26          0.2398
+     Mamadi Diakite 2023-24          0.2550
+           Tre Mann 2023-24          0.2555
+   Payton Pritchard 2023-24          0.2561
+           Jay Huff 2022-23          0.2673
+     Brandon Boston 2024-25          0.2781
+   Taylor Hendricks 2025-26          0.2893
+
+  cluster_22 — 8 distants :
+        player_name  saison  archetype_conf
+  Charlie Brown Jr. 2021-22          0.1147
+        Kris Murray 2024-25          0.1589
+        Kris Murray 2023-24          0.1745
+     Marcus Garrett 2021-22          0.1967
+      Tyrese Martin 2022-23          0.2041
+       Luke Travers 2024-25          0.2046
+        Colby Jones 2023-24          0.2386
+TyTy Washington Jr. 2024-25          0.2581
+
+  cluster_23 — 34 distants :
+       player_name  saison  archetype_conf
+      R.J. Hampton 2021-22          0.0564
+       Abdel Nader 2021-22          0.0619
+     Maxwell Lewis 2023-24          0.0648
+    Jamaree Bouyea 2022-23          0.0690
+     Buddy Boeheim 2022-23          0.0801
+     Shaq Buchanan 2021-22          0.0859
+      Myles Powell 2021-22          0.0875
+      Adam Flagler 2024-25          0.0884
+        Feron Hunt 2021-22          0.0891
+ Charlie Brown Jr. 2023-24          0.0897
+    Tristen Newton 2024-25          0.0909
+      Adam Flagler 2023-24          0.0935
+        KJ Simpson 2024-25          0.0962
+  Keyontae Johnson 2023-24          0.0987
+        Max Shulga 2025-26          0.1018
+      Xavier Sneed 2021-22          0.1027
+      Jack McVeigh 2024-25          0.1056
+       Bruce Brown 2024-25          0.1059
+       Mac McClung 2024-25          0.1241
+      Joshua Primo 2021-22          0.1284
+ Langston Galloway 2021-22          0.1340
+   Jeff Dowtin Jr. 2021-22          0.1702
+     Tyler Johnson 2021-22          0.1770
+       Riley Minix 2024-25          0.1826
+Shaquille Harrison 2021-22          0.2114
+    Trey Alexander 2024-25          0.2146
+ Nigel Hayes-Davis 2025-26          0.2298
+      Yuri Collins 2024-25          0.2307
+    Tyrone Wallace 2021-22          0.2312
+      Trevon Scott 2025-26          0.2313
+     James Johnson 2024-25          0.2331
+ Wendell Moore Jr. 2022-23          0.2709
+   John Butler Jr. 2022-23          0.2950
+    Jamaree Bouyea 2023-24          0.2986
+
+  cluster_24 — 1 distants :
+player_name  saison  archetype_conf
+ Toby Okani 2025-26          0.0634
+
+  cluster_25 — 33 distants :
+       player_name  saison  archetype_conf
+    Reggie Jackson 2023-24          0.0164
+       Derik Queen 2025-26          0.0667
+      Kelly Olynyk 2021-22          0.0688
+   Kyle Filipowski 2025-26          0.0692
+      Jusuf Nurkić 2025-26          0.0696
+      Jusuf Nurkić 2024-25          0.0711
+    Andre Drummond 2022-23          0.0719
+    Day'Ron Sharpe 2025-26          0.0736
+    Andre Drummond 2023-24          0.0792
+       Braxton Key 2021-22          0.0885
+    Andre Drummond 2021-22          0.0940
+    Ausar Thompson 2023-24          0.1037
+Isaiah Hartenstein 2025-26          0.1065
+        Luka Garza 2025-26          0.1071
+   Tristan Enaruna 2025-26          0.1141
+    Day'Ron Sharpe 2024-25          0.1160
+   Cameron McGriff 2021-22          0.1198
+     Petr Cornelie 2021-22          0.1224
+      Tony Bradley 2024-25          0.1378
+      N'Faly Dante 2025-26          0.1407
+        Tolu Smith 2024-25          0.1424
+       Nate Hinton 2023-24          0.1505
+        Luka Garza 2023-24          0.1725
+ Willy Hernangomez 2021-22          0.2071
+     Lamar Stevens 2021-22          0.2247
+    Scottie Barnes 2021-22          0.2320
+    Oscar Tshiebwe 2023-24          0.2396
+        Paris Bass 2021-22          0.2413
+        Luka Garza 2024-25          0.2424
+       Luke Kornet 2021-22          0.2527
+   James Ennis III 2021-22          0.2586
+   Markquis Nowell 2023-24          0.2688
+  Orlando Robinson 2024-25          0.2889
+
+  cluster_26 — 108 distants :
+            player_name  saison  archetype_conf
+          Jalen Johnson 2024-25          0.0402
+          Moritz Wagner 2023-24          0.0431
+            Jalen Duren 2025-26          0.0443
+         Keldon Johnson 2025-26          0.0464
+           Bobby Portis 2022-23          0.0476
+          Kyle Anderson 2024-25          0.0482
+          Chris Boucher 2024-25          0.0495
+           Aaron Gordon 2022-23          0.0503
+              Josh Hart 2024-25          0.0520
+         Scottie Barnes 2023-24          0.0537
+           Aaron Gordon 2025-26          0.0537
+      Derrick Jones Jr. 2022-23          0.0565
+          Alize Johnson 2022-23          0.0573
+           Jaxson Hayes 2025-26          0.0594
+             Taj Gibson 2025-26          0.0603
+        Zion Williamson 2024-25          0.0629
+            Jalen Suggs 2024-25          0.0638
+        Colin Castleton 2025-26          0.0638
+            Luke Kornet 2023-24          0.0646
+      Marvin Bagley III 2023-24          0.0647
+           Jamal Murray 2023-24          0.0696
+            Luka Dončić 2025-26          0.0697
+        Anthony Edwards 2022-23          0.0700
+        Anthony Edwards 2023-24          0.0726
+           Bones Hyland 2024-25          0.0739
+          Mason Plumlee 2022-23          0.0744
+         Wenyen Gabriel 2022-23          0.0754
+           Desmond Bane 2022-23          0.0790
+        P.J. Washington 2024-25          0.0799
+      Immanuel Quickley 2022-23          0.0811
+    Talen Horton-Tucker 2022-23          0.0815
+           Zach Collins 2025-26          0.0867
+Shai Gilgeous-Alexander 2022-23          0.0882
+       Precious Achiuwa 2025-26          0.0899
+         Onyeka Okongwu 2024-25          0.0931
+         Paolo Banchero 2024-25          0.0949
+         Brandon Miller 2024-25          0.0954
+            Deni Avdija 2024-25          0.0956
+           Franz Wagner 2024-25          0.0960
+     Isaiah Hartenstein 2024-25          0.0962
+        Dejounte Murray 2023-24          0.0968
+           Devin Booker 2025-26          0.0971
+         Paolo Banchero 2023-24          0.0973
+         Alperen Sengun 2022-23          0.0981
+           Franz Wagner 2023-24          0.0998
+           John Collins 2023-24          0.1030
+              Tre Jones 2025-26          0.1036
+         Day'Ron Sharpe 2023-24          0.1042
+           John Collins 2024-25          0.1080
+            Jalen Smith 2023-24          0.1087
+            Tyler Herro 2024-25          0.1091
+          Thomas Bryant 2022-23          0.1094
+            Jalen Duren 2023-24          0.1133
+       Precious Achiuwa 2022-23          0.1143
+         Alperen Sengun 2023-24          0.1143
+          Mark Williams 2024-25          0.1193
+               Naz Reid 2022-23          0.1203
+         Charles Bassey 2025-26          0.1249
+        Donovan Clingan 2025-26          0.1272
+             RJ Barrett 2023-24          0.1278
+           Jaylen Brown 2025-26          0.1305
+          Miles Bridges 2024-25          0.1307
+            Ivica Zubac 2024-25          0.1319
+    Robert Williams III 2025-26          0.1335
+               Jay Huff 2024-25          0.1340
+              Alex Sarr 2025-26          0.1344
+           Jaxson Hayes 2024-25          0.1354
+           De'Aaron Fox 2022-23          0.1359
+       Dereck Lively II 2024-25          0.1372
+           Tyrese Maxey 2023-24          0.1384
+          Austin Reaves 2025-26          0.1426
+            Deni Avdija 2025-26          0.1447
+             Coby White 2023-24          0.1472
+           Goga Bitadze 2024-25          0.1472
+              Paul Reed 2025-26          0.1500
+          Amen Thompson 2024-25          0.1509
+           Oso Ighodaro 2025-26          0.1542
+        Quenton Jackson 2025-26          0.1585
+          Matas Buzelis 2025-26          0.1588
+           Olivier Sarr 2023-24          0.1629
+     Brandin Podziemski 2025-26          0.1654
+          Kawhi Leonard 2025-26          0.1656
+          Jalen Johnson 2025-26          0.1712
+           Jordan Poole 2024-25          0.1725
+          Jalen Brunson 2023-24          0.1737
+          Jarrett Allen 2023-24          0.1749
+          Nick Richards 2022-23          0.1776
+          Neemias Queta 2025-26          0.1805
+         Christian Wood 2022-23          0.1865
+     Isaiah Hartenstein 2023-24          0.1891
+           Jamal Murray 2025-26          0.1894
+         Damian Lillard 2022-23          0.1927
+          Jalen Brunson 2022-23          0.1949
+           Jakob Poeltl 2024-25          0.2016
+            Kel'el Ware 2025-26          0.2114
+       Jaime Jaquez Jr. 2025-26          0.2139
+          Collin Sexton 2022-23          0.2194
+           James Harden 2024-25          0.2212
+           Jock Landale 2022-23          0.2217
+         JaMychal Green 2022-23          0.2218
+         Isaiah Jackson 2023-24          0.2252
+           Bones Hyland 2022-23          0.2472
+             Jaden Ivey 2024-25          0.2522
+         Walker Kessler 2025-26          0.2645
+           Jock Landale 2025-26          0.2664
+        Andrew Nembhard 2025-26          0.2907
+       Kevin Porter Jr. 2022-23          0.2920
+            Ivica Zubac 2023-24          0.2938
+
+  cluster_27 — 16 distants :
+      player_name  saison  archetype_conf
+      Jalen Duren 2022-23          0.1518
+Marvin Bagley III 2021-22          0.1834
+     Drew Eubanks 2021-22          0.1888
+    James Wiseman 2022-23          0.1907
+   Maxime Raynaud 2025-26          0.1912
+    Nassir Little 2021-22          0.2055
+    Nick Richards 2024-25          0.2062
+   Bruno Fernando 2021-22          0.2167
+    Jarrett Allen 2021-22          0.2223
+        KJ Martin 2021-22          0.2236
+Marvin Bagley III 2025-26          0.2237
+ Montrezl Harrell 2021-22          0.2566
+   Richaun Holmes 2021-22          0.2580
+      Jalen Duren 2024-25          0.2773
+ Precious Achiuwa 2021-22          0.2792
+      Ivica Zubac 2021-22          0.2797
+
+  cluster_28 — 9 distants :
+         player_name  saison  archetype_conf
+Collin Murray-Boyles 2025-26          0.0826
+        Goga Bitadze 2023-24          0.1067
+          Yves Missi 2025-26          0.1351
+      Dylan Cardwell 2025-26          0.1500
+      Isaiah Jackson 2025-26          0.1710
+     Donovan Clingan 2024-25          0.1749
+  Isaiah Hartenstein 2021-22          0.1870
+      Walker Kessler 2022-23          0.2573
+       Chris Boucher 2022-23          0.2960
+
+  cluster_29 — 12 distants :
+     player_name  saison  archetype_conf
+Jimmy Butler III 2025-26          0.0151
+   Amen Thompson 2025-26          0.0178
+     Nic Claxton 2023-24          0.0461
+     Evan Mobley 2021-22          0.0553
+         Bol Bol 2022-23          0.0583
+        Mo Bamba 2021-22          0.0732
+      Duop Reath 2023-24          0.0838
+       Alex Sarr 2024-25          0.0871
+   Matas Buzelis 2024-25          0.1094
+     Brook Lopez 2024-25          0.1309
+        Naz Reid 2021-22          0.1665
+    Myles Turner 2021-22          0.1700
+
+  declining_star — 1 distants :
+     player_name  saison  archetype_conf
+Jaime Jaquez Jr. 2023-24          0.2666
+
+  declining_vet — 8 distants :
+       player_name  saison  archetype_conf
+Guerschon Yabusele 2024-25          0.0298
+      Jaylen Hoard 2021-22          0.0618
+         Kai Jones 2021-22          0.0626
+       Adou Thiero 2025-26          0.0765
+    Omer Yurtseven 2025-26          0.0802
+Chandler Hutchison 2021-22          0.1363
+      Sidy Cissoko 2023-24          0.1368
+      Grant Nelson 2025-26          0.1578
+
+  developmental_big — 26 distants :
+             player_name  saison  archetype_conf
+              Kyle Lowry 2023-24          0.0879
+         P.J. Washington 2023-24          0.0915
+            Luke Kennard 2024-25          0.1176
+            Jake LaRavia 2024-25          0.1195
+         Kelly Oubre Jr. 2024-25          0.1353
+              Keon Ellis 2023-24          0.1409
+           Keegan Murray 2024-25          0.1415
+      Zaccharie Risacher 2025-26          0.1519
+Nickeil Alexander-Walker 2023-24          0.1540
+              Seth Curry 2022-23          0.1659
+              Alec Burks 2024-25          0.1756
+         DaQuan Jeffries 2024-25          0.1765
+           Lamar Stevens 2022-23          0.1771
+            Ochai Agbaji 2023-24          0.1862
+       Derrick Jones Jr. 2023-24          0.1918
+             Gary Harris 2022-23          0.2144
+           Isaiah Livers 2022-23          0.2255
+         Harrison Barnes 2025-26          0.2395
+        Patrick Williams 2022-23          0.2590
+        Patrick Williams 2024-25          0.2604
+             Gradey Dick 2025-26          0.2673
+           Devin Vassell 2025-26          0.2705
+                 JT Thor 2022-23          0.2707
+        Tim Hardaway Jr. 2024-25          0.2861
+           Nicolas Batum 2023-24          0.2953
+               Dean Wade 2022-23          0.2985
+
+  franchise_player — 35 distants :
+      player_name  saison  archetype_conf
+ Tim Hardaway Jr. 2023-24          0.0399
+     Monte Morris 2021-22          0.0539
+      Bryn Forbes 2021-22          0.0586
+       Joe Ingles 2021-22          0.0616
+  Hassani Gravett 2021-22          0.0627
+   Doug McDermott 2022-23          0.0629
+       Coby White 2021-22          0.0653
+   Grant Williams 2022-23          0.0691
+ Payton Pritchard 2021-22          0.0726
+ Tim Hardaway Jr. 2022-23          0.0730
+        Max Strus 2024-25          0.0736
+   Doug McDermott 2021-22          0.0745
+    Dalton Knecht 2024-25          0.0811
+   Svi Mykhailiuk 2025-26          0.0841
+      Eric Gordon 2021-22          0.0848
+     Luke Kennard 2025-26          0.0901
+   Jordan Hawkins 2023-24          0.1011
+    Malik Beasley 2021-22          0.1019
+      Moses Moody 2022-23          0.1145
+    D.J. Augustin 2021-22          0.1151
+Marcus Morris Sr. 2023-24          0.1196
+       Seth Curry 2021-22          0.1321
+       Malik Monk 2021-22          0.1346
+    Georges Niang 2023-24          0.1498
+  Duncan Robinson 2025-26          0.1672
+     Luke Kennard 2022-23          0.1949
+       Sam Hauser 2025-26          0.2070
+  Pat Connaughton 2021-22          0.2107
+  Duncan Robinson 2024-25          0.2108
+       Damion Lee 2022-23          0.2230
+       Josh Green 2022-23          0.2235
+        Max Strus 2021-22          0.2333
+    Corey Kispert 2022-23          0.2344
+       AJ Griffin 2022-23          0.2432
+  Duncan Robinson 2021-22          0.2721
+
+  fringe_rotation — 20 distants :
+       player_name  saison  archetype_conf
+       Jaden Hardy 2023-24          0.0659
+    Gordon Hayward 2022-23          0.0867
+  D'Angelo Russell 2024-25          0.1012
+    Damian Lillard 2023-24          0.1046
+ Tyrese Haliburton 2024-25          0.1092
+        Trae Young 2023-24          0.1143
+     Miles Bridges 2025-26          0.1150
+   Khris Middleton 2024-25          0.1296
+   Khris Middleton 2023-24          0.1440
+    Jalen Williams 2025-26          0.1460
+      De'Aaron Fox 2025-26          0.1494
+  D'Angelo Russell 2023-24          0.1552
+   Jordan Clarkson 2023-24          0.1589
+      Desmond Bane 2024-25          0.1618
+  Jimmy Butler III 2024-25          0.1797
+        Malik Monk 2024-25          0.1874
+Karl-Anthony Towns 2022-23          0.2046
+   Anfernee Simons 2024-25          0.2397
+       Tyler Herro 2025-26          0.2663
+       Tyler Herro 2022-23          0.2672
+
+  raw_prospect — 18 distants :
+     player_name  saison  archetype_conf
+        Rudy Gay 2022-23          0.0741
+     Zach LaVine 2023-24          0.1082
+    Cam Whitmore 2024-25          0.1240
+    Jordan Poole 2023-24          0.1353
+Bojan Bogdanovic 2023-24          0.1364
+      Obi Toppin 2022-23          0.1408
+ Lauri Markkanen 2024-25          0.1639
+  Keldon Johnson 2023-24          0.1662
+  Andrew Wiggins 2023-24          0.1704
+    Bradley Beal 2023-24          0.1710
+ Trendon Watford 2025-26          0.1824
+Ricky Council IV 2024-25          0.1987
+     Will Barton 2022-23          0.2110
+ Cameron Johnson 2023-24          0.2176
+   Jaylen Nowell 2023-24          0.2307
+   Kevin Huerter 2023-24          0.2604
+Jonathan Kuminga 2022-23          0.2626
+   Luguentz Dort 2022-23          0.2952
+
+  rim_protector — 3 distants :
+    player_name  saison  archetype_conf
+     Tari Eason 2025-26          0.2113
+Justise Winslow 2022-23          0.2270
+ Markelle Fultz 2023-24          0.2459
+
+  scoring_big — 7 distants :
+     player_name  saison  archetype_conf
+    Reggie Perry 2021-22          0.1382
+   Cheick Diallo 2021-22          0.1851
+   Jae'Sean Tate 2021-22          0.2088
+    Moses Wright 2021-22          0.2143
+Vernon Carey Jr. 2021-22          0.2632
+    Daniel Oturu 2021-22          0.2644
+    Chima Moneke 2022-23          0.2701
+
+  shot_blocker — 35 distants :
+          player_name  saison  archetype_conf
+           Taj Gibson 2023-24          0.0378
+       Garrett Temple 2025-26          0.0473
+       Romeo Langford 2022-23          0.0492
+        Justin Minaya 2024-25          0.0494
+     Facundo Campazzo 2022-23          0.0506
+         Caleb Martin 2023-24          0.0508
+          Jae Crowder 2024-25          0.0519
+       David Duke Jr. 2022-23          0.0522
+      Frank Ntilikina 2023-24          0.0541
+         Dillon Jones 2025-26          0.0542
+    Justin Champagnie 2022-23          0.0565
+        James Johnson 2022-23          0.0605
+Juan Toscano-Anderson 2023-24          0.0607
+         Nerlens Noel 2022-23          0.0617
+           Khem Birch 2022-23          0.0641
+       Sterling Brown 2022-23          0.0669
+     Josh Christopher 2022-23          0.0678
+         Usman Garuba 2023-24          0.0680
+          Cody Martin 2022-23          0.0767
+       Greg Brown III 2022-23          0.1287
+           AJ Griffin 2023-24          0.1355
+          Cody Martin 2025-26          0.1454
+           Chris Paul 2025-26          0.1625
+         Joe Wieskamp 2022-23          0.1708
+          Kobe Bufkin 2025-26          0.1829
+           Kyle Lowry 2025-26          0.1867
+         Jevon Carter 2023-24          0.1935
+           Joe Ingles 2024-25          0.1943
+          Dario Saric 2025-26          0.2055
+         Gabe Vincent 2023-24          0.2156
+     Ryan Arcidiacono 2022-23          0.2580
+           Jeff Green 2025-26          0.2595
+         Sidy Cissoko 2024-25          0.2652
+            Ty Jerome 2023-24          0.2688
+     Taylor Hendricks 2024-25          0.2906
+
+  spot_up_shooter — 17 distants :
+     player_name  saison  archetype_conf
+Alondes Williams 2022-23          0.0977
+   Jaysean Paige 2021-22          0.1332
+      Alex Fudge 2023-24          0.1366
+     Rob Edwards 2021-22          0.1472
+      Sam Dekker 2021-22          0.1501
+  Emanuel Miller 2025-26          0.1503
+      Taze Moore 2023-24          0.1536
+   Stanley Umude 2025-26          0.1566
+ Dariq Whitehead 2025-26          0.1756
+ Jahmi'us Ramsey 2021-22          0.1830
+    Trevor Keels 2022-23          0.2059
+   Javonte Smart 2023-24          0.2227
+ Trentyn Flowers 2024-25          0.2640
+   Tyson Etienne 2024-25          0.2670
+    Sean Pedulla 2025-26          0.2723
+       Matt Ryan 2024-25          0.2804
+        Kyle Guy 2021-22          0.2809
+
+  star_fading — 5 distants :
+  player_name  saison  archetype_conf
+Nicolas Batum 2024-25          0.1102
+    Dean Wade 2023-24          0.1171
+Hugo González 2025-26          0.1542
+Royce O'Neale 2022-23          0.2229
+    Dean Wade 2025-26          0.2681
+
+  superstar — 1 distants :
+player_name  saison  archetype_conf
+Bam Adebayo 2023-24          0.0873
+
+Total distants toutes catégories : 562
+
+── CLUSTERS DÉTAIL 4D_mcs20_leaf ─────────────────────────────────────
+  OUTLIERS unclassified           n=883   conf_moy=0.088  stars=['LeBron James', 'Stephen Curry', 'Klay Thompson', 'Anthony Davis']
+  C0   fringe_rotation        n=49    conf_moy=0.587  stars=['LeBron James', 'Kevin Durant', 'Damian Lillard', 'Karl-Anthony Towns']
+  C1   replacement_level      n=27    conf_moy=1.000  stars=['Franz Wagner']
+  C2   raw_prospect           n=47    conf_moy=0.590  stars=[]
+  C3   developmental_big      n=57    conf_moy=0.568  stars=[]
+  C4   rim_protector          n=27    conf_moy=0.848  stars=[]
+  C5   shot_blocker           n=62    conf_moy=0.445  stars=[]
+  C6   physical_big           n=34    conf_moy=0.941  stars=[]
+  C7   scoring_big            n=29    conf_moy=0.777  stars=[]
+  C8   declining_vet          n=32    conf_moy=0.730  stars=[]
+  C9   solid_rotation         n=29    conf_moy=0.956  stars=['Klay Thompson', 'Damian Lillard', 'Trae Young', 'Tyrese Haliburton']
+  C10  ascending_wing         n=31    conf_moy=0.981  stars=['LeBron James', 'Damian Lillard', 'Devin Booker', 'Jayson Tatum']
+  C11  3and_d_wing            n=77    conf_moy=0.373  stars=['LeBron James', 'Rudy Gobert', 'Giannis Antetokounmpo', 'Karl-Anthony Towns']
+  C12  superstar              n=22    conf_moy=0.959  stars=['Kevin Durant', 'Giannis Antetokounmpo', 'Joel Embiid', 'Karl-Anthony Towns']
+  C13  declining_star         n=22    conf_moy=0.967  stars=[]
+  C14  star_fading            n=33    conf_moy=0.839  stars=[]
+  C15  franchise_player       n=63    conf_moy=0.470  stars=[]
+  C16  3and_d_specialist      n=25    conf_moy=0.890  stars=[]
+  C17  spot_up_shooter        n=47    conf_moy=0.586  stars=[]
+  C18  cluster_18             n=26    conf_moy=1.000  stars=[]
+  C19  cluster_19             n=43    conf_moy=0.502  stars=[]
+  C20  cluster_20             n=96    conf_moy=0.457  stars=[]
+  C21  cluster_21             n=79    conf_moy=0.419  stars=[]
+  C22  cluster_22             n=56    conf_moy=0.750  stars=[]
+  C23  cluster_23             n=65    conf_moy=0.465  stars=[]
+  C24  cluster_24             n=21    conf_moy=0.955  stars=[]
+  C25  cluster_25             n=55    conf_moy=0.462  stars=[]
+  C26  cluster_26             n=134   conf_moy=0.270  stars=['Anthony Davis', 'Damian Lillard', 'Devin Booker', 'Franz Wagner']
+  C27  cluster_27             n=39    conf_moy=0.637  stars=['Rudy Gobert']
+  C28  cluster_28             n=35    conf_moy=0.696  stars=[]
+  C29  cluster_29             n=32    conf_moy=0.657  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+
+→ soft_assignment_4d_mcs20_leaf.csv exporté
+
+======================================================================
+CONFIG 6D_mcs15_eom — UMAP n_components=6
+======================================================================
+Pool : 2277 joueurs-saisons
+Calcul UMAP 6D_mcs15_eom...
+Clustering HDBSCAN 6D_mcs15_eom (precomputed cosine, mcs=15, ms=2, csm=eom)...
+→ 35 clusters, 690 outliers (30.3%)
+Calcul soft membership vectors 6D_mcs15_eom...
+
+── MÉTRIQUES 6D_mcs15_eom ──────────────────────────────────────────
+Clusters                 : 35
+Outliers HDBSCAN         : 690 (30.3%)
+Soft assignés (≥0.10)    : 87
+Vrais unclassified       : 603
+Double label             : 3 / 1587
+Conf moy. assignés       : 0.5413
+Conf moy. soft           : 0.1380
+
+── OUTLIERS STARS 6D_mcs15_eom ─────────────────────────────────────
+          player_name  saison      archetype  archetype_conf archetype_secondary  archetype_secondary_conf
+           Trae Young 2024-25     cluster_23          0.1708          cluster_26                    0.0667
+         Jayson Tatum 2021-22 ascending_wing          0.1419          cluster_23                    0.0765
+Giannis Antetokounmpo 2023-24   unclassified          0.1000                None                       NaN
+       Damian Lillard 2023-24   unclassified          0.0998                None                       NaN
+        Klay Thompson 2023-24   unclassified          0.0989                None                       NaN
+          Bam Adebayo 2022-23   unclassified          0.0955                None                       NaN
+         LeBron James 2024-25   unclassified          0.0850                None                       NaN
+          Bam Adebayo 2023-24   unclassified          0.0778                None                       NaN
+          Bam Adebayo 2021-22   unclassified          0.0701                None                       NaN
+         Jayson Tatum 2022-23   unclassified          0.0687                None                       NaN
+        Stephen Curry 2023-24   unclassified          0.0554                None                       NaN
+          Joel Embiid 2025-26   unclassified          0.0427                None                       NaN
+         Devin Booker 2022-23   unclassified          0.0425                None                       NaN
+   Karl-Anthony Towns 2025-26   unclassified          0.0405                None                       NaN
+          Rudy Gobert 2025-26   unclassified          0.0398                None                       NaN
+            Ja Morant 2024-25   unclassified          0.0398                None                       NaN
+        Stephen Curry 2025-26   unclassified          0.0381                None                       NaN
+          Bam Adebayo 2025-26   unclassified          0.0312                None                       NaN
+       Draymond Green 2023-24   unclassified          0.0292                None                       NaN
+         Devin Booker 2023-24   unclassified          0.0280                None                       NaN
+   Karl-Anthony Towns 2023-24   unclassified          0.0271                None                       NaN
+        Klay Thompson 2022-23   unclassified          0.0266                None                       NaN
+         Jayson Tatum 2023-24   unclassified          0.0221                None                       NaN
+         LeBron James 2023-24   unclassified          0.0206                None                       NaN
+          Bam Adebayo 2024-25   unclassified          0.0087                None                       NaN
+   Karl-Anthony Towns 2024-25   unclassified          0.0045                None                       NaN
+
+── DISTRIBUTION OUTLIERS 6D_mcs15_eom ──────────────────────────────
+archetype
+unclassified         603
+shot_blocker          27
+cluster_30            10
+cluster_23             9
+ascending_wing         6
+cluster_34             6
+3and_d_wing            5
+cluster_31             3
+cluster_32             3
+superstar              2
+spot_up_shooter        2
+scoring_big            2
+declining_vet          2
+cluster_29             2
+franchise_player       2
+cluster_28             1
+physical_big           1
+3and_d_specialist      1
+cluster_22             1
+developmental_big      1
+cluster_18             1
+
+── DOUBLE LABEL STARS 6D_mcs15_eom ─────────────────────────────────
+Empty DataFrame
+Columns: [player_name, saison, archetype, archetype_conf, archetype_secondary, archetype_secondary_conf]
+Index: []
+
+── MEMBRES DISTANTS PAR ARCHETYPE 6D_mcs15_eom (conf < 0.30) ───────
+
+  3and_d_specialist — 32 distants :
+           player_name  saison  archetype_conf
+     Mfiondu Kabengele 2022-23          0.0135
+        Malik Williams 2023-24          0.0137
+    Guerschon Yabusele 2024-25          0.0232
+           Ahmad Caver 2021-22          0.0234
+         Jeremy Sochan 2022-23          0.0238
+           Jordan Ford 2023-24          0.0260
+       Daeqwon Plowden 2024-25          0.0264
+         Bobi Klintman 2024-25          0.0265
+      Jarrell Brantley 2022-23          0.0269
+         Emanuel Terry 2021-22          0.0270
+            Obi Toppin 2023-24          0.0275
+       Kyle Filipowski 2024-25          0.0284
+        Meyers Leonard 2022-23          0.0297
+           D.J. Wilson 2023-24          0.0298
+            BJ Johnson 2021-22          0.0298
+          Anthony Gill 2025-26          0.0299
+       Trendon Watford 2022-23          0.0322
+         Drew Peterson 2023-24          0.0336
+        Mouhamed Gueye 2023-24          0.0342
+              Jay Huff 2023-24          0.0352
+       DaRon Holmes II 2025-26          0.0370
+            Jack White 2022-23          0.0373
+        Cameron Oliver 2021-22          0.0421
+  Jermaine Samuels Jr. 2023-24          0.0480
+Quinndary Weatherspoon 2021-22          0.0488
+       Harry Giles III 2023-24          0.0501
+          Jaylen Hoard 2021-22          0.0633
+          Reggie Perry 2021-22          0.0697
+         Jae'Sean Tate 2021-22          0.0792
+          Jahmir Young 2024-25          0.1077
+           Craig Sword 2021-22          0.1145
+       Skal Labissiere 2024-25          0.1657
+
+  3and_d_wing — 9 distants :
+     player_name  saison  archetype_conf
+Patrick Williams 2024-25          0.0716
+ Christian Braun 2025-26          0.0732
+      Saddiq Bey 2023-24          0.0923
+   Rui Hachimura 2024-25          0.0995
+         JT Thor 2022-23          0.1395
+   Isaiah Livers 2022-23          0.1937
+   Devin Vassell 2025-26          0.1941
+  Gary Trent Jr. 2024-25          0.2265
+ Pat Connaughton 2022-23          0.2641
+
+  ascending_wing — 10 distants :
+   player_name  saison  archetype_conf
+  Nikola Jokić 2025-26          0.0988
+  Nikola Jokić 2024-25          0.1086
+Alperen Sengun 2025-26          0.1192
+Scottie Barnes 2024-25          0.1370
+  Nikola Jokić 2023-24          0.1378
+  Nikola Jokić 2021-22          0.1428
+  Cooper Flagg 2025-26          0.1711
+  LeBron James 2021-22          0.1948
+ Pascal Siakam 2021-22          0.2004
+ Julius Randle 2021-22          0.2793
+
+  cluster_18 — 28 distants :
+       player_name  saison  archetype_conf
+   Sekou Doumbouya 2021-22          0.0235
+David Jones Garcia 2025-26          0.0309
+    Frank Kaminsky 2021-22          0.0322
+Isaiah Hartenstein 2025-26          0.0372
+    Emanuel Miller 2024-25          0.0615
+       Nate Hinton 2023-24          0.0627
+   Tristan Enaruna 2025-26          0.0701
+      Tony Bradley 2024-25          0.0707
+        Luka Garza 2025-26          0.0717
+        Luka Garza 2023-24          0.0735
+     Petr Cornelie 2021-22          0.0776
+   Cameron McGriff 2021-22          0.0820
+        Tolu Smith 2024-25          0.0835
+  Keita Bates-Diop 2021-22          0.0890
+        Luka Garza 2024-25          0.0906
+   Nae'Qwan Tomlin 2024-25          0.0906
+ Willy Hernangomez 2021-22          0.0925
+      N'Faly Dante 2025-26          0.0926
+        Paris Bass 2021-22          0.0965
+   James Ennis III 2021-22          0.0989
+    Oscar Tshiebwe 2023-24          0.1057
+    Scottie Barnes 2021-22          0.1063
+      Adama Sanogo 2023-24          0.1156
+       Luke Kornet 2021-22          0.1462
+ Freddie Gillespie 2021-22          0.1495
+      Kevon Looney 2024-25          0.2059
+   Markquis Nowell 2023-24          0.2093
+      Kevon Looney 2023-24          0.2500
+
+  cluster_19 — 16 distants :
+         player_name  saison  archetype_conf
+         Rudy Gobert 2024-25          0.0856
+      Andre Drummond 2025-26          0.0929
+       Nick Richards 2023-24          0.0990
+        Zach Collins 2024-25          0.1071
+        Jusuf Nurkić 2023-24          0.1079
+       Jalen Johnson 2022-23          0.1099
+Trayce Jackson-Davis 2024-25          0.1121
+         Ivica Zubac 2022-23          0.1126
+        Kelly Olynyk 2024-25          0.1326
+    Precious Achiuwa 2023-24          0.1375
+        Daniel Theis 2023-24          0.1393
+       Thomas Bryant 2024-25          0.1465
+           Adem Bona 2025-26          0.1547
+      Onyeka Okongwu 2023-24          0.1609
+       James Wiseman 2023-24          0.1736
+        Drew Eubanks 2022-23          0.1935
+
+  cluster_20 — 32 distants :
+       player_name  saison  archetype_conf
+      Jalen Wilson 2024-25          0.0209
+ Marcus Morris Sr. 2023-24          0.0262
+      Jordan Nwora 2021-22          0.0307
+  Kenrich Williams 2022-23          0.0356
+         Josh Hart 2023-24          0.0377
+       David Roddy 2022-23          0.0379
+  Tristan da Silva 2024-25          0.0382
+       Isaac Okoro 2022-23          0.0383
+Brandin Podziemski 2023-24          0.0389
+         Dean Wade 2023-24          0.0391
+     Dyson Daniels 2022-23          0.0402
+    Justin Holiday 2021-22          0.0403
+     Nicolas Batum 2024-25          0.0430
+     Caleb Houstan 2022-23          0.0451
+      John Konchar 2021-22          0.0461
+       Isaac Okoro 2021-22          0.0470
+        Tony Snell 2021-22          0.0485
+      Max Christie 2023-24          0.0488
+     Austin Reaves 2021-22          0.0525
+      Jevon Carter 2021-22          0.0547
+      Terance Mann 2024-25          0.0550
+     Hugo González 2025-26          0.0582
+         Dean Wade 2025-26          0.0654
+   Wesley Matthews 2021-22          0.0688
+   Wesley Matthews 2022-23          0.0763
+      Ben Sheppard 2024-25          0.0781
+     Ish Wainright 2022-23          0.1054
+    Taurean Prince 2024-25          0.1087
+     Luguentz Dort 2024-25          0.1366
+       P.J. Tucker 2021-22          0.1981
+         Dean Wade 2024-25          0.2651
+     Mikal Bridges 2021-22          0.2877
+
+  cluster_21 — 23 distants :
+       player_name  saison  archetype_conf
+    Grant Williams 2022-23          0.0448
+        AJ Griffin 2022-23          0.0547
+   Ziaire Williams 2021-22          0.0764
+        Josh Green 2022-23          0.0778
+   Pat Connaughton 2021-22          0.0915
+      Luke Kennard 2021-22          0.1016
+         Max Strus 2021-22          0.1064
+     Davis Bertans 2021-22          0.1084
+    Svi Mykhailiuk 2025-26          0.1111
+    Furkan Korkmaz 2021-22          0.1113
+        Sam Hauser 2023-24          0.1149
+  Ryan Arcidiacono 2021-22          0.1161
+   Trey Murphy III 2021-22          0.1197
+Reggie Bullock Jr. 2021-22          0.1265
+       Moses Moody 2022-23          0.1508
+   Wayne Ellington 2021-22          0.1734
+        Joe Harris 2022-23          0.1823
+     Corey Kispert 2021-22          0.1919
+      Ochai Agbaji 2022-23          0.2144
+      Jaylen Wells 2024-25          0.2301
+   Duncan Robinson 2025-26          0.2308
+        Damion Lee 2022-23          0.2395
+    Jamison Battle 2024-25          0.2640
+
+  cluster_22 — 11 distants :
+     player_name  saison  archetype_conf
+   Evan Fournier 2021-22          0.1463
+Tim Hardaway Jr. 2021-22          0.1504
+   Malik Beasley 2022-23          0.1676
+      Caleb Love 2025-26          0.1800
+     Buddy Hield 2021-22          0.1928
+   Kendrick Nunn 2022-23          0.2270
+   Luguentz Dort 2021-22          0.2413
+     Jalen Green 2021-22          0.2477
+    Ben McLemore 2021-22          0.2488
+Lonnie Walker IV 2021-22          0.2659
+      Saddiq Bey 2021-22          0.2782
+
+  cluster_23 — 30 distants :
+            player_name  saison  archetype_conf
+            Luka Dončić 2021-22          0.0844
+           LeBron James 2022-23          0.0850
+Shai Gilgeous-Alexander 2021-22          0.0961
+            Luka Dončić 2023-24          0.1057
+            Tyler Herro 2023-24          0.1085
+           Jaylen Brown 2022-23          0.1102
+           Jayson Tatum 2024-25          0.1160
+          Klay Thompson 2021-22          0.1333
+         Damian Lillard 2024-25          0.1348
+              Ja Morant 2021-22          0.1359
+            Zach LaVine 2021-22          0.1378
+         Jeremiah Fears 2025-26          0.1441
+          Stephen Curry 2024-25          0.1452
+            Jalen Green 2024-25          0.1481
+              Ja Morant 2022-23          0.1532
+           Desmond Bane 2023-24          0.1561
+           James Harden 2025-26          0.1603
+            CJ McCollum 2025-26          0.1625
+        Anfernee Simons 2022-23          0.1704
+        Anfernee Simons 2021-22          0.2003
+           Kon Knueppel 2025-26          0.2032
+         Keyonte George 2023-24          0.2301
+       Payton Pritchard 2025-26          0.2321
+            Tyler Herro 2021-22          0.2372
+           Jrue Holiday 2022-23          0.2407
+           Tyrese Maxey 2021-22          0.2492
+        Khris Middleton 2022-23          0.2655
+           Jordan Poole 2021-22          0.2707
+        Malcolm Brogdon 2022-23          0.2739
+           Jordan Poole 2022-23          0.2857
+
+  cluster_24 — 13 distants :
+       player_name  saison  archetype_conf
+       Evan Mobley 2021-22          0.0329
+           Bol Bol 2022-23          0.0498
+          Mo Bamba 2021-22          0.0605
+        Duop Reath 2023-24          0.0615
+         Alex Sarr 2024-25          0.0665
+        Al Horford 2021-22          0.0789
+       Brook Lopez 2024-25          0.0811
+     Matas Buzelis 2024-25          0.0837
+      Myles Turner 2021-22          0.1109
+          Naz Reid 2021-22          0.1310
+      Jerami Grant 2021-22          0.2276
+ Jaren Jackson Jr. 2023-24          0.2309
+Kristaps Porziņģis 2022-23          0.2694
+
+  cluster_25 — 11 distants :
+     player_name  saison  archetype_conf
+    VJ Edgecombe 2025-26          0.0506
+    Marcus Smart 2021-22          0.0776
+    Eric Bledsoe 2021-22          0.0782
+Dennis Smith Jr. 2022-23          0.0820
+    Lou Williams 2021-22          0.1089
+   Jason Preston 2022-23          0.1102
+     Xavier Moon 2021-22          0.1450
+       Tre Jones 2021-22          0.2071
+     Cory Joseph 2021-22          0.2403
+       Raul Neto 2021-22          0.2549
+   Aaron Holiday 2021-22          0.2784
+
+  cluster_26 — 11 distants :
+      player_name  saison  archetype_conf
+   Stephon Castle 2025-26          0.0372
+   T.J. McConnell 2025-26          0.0412
+  Scoot Henderson 2024-25          0.0423
+     Kelly Olynyk 2023-24          0.0454
+      Josh Giddey 2025-26          0.0492
+     James Harden 2021-22          0.0556
+      Josh Giddey 2024-25          0.0597
+     James Harden 2022-23          0.0680
+Russell Westbrook 2022-23          0.0710
+Tyrese Haliburton 2023-24          0.0942
+        Tre Jones 2024-25          0.2353
+
+  cluster_27 — 16 distants :
+        player_name  saison  archetype_conf
+       Jericho Sims 2022-23          0.1317
+       Jericho Sims 2025-26          0.1325
+    Trendon Watford 2021-22          0.1490
+Robert Williams III 2023-24          0.1509
+        Josh Minott 2022-23          0.1630
+      Dwight Powell 2021-22          0.1656
+     DeAndre Jordan 2025-26          0.1669
+     Marques Bolden 2023-24          0.1754
+        Nic Claxton 2025-26          0.1759
+        Cody Zeller 2022-23          0.1779
+     Brandon Clarke 2022-23          0.1900
+   Vladislav Goldin 2025-26          0.1998
+     Keshad Johnson 2024-25          0.2025
+        D.J. Wilson 2021-22          0.2063
+     Rocco Zikarsky 2025-26          0.2653
+        Isaiah Roby 2021-22          0.2725
+
+  cluster_28 — 45 distants :
+         player_name  saison  archetype_conf
+    Dereck Lively II 2024-25          0.0329
+        Goga Bitadze 2024-25          0.0335
+        Jaxson Hayes 2024-25          0.0336
+      Wenyen Gabriel 2022-23          0.0338
+ Robert Williams III 2025-26          0.0341
+        Jaxson Hayes 2025-26          0.0360
+   Derrick Jones Jr. 2022-23          0.0371
+         Luke Kornet 2023-24          0.0399
+         Nic Claxton 2022-23          0.0434
+         Jalen Smith 2024-25          0.0457
+      Walker Kessler 2024-25          0.0458
+         Rudy Gobert 2021-22          0.0470
+   LaMarcus Aldridge 2021-22          0.0520
+         Luke Kornet 2022-23          0.0568
+      Karlo Matković 2025-26          0.0582
+       Peyton Watson 2022-23          0.0630
+      Isaiah Stewart 2024-25          0.0655
+         Jalen Smith 2021-22          0.0719
+       Darius Bazley 2023-24          0.0969
+    Christian Koloko 2022-23          0.1018
+          Yves Missi 2025-26          0.1042
+         Nic Claxton 2023-24          0.1050
+         Luke Kornet 2024-25          0.1067
+  Isaiah Hartenstein 2021-22          0.1202
+Collin Murray-Boyles 2025-26          0.1339
+     Donovan Clingan 2024-25          0.1379
+      Isaiah Jackson 2025-26          0.1417
+      Dylan Cardwell 2025-26          0.1435
+      Daniel Gafford 2023-24          0.1560
+      Ariel Hukporti 2024-25          0.1578
+          Ibou Badji 2023-24          0.1613
+        Jaxson Hayes 2021-22          0.1638
+        JaVale McGee 2021-22          0.1657
+     Jalen McDaniels 2021-22          0.1689
+          Yves Missi 2024-25          0.1744
+          Taj Gibson 2021-22          0.1828
+         Rudy Gobert 2023-24          0.1851
+   Derrick Jones Jr. 2021-22          0.1934
+        Goga Bitadze 2023-24          0.2023
+       Chris Boucher 2022-23          0.2318
+      Walker Kessler 2022-23          0.2399
+        Damian Jones 2021-22          0.2426
+       Chris Boucher 2021-22          0.2459
+         Kel'el Ware 2024-25          0.2474
+           Zach Edey 2024-25          0.2827
+
+  cluster_29 — 28 distants :
+       player_name  saison  archetype_conf
+     Neemias Queta 2025-26          0.0430
+      Oso Ighodaro 2025-26          0.0442
+     Nick Richards 2022-23          0.0443
+Isaiah Hartenstein 2023-24          0.0452
+ Jaren Jackson Jr. 2024-25          0.0454
+      Olivier Sarr 2023-24          0.0461
+    Isaiah Jackson 2023-24          0.0481
+     Anthony Davis 2024-25          0.0569
+       Evan Mobley 2023-24          0.0621
+ Victor Wembanyama 2025-26          0.0779
+       Kel'el Ware 2025-26          0.0824
+         Paul Reed 2025-26          0.0839
+      Jakob Poeltl 2024-25          0.1030
+       Evan Mobley 2022-23          0.1229
+       Ivica Zubac 2023-24          0.1277
+     Chet Holmgren 2025-26          0.1330
+    JaMychal Green 2022-23          0.1419
+         Alex Sarr 2025-26          0.1430
+          Naz Reid 2022-23          0.1552
+   P.J. Washington 2022-23          0.1684
+    Daniel Gafford 2024-25          0.1809
+     Jarrett Allen 2025-26          0.2085
+     Matas Buzelis 2025-26          0.2342
+       Evan Mobley 2024-25          0.2398
+        Al Horford 2025-26          0.2585
+   Donovan Clingan 2025-26          0.2806
+  Precious Achiuwa 2025-26          0.2876
+     Keegan Murray 2025-26          0.2955
+
+  cluster_31 — 2 distants :
+      player_name  saison  archetype_conf
+De'Anthony Melton 2025-26          0.2470
+        Dru Smith 2025-26          0.2914
+
+  cluster_32 — 55 distants :
+            player_name  saison  archetype_conf
+      De'Anthony Melton 2024-25          0.0389
+          Grayson Allen 2025-26          0.0567
+Shai Gilgeous-Alexander 2024-25          0.0651
+            Luka Dončić 2022-23          0.0662
+          Julius Randle 2025-26          0.0725
+       Jimmy Butler III 2022-23          0.0729
+           Jrue Holiday 2025-26          0.0734
+       Donovan Mitchell 2022-23          0.0836
+           Kyrie Irving 2022-23          0.0894
+       Jimmy Butler III 2025-26          0.0900
+    Talen Horton-Tucker 2022-23          0.0964
+        Trey Murphy III 2025-26          0.0983
+           Ryan Rollins 2025-26          0.0991
+          Kawhi Leonard 2025-26          0.1035
+          Stephen Curry 2022-23          0.1067
+           Bradley Beal 2022-23          0.1096
+          Julius Randle 2022-23          0.1104
+            Deni Avdija 2024-25          0.1137
+           Caris LeVert 2023-24          0.1140
+            CJ McCollum 2023-24          0.1155
+       Donovan Mitchell 2025-26          0.1194
+           Tyrese Maxey 2025-26          0.1231
+              Tre Jones 2025-26          0.1239
+      Tyrese Haliburton 2022-23          0.1303
+      Spencer Dinwiddie 2022-23          0.1353
+           Jamal Murray 2023-24          0.1438
+         Keyonte George 2024-25          0.1464
+      Immanuel Quickley 2023-24          0.1475
+          Austin Reaves 2023-24          0.1502
+           James Harden 2024-25          0.1517
+         Jalen Williams 2024-25          0.1533
+            Luka Dončić 2025-26          0.1547
+        Quenton Jackson 2025-26          0.1712
+       Kevin Porter Jr. 2022-23          0.1740
+        Andrew Nembhard 2025-26          0.1768
+             RJ Barrett 2023-24          0.1800
+          Jalen Brunson 2022-23          0.1840
+             Coby White 2024-25          0.1860
+        Scoot Henderson 2025-26          0.1891
+         Darius Garland 2024-25          0.1925
+        Anthony Edwards 2022-23          0.1956
+         Paolo Banchero 2024-25          0.1987
+           Bones Hyland 2022-23          0.2022
+        Anfernee Simons 2023-24          0.2079
+         Paolo Banchero 2023-24          0.2155
+        Anthony Edwards 2023-24          0.2188
+          Miles Bridges 2024-25          0.2213
+             Coby White 2025-26          0.2243
+           Kemba Walker 2022-23          0.2266
+Shai Gilgeous-Alexander 2022-23          0.2272
+         Brandon Miller 2025-26          0.2296
+           Jaylen Brown 2025-26          0.2467
+      Immanuel Quickley 2022-23          0.2633
+           Franz Wagner 2023-24          0.2652
+           Franz Wagner 2024-25          0.2826
+
+  cluster_33 — 73 distants :
+        player_name  saison  archetype_conf
+      Javonte Green 2023-24          0.0131
+        Dario Saric 2023-24          0.0137
+         Kevin Love 2023-24          0.0143
+         GG Jackson 2025-26          0.0173
+       Tony Bradley 2022-23          0.0185
+       Santi Aldama 2024-25          0.0201
+       Jared Rhoden 2024-25          0.0211
+      Jeremy Sochan 2023-24          0.0217
+  Haywood Highsmith 2022-23          0.0225
+          Ryan Dunn 2025-26          0.0229
+Patrick Baldwin Jr. 2024-25          0.0235
+        Chuma Okeke 2024-25          0.0243
+      Spencer Jones 2025-26          0.0247
+      Malachi Flynn 2023-24          0.0273
+    Julian Phillips 2024-25          0.0281
+      Nate Williams 2025-26          0.0285
+       Anthony Lamb 2022-23          0.0302
+        Skylar Mays 2022-23          0.0322
+    James Bouknight 2023-24          0.0326
+        David Roddy 2025-26          0.0350
+   Taylor Hendricks 2025-26          0.0350
+       Shake Milton 2024-25          0.0357
+      Dylan Windler 2022-23          0.0410
+    Jaden McDaniels 2024-25          0.0415
+          Ty Jerome 2024-25          0.0433
+ Vince Williams Jr. 2025-26          0.0446
+        Kobe Bufkin 2024-25          0.0502
+         Vít Krejčí 2024-25          0.0504
+           Tre Mann 2023-24          0.0512
+   Chris Livingston 2024-25          0.0523
+       Kobi Simmons 2023-24          0.0534
+         Taze Moore 2024-25          0.0535
+   Vernon Carey Jr. 2022-23          0.0536
+      Buddy Boeheim 2023-24          0.0548
+     Jarrett Culver 2022-23          0.0555
+      Kevin Knox II 2024-25          0.0557
+      Isaiah Mobley 2024-25          0.0560
+      James Wiseman 2024-25          0.0561
+       Luke Travers 2025-26          0.0563
+       Blake Wesley 2023-24          0.0563
+        Moses Brown 2024-25          0.0602
+   MarJon Beauchamp 2024-25          0.0605
+    Jalen McDaniels 2024-25          0.0627
+    Isaiah Crawford 2025-26          0.0633
+      Pacôme Dadiet 2025-26          0.0642
+      Johnny Juzang 2025-26          0.0645
+     Ron Harper Jr. 2024-25          0.0678
+      Nate Williams 2023-24          0.0684
+       Nikola Jović 2023-24          0.0688
+     Trey Alexander 2025-26          0.0700
+    Ziaire Williams 2023-24          0.0732
+       Santi Aldama 2022-23          0.0747
+     Brandon Boston 2024-25          0.0764
+    Enrique Freeman 2025-26          0.0811
+         Kyle Kuzma 2025-26          0.0996
+     Xavier Tillman 2025-26          0.1018
+  Simone Fontecchio 2023-24          0.1156
+TyTy Washington Jr. 2025-26          0.1207
+        Mac McClung 2025-26          0.1431
+      Jordan Miller 2025-26          0.1576
+         Joe Ingles 2025-26          0.1621
+       Xavier Sneed 2022-23          0.1638
+       Chris Duarte 2024-25          0.1667
+     Dereon Seabron 2023-24          0.1852
+     Bryce McGowens 2025-26          0.2331
+    Trentyn Flowers 2025-26          0.2387
+         Pete Nance 2024-25          0.2418
+     Daniss Jenkins 2025-26          0.2475
+ Shaquille Harrison 2022-23          0.2478
+     Jordan Goodwin 2022-23          0.2523
+        Sam Merrill 2022-23          0.2640
+ Vince Williams Jr. 2023-24          0.2800
+    Jeff Dowtin Jr. 2023-24          0.2874
+
+  cluster_34 — 23 distants :
+             player_name  saison  archetype_conf
+           Tobias Harris 2023-24          0.1285
+        Jonathan Kuminga 2023-24          0.1507
+            Kevon Harris 2023-24          0.1508
+          Andrew Wiggins 2024-25          0.1684
+         Lauri Markkanen 2022-23          0.1691
+           Peyton Watson 2025-26          0.1750
+             Deni Avdija 2023-24          0.1845
+            Jaylen Wells 2025-26          0.2281
+          Kyshawn George 2025-26          0.2331
+      Michael Porter Jr. 2025-26          0.2529
+         Lauri Markkanen 2025-26          0.2541
+         Kelly Oubre Jr. 2022-23          0.2607
+       Lindell Wigginton 2022-23          0.2628
+        Kenrich Williams 2025-26          0.2643
+      Bennedict Mathurin 2025-26          0.2668
+        Keita Bates-Diop 2022-23          0.2819
+         De'Andre Hunter 2024-25          0.2842
+           Killian Hayes 2024-25          0.2845
+         Cameron Johnson 2024-25          0.2895
+            Joshua Primo 2022-23          0.2903
+          Quentin Grimes 2024-25          0.2921
+Nickeil Alexander-Walker 2024-25          0.2940
+            Jerami Grant 2025-26          0.2964
+
+  declining_vet — 9 distants :
+      player_name  saison  archetype_conf
+  Dejounte Murray 2024-25          0.1085
+   Gordon Hayward 2022-23          0.1277
+    Fred VanVleet 2023-24          0.1521
+      Josh Giddey 2023-24          0.1784
+ D'Angelo Russell 2024-25          0.1864
+Immanuel Quickley 2025-26          0.2335
+ D'Angelo Russell 2023-24          0.2354
+       Trae Young 2023-24          0.2366
+Tyrese Haliburton 2024-25          0.2473
+
+  developmental_big — 24 distants :
+        player_name  saison  archetype_conf
+            Cui Cui 2024-25          0.0367
+  Robert Woodard II 2021-22          0.0517
+     Jordan Schakel 2021-22          0.0522
+        Andrew Funk 2023-24          0.0559
+         Cat Barber 2021-22          0.0575
+      Jason Preston 2023-24          0.0612
+       Curtis Jones 2025-26          0.0701
+TyTy Washington Jr. 2024-25          0.0720
+     Brodric Thomas 2021-22          0.0778
+  Dmytro Skapintsev 2023-24          0.0803
+    Phillip Wheeler 2024-25          0.0819
+        Zyon Pullin 2024-25          0.0836
+       Solomon Hill 2021-22          0.0850
+      Jaylen Morris 2021-22          0.0913
+     Jalen Crutcher 2023-24          0.0919
+    Jerome Robinson 2023-24          0.1017
+          Matt Ryan 2021-22          0.1243
+        Henri Drell 2023-24          0.1681
+     Jazian Gortman 2024-25          0.1689
+         Jay Scrubb 2021-22          0.1985
+       Trevor Keels 2025-26          0.2016
+      Armoni Brooks 2023-24          0.2134
+         Joel Ayayi 2021-22          0.2175
+       Alex Morales 2025-26          0.2844
+
+  franchise_player — 32 distants :
+             player_name  saison  archetype_conf
+         Daeqwon Plowden 2025-26          0.0390
+           Aaron Nesmith 2025-26          0.0427
+         Khris Middleton 2025-26          0.0432
+             Tyler Smith 2025-26          0.0462
+          Victor Oladipo 2022-23          0.0511
+           Drew Peterson 2024-25          0.0548
+         Dejounte Murray 2022-23          0.0560
+           Luguentz Dort 2023-24          0.0568
+            Chris Duarte 2022-23          0.0578
+              Taj Gibson 2023-24          0.0593
+             Dario Saric 2024-25          0.0595
+           Chris Boucher 2025-26          0.0601
+             Bruce Brown 2023-24          0.0624
+             Gradey Dick 2025-26          0.0669
+         Davion Mitchell 2022-23          0.0691
+Nickeil Alexander-Walker 2023-24          0.0699
+           Dalano Banton 2025-26          0.0719
+            Terance Mann 2025-26          0.0770
+              Tyus Jones 2025-26          0.0903
+             Daishen Nix 2022-23          0.0913
+         Justise Winslow 2022-23          0.0927
+              Tari Eason 2025-26          0.0931
+              OG Anunoby 2023-24          0.1032
+             Mike Conley 2025-26          0.1227
+           Terence Davis 2022-23          0.1274
+         Nae'Qwan Tomlin 2025-26          0.1368
+           Aaron Holiday 2022-23          0.1994
+Kentavious Caldwell-Pope 2022-23          0.2034
+          Markelle Fultz 2023-24          0.2100
+        Patrick Beverley 2022-23          0.2114
+        Lindy Waters III 2024-25          0.2184
+          Thaddeus Young 2022-23          0.2733
+
+  fringe_rotation — 19 distants :
+       player_name  saison  archetype_conf
+     Mason Plumlee 2025-26          0.0341
+       Chris Silva 2021-22          0.0348
+          Ed Davis 2021-22          0.0355
+    Amari Williams 2025-26          0.0398
+        Tyler Cook 2021-22          0.0412
+     Dwight Powell 2025-26          0.0438
+      Olivier Sarr 2025-26          0.0477
+         Kai Jones 2021-22          0.0776
+       Adou Thiero 2025-26          0.0837
+    Omer Yurtseven 2025-26          0.0896
+      Grant Nelson 2025-26          0.1033
+Chandler Hutchison 2021-22          0.1190
+      Sidy Cissoko 2023-24          0.1762
+        Mark Sears 2025-26          0.2177
+       Mason Jones 2021-22          0.2252
+   Lester Quinones 2022-23          0.2257
+    Filip Petrusev 2023-24          0.2485
+Alex Antetokounmpo 2025-26          0.2495
+     Stanley Umude 2022-23          0.2588
+
+  physical_big — 51 distants :
+        player_name  saison  archetype_conf
+       E.J. Liddell 2023-24          0.0319
+        Mason Jones 2023-24          0.0338
+       Hunter Tyson 2025-26          0.0352
+     Tremont Waters 2021-22          0.0401
+       Nikola Jović 2022-23          0.0413
+       Anton Watson 2024-25          0.0422
+       Jacob Toppin 2024-25          0.0452
+      Kevin Knox II 2021-22          0.0472
+      Maxwell Lewis 2023-24          0.0474
+    Jahmi'us Ramsey 2021-22          0.0516
+       Miles Norris 2024-25          0.0529
+    Markieff Morris 2023-24          0.0535
+      Pacôme Dadiet 2024-25          0.0537
+         Seth Lundy 2023-24          0.0560
+   Lucas Williamson 2025-26          0.0561
+   Alondes Williams 2022-23          0.0586
+        Theo Pinson 2021-22          0.0596
+        Isaiah Todd 2021-22          0.0598
+ Chaundee Brown Jr. 2021-22          0.0615
+ Vince Williams Jr. 2022-23          0.0620
+         Louis King 2021-22          0.0662
+       Josh Jackson 2021-22          0.0684
+         Aleem Ford 2021-22          0.0690
+      Javonte Cooke 2025-26          0.0761
+       Armel Traore 2024-25          0.0808
+      Scotty Hopson 2021-22          0.0809
+         Taze Moore 2023-24          0.0863
+           Miye Oni 2021-22          0.0865
+     Chucky Hepburn 2025-26          0.0876
+  Deividas Sirvydis 2021-22          0.0881
+        George King 2021-22          0.0915
+        Jordan Hall 2022-23          0.0916
+    Dariq Whitehead 2023-24          0.0943
+    Payton Sandfort 2025-26          0.0951
+         Alex Fudge 2023-24          0.1003
+       Kobi Simmons 2022-23          0.1042
+     Emanuel Miller 2025-26          0.1136
+         Sam Dekker 2021-22          0.1188
+      Stanley Umude 2025-26          0.1260
+    Trentyn Flowers 2024-25          0.1367
+     Dakota Mathias 2021-22          0.1478
+Patrick Baldwin Jr. 2022-23          0.1584
+Jalen Hood-Schifino 2023-24          0.1652
+       Carlik Jones 2021-22          0.1689
+         Pete Nance 2023-24          0.1772
+      Jaysean Paige 2021-22          0.1818
+     Justin Jackson 2021-22          0.2032
+     Sharife Cooper 2021-22          0.2052
+      Javonte Smart 2023-24          0.2071
+       Didi Louzada 2021-22          0.2116
+      David Johnson 2021-22          0.2278
+
+  raw_prospect — 19 distants :
+           player_name  saison  archetype_conf
+       Jamorko Pickett 2021-22          0.0250
+          Jared Rhoden 2022-23          0.0349
+        Tidjane Salaün 2024-25          0.0400
+         Blake Griffin 2021-22          0.0471
+   Dorian Finney-Smith 2023-24          0.0570
+       Bilal Coulibaly 2023-24          0.0853
+        Oshae Brissett 2021-22          0.0878
+           Deni Avdija 2022-23          0.0991
+Jeremiah Robinson-Earl 2021-22          0.1040
+            Kobe Brown 2025-26          0.1051
+       Jaylin Williams 2022-23          0.1083
+Jeremiah Robinson-Earl 2024-25          0.1187
+   Willie Cauley-Stein 2021-22          0.1204
+          Terry Taylor 2023-24          0.1274
+            Trey Lyles 2024-25          0.1286
+           Noah Vonleh 2022-23          0.1342
+            Wes Iwundu 2021-22          0.1439
+           Deni Avdija 2021-22          0.1525
+         James Johnson 2021-22          0.2588
+
+  rim_protector — 12 distants :
+     player_name  saison  archetype_conf
+      Vít Krejčí 2025-26          0.0891
+     Sam Merrill 2023-24          0.1008
+  David Duke Jr. 2024-25          0.1344
+   Lamar Stevens 2024-25          0.1365
+   Nassir Little 2022-23          0.1404
+    Jevon Carter 2023-24          0.1565
+  Rob Dillingham 2025-26          0.1698
+   Jose Alvarado 2022-23          0.2142
+     T.J. Warren 2023-24          0.2245
+    Gabe Vincent 2023-24          0.2491
+Ryan Arcidiacono 2022-23          0.2757
+      AJ Griffin 2023-24          0.2978
+
+  shot_blocker — 6 distants :
+             player_name  saison  archetype_conf
+          Brandon Boston 2021-22          0.1730
+            Kaiser Gates 2023-24          0.1751
+Nickeil Alexander-Walker 2021-22          0.1926
+          Jamaree Bouyea 2022-23          0.2147
+        Josh Christopher 2024-25          0.2225
+     TyTy Washington Jr. 2023-24          0.2299
+
+  solid_rotation — 16 distants :
+       player_name  saison  archetype_conf
+  Domantas Sabonis 2022-23          0.0533
+ Marvin Bagley III 2022-23          0.0562
+     Tobias Harris 2021-22          0.0636
+  Domantas Sabonis 2024-25          0.0667
+         Josh Hart 2021-22          0.0670
+  Domantas Sabonis 2021-22          0.0679
+Aleksej Pokusevski 2021-22          0.0769
+     Cedric Coward 2025-26          0.0815
+     James Wiseman 2022-23          0.0838
+    Maxime Raynaud 2025-26          0.0862
+       Dario Saric 2022-23          0.0919
+     Moritz Wagner 2021-22          0.1026
+ Marvin Bagley III 2021-22          0.1043
+        Kevin Love 2021-22          0.1054
+ Jonas Valančiūnas 2024-25          0.1206
+       Darius Days 2022-23          0.2669
+
+  star_fading — 39 distants :
+       player_name  saison  archetype_conf
+   Kelly Oubre Jr. 2024-25          0.0222
+   DaQuan Jeffries 2024-25          0.0239
+      Ochai Agbaji 2023-24          0.0246
+     Lamar Stevens 2022-23          0.0254
+Zaccharie Risacher 2025-26          0.0258
+ Julian Champagnie 2023-24          0.0284
+     Keegan Murray 2024-25          0.0286
+       Zach LaVine 2023-24          0.0298
+   P.J. Washington 2023-24          0.0304
+      Quinten Post 2025-26          0.0318
+        Trey Lyles 2022-23          0.0345
+      Bradley Beal 2023-24          0.0373
+    Keldon Johnson 2023-24          0.0377
+      John Collins 2022-23          0.0410
+   Kelly Oubre Jr. 2023-24          0.0440
+    Andrew Wiggins 2025-26          0.0442
+      John Collins 2025-26          0.0446
+     Tobias Harris 2024-25          0.0485
+    Andrew Wiggins 2023-24          0.0531
+    Christian Wood 2023-24          0.0537
+  Jonathan Kuminga 2022-23          0.0550
+      Mike Muscala 2022-23          0.0565
+       Zach LaVine 2025-26          0.0565
+      Bradley Beal 2024-25          0.0577
+      Jerami Grant 2024-25          0.0595
+       Paul George 2024-25          0.0599
+  Bojan Bogdanovic 2023-24          0.0629
+      Caris LeVert 2022-23          0.0661
+      Jordan Poole 2023-24          0.0770
+    Quentin Grimes 2025-26          0.0848
+        Kevin Love 2022-23          0.0945
+    Reggie Jackson 2022-23          0.0974
+       Buddy Hield 2023-24          0.1080
+Kenneth Lofton Jr. 2023-24          0.1133
+     Tobias Harris 2022-23          0.1223
+     Jaylen Nowell 2023-24          0.1778
+  Ricky Council IV 2024-25          0.2383
+      Jrue Holiday 2023-24          0.2808
+     Luguentz Dort 2022-23          0.2809
+
+  superstar — 1 distants :
+    player_name  saison  archetype_conf
+Justise Winslow 2021-22          0.2345
+
+Total distants toutes catégories : 696
+
+── CLUSTERS DÉTAIL 6D_mcs15_eom ─────────────────────────────────────
+  OUTLIERS unclassified           n=690   conf_moy=0.057  stars=['LeBron James', 'Stephen Curry', 'Klay Thompson', 'Damian Lillard']
+  C0   fringe_rotation        n=37    conf_moy=0.497  stars=[]
+  C1   replacement_level      n=16    conf_moy=0.967  stars=[]
+  C2   raw_prospect           n=35    conf_moy=0.498  stars=[]
+  C3   developmental_big      n=48    conf_moy=0.448  stars=[]
+  C4   rim_protector          n=115   conf_moy=0.735  stars=[]
+  C5   shot_blocker           n=49    conf_moy=0.789  stars=[]
+  C6   physical_big           n=81    conf_moy=0.360  stars=[]
+  C7   scoring_big            n=16    conf_moy=1.000  stars=['Draymond Green']
+  C8   declining_vet          n=49    conf_moy=0.747  stars=['LeBron James', 'Kevin Durant', 'Karl-Anthony Towns', 'Devin Booker']
+  C9   solid_rotation         n=31    conf_moy=0.532  stars=[]
+  C10  ascending_wing         n=27    conf_moy=0.689  stars=['LeBron James', 'Kevin Durant', 'Giannis Antetokounmpo', 'Joel Embiid']
+  C11  3and_d_wing            n=28    conf_moy=0.639  stars=[]
+  C12  superstar              n=23    conf_moy=0.967  stars=[]
+  C13  declining_star         n=15    conf_moy=1.000  stars=[]
+  C14  star_fading            n=57    conf_moy=0.332  stars=['Klay Thompson']
+  C15  franchise_player       n=48    conf_moy=0.391  stars=[]
+  C16  3and_d_specialist      n=52    conf_moy=0.412  stars=[]
+  C17  spot_up_shooter        n=15    conf_moy=1.000  stars=['Franz Wagner']
+  C18  cluster_18             n=46    conf_moy=0.408  stars=[]
+  C19  cluster_19             n=35    conf_moy=0.583  stars=['Rudy Gobert']
+  C20  cluster_20             n=48    conf_moy=0.382  stars=[]
+  C21  cluster_21             n=43    conf_moy=0.496  stars=[]
+  C22  cluster_22             n=37    conf_moy=0.711  stars=['Klay Thompson']
+  C23  cluster_23             n=93    conf_moy=0.613  stars=['LeBron James', 'Stephen Curry', 'Klay Thompson', 'Damian Lillard']
+  C24  cluster_24             n=30    conf_moy=0.599  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+  C25  cluster_25             n=26    conf_moy=0.640  stars=[]
+  C26  cluster_26             n=26    conf_moy=0.608  stars=['Tyrese Haliburton']
+  C27  cluster_27             n=36    conf_moy=0.583  stars=[]
+  C28  cluster_28             n=63    conf_moy=0.340  stars=['Rudy Gobert']
+  C29  cluster_29             n=53    conf_moy=0.434  stars=['Anthony Davis', 'Chet Holmgren', 'Victor Wembanyama']
+  C30  cluster_30             n=16    conf_moy=0.961  stars=[]
+  C31  cluster_31             n=18    conf_moy=0.885  stars=[]
+  C32  cluster_32             n=76    conf_moy=0.353  stars=['Stephen Curry', 'Damian Lillard', 'Devin Booker', 'Tyrese Haliburton']
+  C33  cluster_33             n=101   conf_moy=0.267  stars=[]
+  C34  cluster_34             n=98    conf_moy=0.551  stars=['Franz Wagner']
+
+→ soft_assignment_6d_mcs15_eom.csv exporté
+
+================================================================================
+COMPARATIF FINAL : 2D  vs  3D  vs  6D
+================================================================================
+Métrique                                     2D6D_mcs15_leaf4D_mcs20_leaf6D_mcs15_eom
+-----------------------------------------------------------------------------------
+  Clusters                                   16          43 →          30 →          35 →
+  Outliers HDBSCAN                          335         813 →         883 →         690 →
+  % outliers                            14.7000     35.7000 →     38.8000 →     30.3000 →
+  Soft assignés                             242         126 →         296 ✅          87 →
+  Vrais unclassified                         93         687 →         587 →         603 →
+  Total distants                            408         695 →         562 →         696 →
+  Conf moy. assignés                     0.6812      0.5467 →      0.5948 →      0.5413 →
+  Conf moy. soft                         0.1888      0.1748 →      0.1611 →      0.1380 →
+  Double label                              146          23 →          31 →           3 →
+
+── OUTLIERS STARS par config ───────────────────────────────────
+  2D : 11/92 stars en outlier (12.0%)
+  6D_mcs15_leaf : 35/92 stars en outlier (38.0%)
+  4D_mcs20_leaf : 32/92 stars en outlier (34.8%)
+  6D_mcs15_eom : 26/92 stars en outlier (28.3%)
 
 → viz_A_2d_reference.png
-→ viz_B_3d_projections.png
-→ viz_C_3d_scatter.png
-→ viz_D_confidence_comparison.png
-→ viz_E_3d_per_archetype.png
+-> viz_6d_mcs15_leaf_overview.png
+-> soft_assignment_6d_mcs15_leaf.csv exporte
+-> viz_4d_mcs20_leaf_overview.png
+-> soft_assignment_4d_mcs20_leaf.csv exporte
+-> viz_6d_mcs15_eom_overview.png
+-> soft_assignment_6d_mcs15_eom.csv exporte

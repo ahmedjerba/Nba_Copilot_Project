@@ -97,12 +97,15 @@ def optimize_trades(
     cap       = rules["thresholds"]["salary_cap"]
     under_cap = state.total_cap_hit <= cap
 
-    # ── Valeurs entières scalées (en milliers de $) ──────────────────────────
-    val_out_scaled = [
-        int((p.market_value or p.cap_hit) // _SCALE) for p in roster
+    # ── Valeurs de surplus scalées (en milliers de $) ────────────────────────
+    # Objectif CP-SAT : Maximiser le surplus net acquis (V_in - C_in) - (V_out - C_out)
+    surplus_out_scaled = [
+        int((p.surplus_value if p.surplus_value is not None else (p.market_value if p.market_value is not None else 0)) // _SCALE)
+        for p in roster
     ]
-    val_in_scaled = [
-        int((p.market_value or p.cap_hit) // _SCALE) for p in available
+    surplus_in_scaled = [
+        int((p.surplus_value if p.surplus_value is not None else (p.market_value if p.market_value is not None else 0)) // _SCALE)
+        for p in available
     ]
     cap_out_scaled = [int(p.cap_hit // _SCALE) for p in roster]
     cap_in_scaled  = [int(p.cap_hit // _SCALE) for p in available]
@@ -157,13 +160,18 @@ def optimize_trades(
         is_over_apron2 = bool(apron2 and state.total_cap_hit > apron2)
 
         if under_cap:
-            model.Add(salary_in_expr * 4 <= salary_out_expr * 5 + 400)
+            # En CBA, une équipe sous le cap peut soit utiliser son cap room libre (absorption directe),
+            # soit utiliser la règle de matching standard (125% + 100k)
+            cap_room_scaled = int(max(cap - state.total_cap_hit, 0) // _SCALE)
+            # salary_in <= salary_out + cap_room OU salary_in <= 1.25 * salary_out + 100
+            # Pour CP-SAT sous forme linéaire sûre :
+            model.Add(salary_in_expr <= salary_out_expr + max(cap_room_scaled, 5_000))
         elif is_over_apron2:
-            # Règle Second Apron CBA :
+            # Règle Second Apron CBA (Article VII, Section 2) :
             # - Interdiction de recevoir plus de salaire qu'envoyé (100% max, 0$ de marge)
-            # - Interdiction d'agréger plusieurs salaires entrants (1 seul joueur reçu)
+            # - Interdiction d'agréger plusieurs salaires SORTANTS (1 seul joueur envoyé max)
             model.Add(salary_in_expr <= salary_out_expr)
-            model.Add(sum(y[j] for j in range(n_in)) <= 1)
+            model.Add(sum(x[i] for i in range(n_out)) <= 1)
         else:
             model.Add(salary_in_expr <= salary_out_expr + 5_000)
 
@@ -190,10 +198,10 @@ def optimize_trades(
                 continue
             model.Add(sum(same_x) + sum(same_y) <= n_same - 1)
 
-        # ── Objectif : maximiser value_delta ─────────────────────────────────
+        # ── Objectif : maximiser le surplus net du trade ─────────────────────
         objective = (
-            sum(val_in_scaled[j]  * y[j] for j in range(n_in))
-            - sum(val_out_scaled[i] * x[i] for i in range(n_out))
+            sum(surplus_in_scaled[j]  * y[j] for j in range(n_in))
+            - sum(surplus_out_scaled[i] * x[i] for i in range(n_out))
         )
         model.Maximize(objective)
 
@@ -242,8 +250,8 @@ def optimize_trades(
                     cap_hit         = p.cap_hit,
                     base_salary     = p.base_salary,
                     years_remaining = p.years_remaining,
-                    estimated_value = p.market_value,
-                    surplus_value   = p.market_value,
+                    estimated_value = p.estimated_market_value if p.estimated_market_value is not None else p.cap_hit,
+                    surplus_value   = p.surplus_value if p.surplus_value is not None else p.market_value,
                 )
                 for p in players_out_list
             ],
@@ -256,8 +264,8 @@ def optimize_trades(
                     cap_hit         = p.cap_hit,
                     base_salary     = p.base_salary,
                     years_remaining = p.years_remaining,
-                    estimated_value = p.market_value,
-                    surplus_value   = p.market_value,
+                    estimated_value = p.estimated_market_value if p.estimated_market_value is not None else p.cap_hit,
+                    surplus_value   = p.surplus_value if p.surplus_value is not None else p.market_value,
                 )
                 for p in players_in_list
             ],

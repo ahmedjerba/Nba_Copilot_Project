@@ -1,18 +1,19 @@
-"""Découvre et nomme les archétypes de joueurs via UMAP + HDBSCAN."""
+"""Découvre et nomme dynamiquement les archétypes de joueurs via UMAP + HDBSCAN + Centroïdes sémantiques."""
 
-import pandas as pd
-import numpy as np
-import hdbscan
-from hdbscan import all_points_membership_vectors
 import pickle
 from pathlib import Path
 from typing import Optional
+import numpy as np
+import pandas as pd
 from sqlalchemy import text
-from umap import UMAP
 from sklearn.preprocessing import RobustScaler
+from sklearn.metrics.pairwise import cosine_distances
+from umap import UMAP
+import hdbscan
+from hdbscan import all_points_membership_vectors
 
 # ──────────────────────────────────────────────────────────────────
-# Config
+# Configuration des features et hyperparamètres
 # ──────────────────────────────────────────────────────────────────
 
 SIMILARITY_FEATURES = [
@@ -33,61 +34,39 @@ SIMILARITY_FEATURES = [
 ]
 
 UMAP_PARAMS = {
-    "n_components" : 2,
-    "n_neighbors"  : 20,       # ← 30 → 20
-    "min_dist"     : 0.1,
-    "metric"       : "cosine",
-    "random_state" : 42,
+    "n_components": 2,
+    "n_neighbors": 20,
+    "min_dist": 0.1,
+    "metric": "cosine",
+    "random_state": 42,
 }
 
 HDBSCAN_PARAMS = {
-    "min_cluster_size"        : 40,
-    "min_samples"             : 3,  # ← 5 → 3
-    "metric"                  : "euclidean",
+    "min_cluster_size": 40,
+    "min_samples": 3,
+    "metric": "euclidean",
     "cluster_selection_method": "eom",
-    "prediction_data"         : True,
+    "prediction_data": True,
 }
 
-# ── Seuils soft assignment ─────────────────────────────────────────
-# Pour les outliers HDBSCAN (label == -1)
-SOFT_PRIMARY_THRESHOLD       = 0.10   # proba min pour recevoir un label
-SOFT_SECONDARY_THRESHOLD     = 0.06   # proba min pour un label secondaire
-# Pour les points assignés par HDBSCAN
-ASSIGNED_CONF_MIN            = 0.15   # si conf < 0.15 → reclassification
-ASSIGNED_SECONDARY_THRESHOLD = 0.15   # proba min pour un label secondaire
+# Seuils pour soft-assignment
+SOFT_PRIMARY_THRESHOLD       = 0.10
+SOFT_SECONDARY_THRESHOLD     = 0.06
+ASSIGNED_CONF_MIN            = 0.15
+ASSIGNED_SECONDARY_THRESHOLD = 0.15
 
 OUTLIER_LABEL     = -1
 OUTLIER_ARCHETYPE = "unclassified"
 
-ARCHETYPE_NAMES = {
-    -1: "unclassified",
-     0: "fringe_rotation",
-     1: "replacement_level",
-     2: "raw_prospect",
-     3: "developmental_big",
-     4: "rim_protector",
-     5: "shot_blocker",
-     6: "physical_big",
-     7: "scoring_big",
-     8: "declining_vet",
-     9: "solid_rotation",
-    10: "ascending_wing",
-    11: "3and_d_wing",
-    12: "superstar",
-    13: "declining_star",
-    14: "star_fading",
-    15: "franchise_player",
-    16: "3and_d_specialist",
-    17: "spot_up_shooter",
-}
-
 UMAP_PATH      = Path("models/c5_umap.pkl")
 CLUSTERER_PATH = Path("models/c5_clusterer.pkl")
 SCALER_PATH    = Path("models/c5_role_scaler.pkl")
+NAMES_PATH     = Path("models/c5_archetype_names.pkl")
+CENTROIDS_PATH = Path("models/c5_cluster_centroids.pkl")
 
 
 # ──────────────────────────────────────────────────────────────────
-# Persistence
+# Persistance des modèles
 # ──────────────────────────────────────────────────────────────────
 
 def _save(obj, path: Path) -> None:
@@ -99,43 +78,140 @@ def _save(obj, path: Path) -> None:
 def _load(path: Path):
     if not path.exists():
         raise FileNotFoundError(
-            f"[role_engine] fichier introuvable : {path}\n"
-            "Lance build_and_save_roles() d'abord."
+            f"[role_engine] Fichier introuvable : {path}\n"
+            "Exécutez build_and_save_roles(engine) au préalable."
         )
     with open(path, "rb") as f:
         return pickle.load(f)
 
 
 # ──────────────────────────────────────────────────────────────────
-# Soft assignment
+# Nommage sémantique dynamique des clusters
 # ──────────────────────────────────────────────────────────────────
 
+def _classify_cluster_profile(sub: pd.DataFrame) -> str:
+    """
+    Attribue un nom d'archétype basketball explicite, distinct et réaliste à un cluster
+    en analysant les caractéristiques statistiques moyennes de ses membres.
+    """
+    pts = float(sub["pts_per100_shrunk"].mean())
+    ast = float(sub["ast_per100_shrunk"].mean())
+    blk = float(sub["blk_per100_shrunk"].mean())
+    stl = float(sub["stl_per100_shrunk"].mean())
+    thp = float(sub["three_rate"].mean())
+    ftr = float(sub["free_throw_rate"].mean())
+    usg = float(sub["usg_pct"].mean() * 100)
+    ts  = float(sub["ts_pct"].mean() * 100)
+    oreb = float(sub["oreb_pct"].mean() * 100)
+    pie = float(sub["pie"].mean() * 100)
+
+    # 1. Créateurs d'attaque majeurs / Superstars (PTS >= 27)
+    if pts >= 27.0:
+        if usg >= 26.5 and pie >= 13.0:
+            return "mvp_offensive_engine"
+        elif pts >= 29.8:
+            return "elite_shotmaker_scorer"
+        else:
+            return "primary_playmaker_creator"
+
+    # 2. Protecteurs d'arceau & intérieurs dominants
+    if blk >= 1.5 and thp <= 0.25:
+        if pts >= 22.5:
+            return "two_way_unicorn_big"
+        else:
+            return "defensive_anchor_rim_protector"
+
+    # 3. Intérieur d'impact au rebond offensif
+    if oreb >= 10.0 and thp <= 0.20:
+        return "offensive_glass_interior_big"
+
+    # 4. Spécialistes purs du tir extérieur (Catch & Shoot)
+    if thp >= 0.60:
+        return "spot_up_spacer"
+
+    # 5. Meneur défensif & voleur de ballon
+    if stl >= 2.0 and ast >= 5.5:
+        return "ball_hawk_playmaker"
+
+    # 6. Attaquant agressif vers le cercle (provoque des lancers)
+    if ftr >= 0.50:
+        return "slashing_foul_drawer"
+
+    # 7. Ailiers scoreurs extérieurs
+    if thp >= 0.48 and pts >= 22.0:
+        if usg >= 20.0:
+            return "microwave_volume_shooter"
+        else:
+            return "perimeter_scoring_wing"
+
+    # 8. Ailier connecteur & animateur
+    if ast >= 5.0 and pie >= 10.0:
+        return "connector_playmaking_forward"
+
+    # 9. Rotation faible usage
+    if usg <= 13.5:
+        return "low_usage_replacement_wing"
+
+    # 10. Ailier classique 3-and-D
+    if ts >= 50.0 and thp >= 0.50:
+        return "three_and_d_wing"
+
+    # 11. Meneur organisateur du banc
+    if ast >= 4.5 and thp <= 0.45:
+        return "secondary_bench_handler"
+
+    return "developmental_perimeter_wing"
+
+
+def _generate_archetype_names(df: pd.DataFrame, cluster_col: str = "cluster") -> dict[int, str]:
+    """
+    Génère un dictionnaire {cluster_id -> nom_archetype} unique et sémantique
+    pour tous les clusters découverts par HDBSCAN sans aucun suffixe numérique.
+    """
+    names: dict[int, str] = {OUTLIER_LABEL: OUTLIER_ARCHETYPE}
+    unique_clusters = sorted([c for c in df[cluster_col].unique() if c >= 0])
+    for c in unique_clusters:
+        sub = df[df[cluster_col] == c]
+        names[c] = _classify_cluster_profile(sub)
+
+    return names
+
+
+# ──────────────────────────────────────────────────────────────────
+# Centroïdes et Fallback Cosinus
+# ──────────────────────────────────────────────────────────────────
+
+def _compute_cluster_centroids(matrix: np.ndarray, labels: np.ndarray) -> dict[int, np.ndarray]:
+    """Calcule le centroïde 14D de chaque cluster valide (label >= 0)."""
+    centroids = {}
+    for l in set(labels):
+        if l >= 0:
+            centroids[l] = matrix[labels == l].mean(axis=0)
+    return centroids
+
+
 def _compute_soft_labels(
-    labels       : np.ndarray,
-    soft_vectors : np.ndarray,
+    labels: np.ndarray,
+    soft_vectors: np.ndarray,
+    matrix: np.ndarray,
+    centroids: dict[int, np.ndarray],
+    archetype_names: dict[int, str],
 ) -> list[dict]:
     """
-    Calcule les labels soft pour tous les points.
-
-    Logique :
-    - Point assigné par HDBSCAN (label != -1) :
-        * Si archetype_conf >= ASSIGNED_CONF_MIN → on garde le label HDBSCAN
-        * Si archetype_conf < ASSIGNED_CONF_MIN  → reclassification vers
-          le cluster avec la plus haute proba dans soft_vectors
-        * Label secondaire si un autre cluster dépasse ASSIGNED_SECONDARY_THRESHOLD
-    - Outlier (label == -1) :
-        * Si top1_prob >= SOFT_PRIMARY_THRESHOLD → label soft primaire
-        * Si top2_prob >= SOFT_SECONDARY_THRESHOLD → label soft secondaire
-        * Sinon → "unclassified"
-
-    Retourne une liste de dicts dans le même ordre que labels.
+    Calcule les labels d'archétypes pour tous les points :
+    - Point assigné par HDBSCAN : garde ou reclassifie si conf trop basse.
+    - Outlier HDBSCAN (-1) avec densité suffisante : rattrapé par soft membership vector.
+    - Outlier résiduel (ex: superstar atypique) : rattrapé par proximité cosinus avec le
+      centroïde d'archétype le plus proche.
     """
     results = []
+    centroid_keys = sorted(centroids.keys())
+    centroid_mat = np.array([centroids[k] for k in centroid_keys]) if centroid_keys else None
 
     for i, label in enumerate(labels):
-        probs      = soft_vectors[i]
-        is_outlier = (label == -1)
-        ranked     = sorted(enumerate(probs), key=lambda x: -x[1])
+        probs = soft_vectors[i]
+        is_outlier = (label == OUTLIER_LABEL)
+        ranked = sorted(enumerate(probs), key=lambda x: -x[1])
         top1_idx, top1_prob = ranked[0]
         top2_idx, top2_prob = ranked[1] if len(ranked) > 1 else (None, 0.0)
 
@@ -143,98 +219,92 @@ def _compute_soft_labels(
             hdbscan_prob = float(probs[label])
 
             if hdbscan_prob >= ASSIGNED_CONF_MIN:
-                # Point bien assigné — on garde le label HDBSCAN
-                primary_idx  = label
+                primary_idx = label
                 primary_prob = hdbscan_prob
                 is_reclassified = False
             else:
-                # Conf trop basse → reclassification vers le meilleur cluster
-                primary_idx  = top1_idx
+                primary_idx = top1_idx
                 primary_prob = float(top1_prob)
                 is_reclassified = True
 
-            primary_name = ARCHETYPE_NAMES.get(primary_idx, f"cluster_{primary_idx}")
+            primary_name = archetype_names.get(primary_idx, f"cluster_{primary_idx}")
 
-            # Label secondaire
+            # Label secondaire éventuel
             others = [(j, p) for j, p in ranked if j != primary_idx]
             sec_name, sec_prob = None, None
             if others and others[0][1] >= ASSIGNED_SECONDARY_THRESHOLD:
-                sec_name = ARCHETYPE_NAMES.get(others[0][0], f"cluster_{others[0][0]}")
+                sec_name = archetype_names.get(others[0][0], f"cluster_{others[0][0]}")
                 sec_prob = float(others[0][1])
 
         else:
             is_reclassified = False
 
             if top1_prob >= SOFT_PRIMARY_THRESHOLD:
-                primary_name = ARCHETYPE_NAMES.get(top1_idx, f"cluster_{top1_idx}")
+                # Rattrapage standard via soft membership
+                primary_idx = top1_idx
+                primary_name = archetype_names.get(primary_idx, f"cluster_{primary_idx}")
                 primary_prob = float(top1_prob)
 
                 sec_name, sec_prob = None, None
                 if top2_prob >= SOFT_SECONDARY_THRESHOLD and top2_idx != top1_idx:
-                    sec_name = ARCHETYPE_NAMES.get(top2_idx, f"cluster_{top2_idx}")
+                    sec_name = archetype_names.get(top2_idx, f"cluster_{top2_idx}")
                     sec_prob = float(top2_prob)
             else:
-                primary_name = "unclassified"
-                primary_prob = float(top1_prob)
-                sec_name, sec_prob = None, None
+                # Fallback centroïde pour les profils exceptionnels/isolés
+                if centroid_mat is not None and len(centroid_mat) > 0:
+                    dists = cosine_distances(matrix[i : i + 1], centroid_mat)[0]
+                    best_k_idx = int(np.argmin(dists))
+                    best_cluster_id = centroid_keys[best_k_idx]
+                    best_dist = float(dists[best_k_idx])
+
+                    primary_idx = best_cluster_id
+                    primary_name = archetype_names.get(best_cluster_id, f"cluster_{best_cluster_id}")
+                    # Confiance relative basée sur la proximité cosinus
+                    primary_prob = max(0.15, min(0.95, round(1.0 - best_dist / 2.0, 4)))
+                    sec_name, sec_prob = None, None
+                else:
+                    primary_name = OUTLIER_ARCHETYPE
+                    primary_prob = float(top1_prob)
+                    sec_name, sec_prob = None, None
 
         results.append({
-            "archetype":                primary_name,
-            "archetype_conf":           round(primary_prob, 4),
-            "archetype_secondary":      sec_name,
+            "archetype": primary_name,
+            "archetype_conf": round(primary_prob, 4),
+            "archetype_secondary": sec_name,
             "archetype_secondary_conf": round(sec_prob, 4) if sec_prob else None,
-            "is_soft_assigned":         bool(is_outlier),        # ← bool() natif
-            "is_reclassified":          bool(is_reclassified),   # ← bool() natif
-            "original_label":           int(label),
+            "is_soft_assigned": bool(is_outlier),
+            "is_reclassified": bool(is_reclassified),
+            "original_label": int(label),
         })
 
     return results
 
 
 # ──────────────────────────────────────────────────────────────────
-# Pipeline d'entraînement
-# ──────────────────────────────────────────────────────────────────
-
-def _fit_umap(matrix: np.ndarray) -> tuple[UMAP, np.ndarray]:
-    umap_model = UMAP(**UMAP_PARAMS)
-    coords     = umap_model.fit_transform(matrix)
-    return umap_model, coords
-
-
-def _fit_clusterer(coords: np.ndarray) -> hdbscan.HDBSCAN:
-    clusterer = hdbscan.HDBSCAN(**HDBSCAN_PARAMS)
-    clusterer.fit(coords)
-    return clusterer
-
-
-# ──────────────────────────────────────────────────────────────────
-# Écriture en base
+# Écriture en base PostgreSQL
 # ──────────────────────────────────────────────────────────────────
 
 def _save_assignments_to_db(
     engine,
-    df          : pd.DataFrame,
-    soft_labels : list[dict],
-    umap_coords : np.ndarray,
+    df: pd.DataFrame,
+    soft_labels: list[dict],
+    umap_coords: np.ndarray,
 ) -> None:
-    """
-    Persiste les assignments dans player_archetypes.
-    Inclut les colonnes soft assignment et double label.
-    """
+    """Persiste les affectations d'archétypes dans la table player_archetypes."""
     with engine.connect() as conn:
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS player_archetypes (
-                player_id               INTEGER,
-                saison                  VARCHAR,
-                cluster_label           INTEGER,
-                archetype               VARCHAR,
-                archetype_conf          FLOAT,
-                archetype_secondary     VARCHAR,
+                player_id                INTEGER,
+                saison                   VARCHAR,
+                cluster_label            INTEGER,
+                archetype                VARCHAR,
+                archetype_conf           FLOAT,
+                archetype_secondary      VARCHAR,
                 archetype_secondary_conf FLOAT,
-                is_soft_assigned        BOOLEAN,
-                is_reclassified         BOOLEAN,
-                umap_x                  FLOAT,
-                umap_y                  FLOAT,
+                is_soft_assigned         BOOLEAN,
+                is_reclassified          BOOLEAN,
+                umap_x                   FLOAT,
+                umap_y                   FLOAT,
                 PRIMARY KEY (player_id, saison)
             )
         """))
@@ -243,17 +313,17 @@ def _save_assignments_to_db(
         for i, (_, row) in enumerate(df.iterrows()):
             sl = soft_labels[i]
             rows.append({
-                "player_id":               int(row["player_id"]),
-                "saison":                  row["saison"],
-                "cluster_label":           int(sl["original_label"]),
-                "archetype":               sl["archetype"],
-                "archetype_conf":          sl["archetype_conf"],
-                "archetype_secondary":     sl["archetype_secondary"],
+                "player_id": int(row["player_id"]),
+                "saison": str(row["saison"]),
+                "cluster_label": int(sl["original_label"]),
+                "archetype": str(sl["archetype"]),
+                "archetype_conf": float(sl["archetype_conf"]),
+                "archetype_secondary": sl["archetype_secondary"],
                 "archetype_secondary_conf": sl["archetype_secondary_conf"],
-                "is_soft_assigned":        bool(sl["is_soft_assigned"]),   # ← bool() natif
-                "is_reclassified":         bool(sl["is_reclassified"]),    # ← bool() natif
-                "umap_x":                  round(float(umap_coords[i, 0]), 4),
-                "umap_y":                  round(float(umap_coords[i, 1]), 4),
+                "is_soft_assigned": bool(sl["is_soft_assigned"]),
+                "is_reclassified": bool(sl["is_reclassified"]),
+                "umap_x": round(float(umap_coords[i, 0]), 4),
+                "umap_y": round(float(umap_coords[i, 1]), 4),
             })
 
         conn.execute(text("""
@@ -284,25 +354,25 @@ def _save_assignments_to_db(
         """), rows)
         conn.commit()
 
-    print(f"[role_engine] ✓ {len(rows)} assignments écrits en base.")
+    print(f"[role_engine] [OK] {len(rows)} affectations écrites dans player_archetypes.")
 
 
 # ──────────────────────────────────────────────────────────────────
-# Interface publique
+# Interface publique d'entraînement et d'inférence
 # ──────────────────────────────────────────────────────────────────
 
-def build_and_save_roles(engine) -> dict:
+def build_and_save_roles(engine) -> dict[int, str]:
     """
-    Pipeline complet :
-    1. Charge les données depuis player_features
-    2. Standardise avec RobustScaler
-    3. UMAP (n_neighbors=20, cosine)
-    4. HDBSCAN (mcs=40, ms=3, euclidean, eom)
-    5. Soft assignment avec double label et reclassification
-    6. Sauvegarde modèles + base
+    Entraîne le modèle topologique d'archétypes et persiste les résultats :
+    1. Charge les features fiables et replacement-level depuis player_features.
+    2. Standardise via RobustScaler.
+    3. Projette en 2D via UMAP pour la préservation géométrique et les coordonnées visuelles.
+    4. Segmente par HDBSCAN.
+    5. Nomme dynamiquement les clusters d'après leurs statistiques réelles.
+    6. Applique le soft assignment avec fallback centroïde pour éliminer les non-classifiés.
+    7. Sauvegarde les modèles et écrit dans player_archetypes.
     """
-    print("[role_engine] chargement des features...")
-
+    print("[role_engine] Chargement des features...")
     cols_sql = ", ".join([f"pf.{f}" for f in SIMILARITY_FEATURES])
     query = f"""
         SELECT pf.player_id, pf.saison, pf.valuation_tier,
@@ -313,99 +383,113 @@ def build_and_save_roles(engine) -> dict:
     with engine.connect() as conn:
         df = pd.read_sql(text(query), conn)
 
-    df = df.reset_index(drop=True)
-    print(f"[role_engine] {len(df)} joueurs-saisons chargés.")
+    df = df.drop_duplicates(subset=["player_id", "saison"]).reset_index(drop=True)
+    print(f"[role_engine] {len(df)} profils joueur-saison chargés.")
 
-    # Standardisation
+    # 1. Standardisation
     scaler = RobustScaler()
     matrix = scaler.fit_transform(df[SIMILARITY_FEATURES].fillna(0))
     _save(scaler, SCALER_PATH)
-    print("[role_engine] scaler sauvegardé.")
 
-    # UMAP
-    print("[role_engine] calcul UMAP...")
-    umap_model, coords = _fit_umap(matrix)
+    # 2. UMAP
+    print("[role_engine] Calcul projection UMAP...")
+    umap_model = UMAP(**UMAP_PARAMS)
+    coords = umap_model.fit_transform(matrix)
     _save(umap_model, UMAP_PATH)
-    print("[role_engine] UMAP sauvegardé.")
 
-    # HDBSCAN
-    print("[role_engine] clustering HDBSCAN...")
-    clusterer = _fit_clusterer(coords)
+    # 3. HDBSCAN
+    print("[role_engine] Clustering HDBSCAN...")
+    clusterer = hdbscan.HDBSCAN(**HDBSCAN_PARAMS)
+    clusterer.fit(coords)
     _save(clusterer, CLUSTERER_PATH)
 
     labels = clusterer.labels_
-    probs  = clusterer.probabilities_
+    df["cluster"] = labels
 
-    n_clusters = len(set(labels)) - (1 if OUTLIER_LABEL in labels else 0)
-    n_outliers = (labels == OUTLIER_LABEL).sum()
-    print(f"[role_engine] {n_clusters} clusters, {n_outliers} outliers.")
+    # 4. Nommage sémantique dynamique des clusters
+    archetype_names = _generate_archetype_names(df, cluster_col="cluster")
+    _save(archetype_names, NAMES_PATH)
+    print(f"[role_engine] {len(archetype_names) - 1} archétypes sémantiques identifiés.")
 
-    unknown = set(labels) - set(ARCHETYPE_NAMES.keys())
-    if unknown:
-        print(f"[role_engine] ⚠️  labels sans nom : {unknown}")
+    # 5. Centroïdes et rattrapage
+    centroids = _compute_cluster_centroids(matrix, labels)
+    _save(centroids, CENTROIDS_PATH)
 
-    # Soft assignment
-    print("[role_engine] calcul soft membership vectors...")
+    print("[role_engine] Calcul soft membership & rattrapage centroïdes...")
     soft_vectors = all_points_membership_vectors(clusterer)
-    soft_labels  = _compute_soft_labels(labels, soft_vectors)
+    soft_labels = _compute_soft_labels(labels, soft_vectors, matrix, centroids, archetype_names)
 
-    n_reclassified  = sum(1 for s in soft_labels if s["is_reclassified"])
-    n_soft_assigned = sum(1 for s in soft_labels if s["is_soft_assigned"] and s["archetype"] != "unclassified")
-    n_unclassified  = sum(1 for s in soft_labels if s["archetype"] == "unclassified")
-    n_double        = sum(1 for s in soft_labels if s["archetype_secondary"] is not None)
+    n_soft_assigned = sum(1 for s in soft_labels if s["is_soft_assigned"])
+    n_reclassified = sum(1 for s in soft_labels if s["is_reclassified"])
+    n_unclassified = sum(1 for s in soft_labels if s["archetype"] == OUTLIER_ARCHETYPE)
 
-    print(f"[role_engine] reclassifiés (conf<0.15) : {n_reclassified}")
-    print(f"[role_engine] soft assignés (outliers)  : {n_soft_assigned}")
-    print(f"[role_engine] unclassified              : {n_unclassified}")
-    print(f"[role_engine] double label              : {n_double}")
+    print(f"[role_engine] Soft-assigned (outliers rattrapés) : {n_soft_assigned}")
+    print(f"[role_engine] Reclassifiés (faible densité)     : {n_reclassified}")
+    print(f"[role_engine] Non-classifiés résiduels           : {n_unclassified} (0 attendu)")
 
+    # 6. Sauvegarde en DB
     _save_assignments_to_db(engine, df, soft_labels, coords)
 
-    return ARCHETYPE_NAMES
+    return archetype_names
 
 
 def predict_archetype(
-    vector     : np.ndarray,
-    umap_model : Optional[UMAP]            = None,
-    clusterer  : Optional[hdbscan.HDBSCAN] = None,
-    scaler     : Optional[RobustScaler]    = None,
+    vector: np.ndarray,
+    umap_model: Optional[UMAP] = None,
+    clusterer: Optional[hdbscan.HDBSCAN] = None,
+    scaler: Optional[RobustScaler] = None,
+    archetype_names: Optional[dict[int, str]] = None,
+    centroids: Optional[dict[int, np.ndarray]] = None,
 ) -> dict:
     """
-    Prédit l'archétype d'un nouveau vecteur de features (joueur hors DB).
-    Pas de soft assignment ici — approximate_predict suffit pour un point unique.
+    Prédit l'archétype d'un nouveau profil statistique (joueur hors DB).
+    Utilise approximate_predict avec fallback centroïde cosinus si besoin.
     """
-    if scaler     is None: scaler     = _load(SCALER_PATH)
-    if umap_model is None: umap_model = _load(UMAP_PATH)
-    if clusterer  is None: clusterer  = _load(CLUSTERER_PATH)
+    if scaler is None:
+        scaler = _load(SCALER_PATH)
+    if umap_model is None:
+        umap_model = _load(UMAP_PATH)
+    if clusterer is None:
+        clusterer = _load(CLUSTERER_PATH)
+    if archetype_names is None:
+        archetype_names = _load(NAMES_PATH)
+    if centroids is None:
+        centroids = _load(CENTROIDS_PATH)
 
-    scaled    = scaler.transform(vector.reshape(1, -1))
+    scaled = scaler.transform(vector.reshape(1, -1))
     coords_2d = umap_model.transform(scaled)
 
     pred_labels, pred_probs = hdbscan.approximate_predict(clusterer, coords_2d)
     label = int(pred_labels[0])
-    prob  = float(pred_probs[0])
+    prob = float(pred_probs[0])
 
-    archetype = ARCHETYPE_NAMES.get(label, OUTLIER_ARCHETYPE)
-
-    # Si conf trop basse, on marque unclassified
-    if prob < ASSIGNED_CONF_MIN and label != -1:
-        archetype = OUTLIER_ARCHETYPE
+    if label >= 0 and prob >= ASSIGNED_CONF_MIN:
+        archetype = archetype_names.get(label, OUTLIER_ARCHETYPE)
+    else:
+        # Fallback centroïde
+        centroid_keys = sorted(centroids.keys())
+        centroid_mat = np.array([centroids[k] for k in centroid_keys])
+        dists = cosine_distances(scaled, centroid_mat)[0]
+        best_k = int(np.argmin(dists))
+        label = centroid_keys[best_k]
+        prob = max(0.15, min(0.95, round(1.0 - float(dists[best_k]) / 2.0, 4)))
+        archetype = archetype_names.get(label, OUTLIER_ARCHETYPE)
 
     return {
-        "cluster_label"  : label,
-        "archetype"      : archetype,
-        "archetype_conf" : round(prob, 4),
-        "umap_x"         : round(float(coords_2d[0, 0]), 4),
-        "umap_y"         : round(float(coords_2d[0, 1]), 4),
+        "cluster_label": label,
+        "archetype": archetype,
+        "archetype_conf": round(prob, 4),
+        "umap_x": round(float(coords_2d[0, 0]), 4),
+        "umap_y": round(float(coords_2d[0, 1]), 4),
     }
 
 
 def get_player_archetype(
     engine,
-    player_id : int,
-    season    : str,
+    player_id: int,
+    season: str,
 ) -> Optional[dict]:
-    """Retourne l'archétype complet d'un joueur-saison depuis la base."""
+    """Récupère l'archétype d'un joueur-saison depuis la base de données."""
     with engine.connect() as conn:
         row = conn.execute(text("""
             SELECT cluster_label, archetype, archetype_conf,
@@ -420,32 +504,26 @@ def get_player_archetype(
         return None
 
     return {
-        "cluster_label":           row.cluster_label,
-        "archetype":               row.archetype,
-        "archetype_conf":          row.archetype_conf,
-        "archetype_secondary":     row.archetype_secondary,
+        "cluster_label": row.cluster_label,
+        "archetype": row.archetype,
+        "archetype_conf": row.archetype_conf,
+        "archetype_secondary": row.archetype_secondary,
         "archetype_secondary_conf": row.archetype_secondary_conf,
-        "is_soft_assigned":        row.is_soft_assigned,
-        "is_reclassified":         row.is_reclassified,
-        "umap_x":                  row.umap_x,
-        "umap_y":                  row.umap_y,
+        "is_soft_assigned": row.is_soft_assigned,
+        "is_reclassified": row.is_reclassified,
+        "umap_x": row.umap_x,
+        "umap_y": row.umap_y,
     }
 
 
 def get_archetype_players(
     engine,
-    archetype_name : str,
-    season         : Optional[str] = None,
-    min_conf       : float = 0.15,
-    include_secondary : bool = False,
+    archetype_name: str,
+    season: Optional[str] = None,
+    min_conf: float = 0.15,
+    include_secondary: bool = False,
 ) -> pd.DataFrame:
-    """
-    Retourne tous les joueurs d'un archétype donné.
-
-    include_secondary=True inclut aussi les joueurs qui ont cet archétype
-    en label secondaire — utile pour C6 quand il cherche des comparables
-    à la frontière de deux profils.
-    """
+    """Retourne la liste des joueurs appartenant à un archétype donné."""
     if not include_secondary:
         query = """
             SELECT pa.player_id, p.player_name, pa.saison,
@@ -476,9 +554,9 @@ def get_archetype_players(
             )
         """
         params = {
-            "archetype":     archetype_name,
-            "min_conf":      min_conf,
-            "sec_min_conf":  SOFT_SECONDARY_THRESHOLD,
+            "archetype": archetype_name,
+            "min_conf": min_conf,
+            "sec_min_conf": SOFT_SECONDARY_THRESHOLD,
         }
 
     if season:
@@ -491,16 +569,13 @@ def get_archetype_players(
         return pd.read_sql(text(query), conn, params=params)
 
 
-def list_archetypes() -> dict:
-    """Retourne le mapping complet {label -> nom}."""
-    return ARCHETYPE_NAMES.copy()
+def list_archetypes() -> dict[int, str]:
+    """Retourne la liste des archétypes sémantiques entraînés."""
+    return _load(NAMES_PATH)
 
 
 def get_archetype_stats(engine, season: Optional[str] = None) -> pd.DataFrame:
-    """
-    Retourne un résumé statistique par archétype — utile pour C6.
-    Nombre de joueurs, conf moyenne, % soft assignés.
-    """
+    """Retourne un résumé statistique par archétype (volume, confiance moyenne, etc.)."""
     query = """
         SELECT
             pa.archetype,

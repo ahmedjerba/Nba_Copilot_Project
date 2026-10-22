@@ -1,4 +1,12 @@
 # test_comparable_service.py
+import sys
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 from sqlalchemy import create_engine
 from config import DB_URL
 from comparable_service import find, ComparableRequest, ComparableMode

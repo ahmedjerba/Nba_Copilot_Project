@@ -4,7 +4,8 @@ from pathlib import Path
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-    DATA_DIR = PROJECT_ROOT / "ingestion/data/raw"
+    COMPOSANT1_DIR = PROJECT_ROOT / "Composant1"
+    DATA_DIR = COMPOSANT1_DIR / "data/raw" if (COMPOSANT1_DIR / "data/raw").exists() else PROJECT_ROOT / "ingestion/data/raw"
     
 
     stats = pd.read_csv(DATA_DIR / "player_stats_merged.csv")

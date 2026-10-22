@@ -8,7 +8,7 @@ import pandas as pd
 import statsmodels.formula.api as smf
 import statsmodels.api as sm
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.metrics import mean_absolute_error
 
 from Composant3.Valorisation.config import SALARY_CAP_REF
@@ -28,6 +28,7 @@ class BetaValuationModel:
     def __init__(self):
         self.glm_model    = None
         self.imputer      = None
+        self.scaler       = None
         self.encoder      = None
         self.alpha        = 0.01
         self.num_features: list[str] = []
@@ -44,10 +45,13 @@ class BetaValuationModel:
         if fit:
             self.imputer = SimpleImputer(strategy="median")
             X_num_imp = self.imputer.fit_transform(X_num)
+            self.scaler = StandardScaler()
+            X_num_sc = self.scaler.fit_transform(X_num_imp)
         else:
             X_num_imp = self.imputer.transform(X_num)
+            X_num_sc = self.scaler.transform(X_num_imp)
 
-        X_num_df = pd.DataFrame(X_num_imp, columns=self.num_features,
+        X_num_df = pd.DataFrame(X_num_sc, columns=self.num_features,
                                 index=df.index)
 
         X_cat_raw = df[self.cat_features].fillna("unknown")
@@ -102,6 +106,13 @@ class BetaValuationModel:
 
         weights = df[sample_weight_col].values if sample_weight_col in df.columns else None
 
+        # CORRECTION C3-2 : freq_weights doit être un vecteur d'entiers.
+        # Les poids flottants (ex. 2.5) ne sont pas supportés par statsmodels
+        # et peuvent causer des avertissements ou erreurs silencieuses.
+        # On les arrondit à l'entier le plus proche (perte négligeable).
+        if weights is not None:
+            weights = np.round(weights).astype(int)
+
         formula = self._build_formula(self.feature_names, "cap_hit_pct")
 
         glm = smf.glm(
@@ -115,6 +126,10 @@ class BetaValuationModel:
             self.glm_model = glm.fit_regularized(alpha=alpha, L1_wt=0.0)
         else:
             self.glm_model = glm.fit(disp=0)
+
+        # Sauvegarder y et les prédictions in-sample pour le bootstrap (C3-4)
+        self._y_train  = y
+        self._X_train  = X_model.copy()
 
         return self
 
@@ -154,9 +169,15 @@ class BetaValuationModel:
         self,
         player_row: pd.DataFrame,
         salary_cap: float = SALARY_CAP_REF,
+        n_bootstrap: int = 200,
+        ci_alpha: float  = 0.20,
     ) -> dict:
         """
         Prédit la valeur marché d'un joueur à partir d'une ligne de features.
+
+        L'intervalle de confiance est calculé par bootstrap résiduel quand
+        get_prediction() n'est pas disponible (cas fit_regularized / C3-4).
+        ci_alpha=0.20 donne un intervalle P10-P90 (80%).
         """
         X_full  = self._prepare_X(player_row, fit=False)
         X_model = X_full.reset_index(drop=True)
@@ -164,14 +185,19 @@ class BetaValuationModel:
         val_pct = float(self.glm_model.predict(X_model).iloc[0])
         val_usd = val_pct * salary_cap
 
+        # Tentative 1 : get_prediction() — disponible seulement sans régularisation
         try:
             pred_obj = self.glm_model.get_prediction(X_model)
-            ci       = pred_obj.summary_frame(alpha=0.20)
+            ci       = pred_obj.summary_frame(alpha=ci_alpha)
             low_pct  = float(ci["mean_ci_lower"].iloc[0])
             high_pct = float(ci["mean_ci_upper"].iloc[0])
         except Exception:
-            low_pct  = val_pct * 0.85
-            high_pct = val_pct * 1.15
+            # CORRECTION C3-4 : bootstrap résiduel au lieu du fallback ±15% déterministe.
+            # On re-prédit sur le training set, calcule les résidus, les échantillonne
+            # et on les ajoute à la prédiction pour construire l'intervalle empirique.
+            low_pct, high_pct = self._bootstrap_ci(
+                X_model, val_pct, n_bootstrap=n_bootstrap, ci_alpha=ci_alpha
+            )
 
         return {
             "valeur_pct":     round(val_pct, 4),
@@ -180,6 +206,33 @@ class BetaValuationModel:
             "p90_dollars":    round(high_pct * salary_cap),
             "salary_cap":     salary_cap,
         }
+
+    def _bootstrap_ci(
+        self,
+        X_pred: pd.DataFrame,
+        val_pct: float,
+        n_bootstrap: int = 200,
+        ci_alpha: float  = 0.20,
+    ) -> tuple[float, float]:
+        """
+        Bootstrap résiduel : échantillonne les résidus in-sample
+        pour estimer la distribution de l'érreur de prédiction.
+        Retourne (quantile_bas, quantile_haut) en fraction du cap.
+        """
+        if not hasattr(self, "_y_train") or not hasattr(self, "_X_train"):
+            # Fallback minimal si pas de données d'entraînement stockées
+            return val_pct * (1 - ci_alpha), val_pct * (1 + ci_alpha)
+
+        y_hat_train = np.array(self.glm_model.predict(self._X_train))
+        residuals   = self._y_train - y_hat_train  # résidus bruts
+
+        rng = np.random.default_rng(seed=42)
+        boot_samples = val_pct + rng.choice(residuals, size=n_bootstrap, replace=True)
+        boot_samples = np.clip(boot_samples, 1e-6, 1 - 1e-6)
+
+        low  = float(np.quantile(boot_samples, ci_alpha / 2))
+        high = float(np.quantile(boot_samples, 1 - ci_alpha / 2))
+        return low, high
 
     def predict_surplus(
         self,

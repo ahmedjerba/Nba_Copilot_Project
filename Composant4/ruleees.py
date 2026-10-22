@@ -108,8 +108,12 @@ def check_trade_matching(state: TeamPayroll, move: Move, rules: dict) -> RuleRes
 
     # Calcul du max recevable
     if state.total_cap_hit <= cap:
-        max_receivable = int(salary_out * (1 + pct)) + flat
-        rule_label = f"sous le cap (max = salary_out × {1+pct} + {flat:,}$)"
+        cap_space = cap - state.total_cap_hit
+        # En CBA, une équipe sous le cap peut soit absorber directement dans son cap space,
+        # soit utiliser le matching standard à 125% + 100k
+        matching_limit = int(salary_out * (1 + pct)) + flat
+        max_receivable = max(salary_out + cap_space, matching_limit)
+        rule_label = f"sous le cap (max absorption cap space/matching = {max_receivable:,}$)"
     else:
         max_receivable = salary_out + above_flat
         rule_label = f"au-dessus du cap (max = salary_out + {above_flat:,}$)"
@@ -158,11 +162,11 @@ def check_luxury_tax(state: TeamPayroll, move: Move, rules: dict) -> RuleResult:
                 f"({cap_after:,}$). Aucune exception autorisée."
             )
         if ap2_rules.get("no_trade_aggregation") and move.move_type == MoveType.TRADE:
-            if len(move.players_in) > 1:
+            if len(move.players_out) > 1:
                 return _fail(
                     RULE,
                     f"Second apron dépassé ({cap_after:,}$) : "
-                    f"impossible d'agréger plusieurs salaires entrants dans un trade."
+                    f"interdiction d'agréger plusieurs salaires sortants (Article VII, Section 2 CBA)."
                 )
 
     # Apron 1

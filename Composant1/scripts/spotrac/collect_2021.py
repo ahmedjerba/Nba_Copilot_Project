@@ -6,9 +6,10 @@ from bs4 import BeautifulSoup
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-    CACHE = PROJECT_ROOT / "ingestion/cache/cache_spotrac"
+    COMPOSANT1_DIR = PROJECT_ROOT / "Composant1"
+    CACHE = COMPOSANT1_DIR / "cache/cache_spotrac"
     CACHE.mkdir(parents=True, exist_ok=True)
-    DATA_DIR = PROJECT_ROOT / "ingestion/data/raw"
+    DATA_DIR = COMPOSANT1_DIR / "data/raw"
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     BASE = "https://www.spotrac.com"

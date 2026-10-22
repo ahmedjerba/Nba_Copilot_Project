@@ -6,7 +6,8 @@ from pathlib import Path
 
 if __name__ == "__main__":
     PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-    DATA_DIR = PROJECT_ROOT / "ingestion/data/raw"
+    COMPOSANT1_DIR = PROJECT_ROOT / "Composant1"
+    DATA_DIR = COMPOSANT1_DIR / "data/raw"
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     # Récupérer tous les joueurs actifs
